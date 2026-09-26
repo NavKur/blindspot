@@ -57,6 +57,18 @@ Everything else (mode, flags, prompt template, batch size, question order within
 **Descriptive (no tests):** per-module accuracy with Wilson 95% intervals; reliability diagram (5 bins) and ECE;
 run-to-run agreement across the `REPEATS` runs per condition; coins per call by condition.
 
+**Sensitivity check: cluster bootstrap.** Questions about the same piece of code are not independent
+(if Bob misunderstands one function, several answers fail together), so the question-level analysis may be
+too optimistic. For the C2 minus C1 differences in accuracy and in Brier score (repeat 1), we resample whole
+clusters of questions with replacement, `N_BOOT` times, and report the 95% percentile interval and the
+design effect (cluster variance divided by independent-question variance).
+- Primary clustering: the code entity each question is about (function, method or class; module-level
+  questions form one cluster per module). This gives many clusters, which the bootstrap needs.
+- Secondary clustering: module. tinydb has about 9 modules, too few for a reliable cluster bootstrap,
+  so this is shown for transparency only.
+- If the entity-clustered interval for the accuracy difference includes 0 while the primary McNemar test
+  is significant, this is stated next to the primary result. It does not replace the primary result.
+
 **Red module rule.** A module is red if the Wilson 95% lower bound on its accuracy is below `RED_ACC_LOWER`,
 or its confidently-wrong rate (share of its questions answered wrongly with `p >= CONFIDENT_P`) exceeds `RED_CW_RATE`.
 
@@ -87,6 +99,7 @@ CONFIDENT_P = 0.8
 RED_ACC_LOWER = 0.60
 RED_CW_RATE = 0.20
 MAX_CARTO_MODULES = 5
+N_BOOT = 2000
 ```
 
 ## Deviations
