@@ -9,8 +9,15 @@ RESULTS_DIR = ROOT / "results"        # answers + stats JSON, committed; hidden 
 CACHE_DIR = ROOT / ".cache" / "bob"   # cached Bob responses, not committed
 BOB_DIR = ROOT / ".bob"               # custom modes, Skill, rules
 
-SEED = 7                  # exam generation seed (fixed in PREREGISTRATION.md)
+# The values below are fixed by PREREGISTRATION.md. tests/test_prereg.py fails if they drift.
+SEED = 7                  # exam generation + TRAIN/TEST split seed
 BATCH_SIZE = 20           # questions per bob run call
 N_TRAIN = 120
-N_TEST = 120
+N_TEST = 200
+REPEATS = 3               # times each condition sits the TEST set (repeat 1 is the primary analysis)
+ALPHA = 0.05
+CONFIDENT_P = 0.8         # "confident" means stated probability >= this
+RED_ACC_LOWER = 0.60      # module is red if the Wilson lower bound on accuracy is below this ...
+RED_CW_RATE = 0.20        # ... or its confidently-wrong rate is above this
+MAX_CARTO_MODULES = 5
 CONDITIONS = ("C0", "C1", "C2")   # no context | /init AGENTS.md | /init + Blindspot context
