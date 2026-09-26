@@ -1,4 +1,4 @@
-"""Build question candidates from the repo index (steps 6 and 7).
+"""Build question candidates from the repo index (steps 6 and 7: five families).
 
 Families produce ALL candidate questions they can verify. Step 8 (split.py) samples from
 them to get balanced TRAIN and TEST sets.
@@ -8,9 +8,9 @@ import json
 import sys
 
 from blindspot import config
-from blindspot.families import defaults, exists, imports
+from blindspot.families import calls, defaults, exists, imports, raises
 
-FAMILIES = [imports, exists, defaults]   # step 7 adds raises and calls
+FAMILIES = [imports, exists, defaults, raises, calls]
 
 
 def build_candidates(index: dict) -> list:
