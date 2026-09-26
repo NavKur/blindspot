@@ -1,0 +1,26 @@
+# .bobignore: files IBM Bob must never read or write in this workspace.
+# Same syntax as .gitignore. Bob cannot edit this file itself.
+
+# --- Exam integrity: answer keys and results must stay hidden from Bob ---
+# Questions + true answers (TRAIN, TEST, pilot). Seeing these would leak the exam.
+exams/
+# Bob's marked answers, statistics and failure summaries.
+results/
+# Cached raw Bob responses.
+.cache/
+
+# --- Secrets ---
+.env
+.env.*
+*.pem
+*.key
+
+# --- Noise that wastes Bobcoins if Bob reads it ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+*.zip
+bob_sessions/
