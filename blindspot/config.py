@@ -22,3 +22,7 @@ RED_CW_RATE = 0.20        # ... or its confidently-wrong rate is above this
 MAX_CARTO_MODULES = 5
 N_BOOT = 2000             # bootstrap resamples (paired and cluster)
 CONDITIONS = ("C0", "C1", "C2")   # no context | /init AGENTS.md | /init + Blindspot context
+
+# Exam scope (step 6). Modules with fewer lines than this, or listed here, get no questions.
+MIN_MODULE_LOC = 10
+EXCLUDE_MODULES = ("tinydb.mypy_plugin",)   # type-checker add-on, not part of the library's behaviour

@@ -1,0 +1,2366 @@
+{
+  "package": "tinydb",
+  "modules": [
+    {
+      "module": "tinydb",
+      "path": "tinydb/__init__.py",
+      "entity": "tinydb:<module>",
+      "loc": 26,
+      "imports": [
+        "tinydb.database",
+        "tinydb.queries",
+        "tinydb.storages",
+        "tinydb.version"
+      ],
+      "functions": [],
+      "classes": [],
+      "internal_imports": [
+        "tinydb.database",
+        "tinydb.queries",
+        "tinydb.storages",
+        "tinydb.version"
+      ]
+    },
+    {
+      "module": "tinydb.database",
+      "path": "tinydb/database.py",
+      "entity": "tinydb.database:<module>",
+      "loc": 208,
+      "imports": [
+        "collections.abc",
+        "tinydb",
+        "tinydb.storages",
+        "tinydb.table",
+        "tinydb.utils"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "module": "tinydb.database",
+          "qualname": "TinyDB",
+          "entity": "tinydb.database:TinyDB",
+          "line": 17,
+          "bases": [
+            "TableBase"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__init__",
+              "entity": "tinydb.database:TinyDB.__init__",
+              "kind": "method",
+              "line": 87,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "pop",
+                "storage"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__repr__",
+              "entity": "tinydb.database:TinyDB.__repr__",
+              "kind": "method",
+              "line": 100,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__len__",
+                "format",
+                "join",
+                "len",
+                "list",
+                "table",
+                "tables",
+                "type"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.table",
+              "entity": "tinydb.database:TinyDB.table",
+              "kind": "method",
+              "line": 111,
+              "params": [
+                "self",
+                "name"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "table_class"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.tables",
+              "entity": "tinydb.database:TinyDB.tables",
+              "kind": "method",
+              "line": 135,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "read",
+                "set"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.drop_tables",
+              "entity": "tinydb.database:TinyDB.drop_tables",
+              "kind": "method",
+              "line": 163,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "clear",
+                "write"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.drop_table",
+              "entity": "tinydb.database:TinyDB.drop_table",
+              "kind": "method",
+              "line": 176,
+              "params": [
+                "self",
+                "name"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "read",
+                "write"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.storage",
+              "entity": "tinydb.database:TinyDB.storage",
+              "kind": "method",
+              "line": 205,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.close",
+              "entity": "tinydb.database:TinyDB.close",
+              "kind": "method",
+              "line": 214,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "close"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__enter__",
+              "entity": "tinydb.database:TinyDB.__enter__",
+              "kind": "method",
+              "line": 232,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__exit__",
+              "entity": "tinydb.database:TinyDB.__exit__",
+              "kind": "method",
+              "line": 244,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "close"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__getattr__",
+              "entity": "tinydb.database:TinyDB.__getattr__",
+              "kind": "method",
+              "line": 251,
+              "params": [
+                "self",
+                "name"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "getattr",
+                "table"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__len__",
+              "entity": "tinydb.database:TinyDB.__len__",
+              "kind": "method",
+              "line": 260,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "len",
+                "table"
+              ]
+            },
+            {
+              "module": "tinydb.database",
+              "qualname": "TinyDB.__iter__",
+              "entity": "tinydb.database:TinyDB.__iter__",
+              "kind": "method",
+              "line": 270,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "iter",
+                "table"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": [
+        "tinydb",
+        "tinydb.storages",
+        "tinydb.table",
+        "tinydb.utils"
+      ]
+    },
+    {
+      "module": "tinydb.middlewares",
+      "path": "tinydb/middlewares.py",
+      "entity": "tinydb.middlewares:<module>",
+      "loc": 93,
+      "imports": [
+        "tinydb",
+        "typing"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "module": "tinydb.middlewares",
+          "qualname": "Middleware",
+          "entity": "tinydb.middlewares:Middleware",
+          "line": 10,
+          "bases": [],
+          "methods": [
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "Middleware.__init__",
+              "entity": "tinydb.middlewares:Middleware.__init__",
+              "kind": "method",
+              "line": 21,
+              "params": [
+                "self",
+                "storage_cls"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "Middleware.__call__",
+              "entity": "tinydb.middlewares:Middleware.__call__",
+              "kind": "method",
+              "line": 25,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_storage_cls"
+              ]
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "Middleware.__getattr__",
+              "entity": "tinydb.middlewares:Middleware.__getattr__",
+              "kind": "method",
+              "line": 67,
+              "params": [
+                "self",
+                "name"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "getattr"
+              ]
+            }
+          ]
+        },
+        {
+          "module": "tinydb.middlewares",
+          "qualname": "CachingMiddleware",
+          "entity": "tinydb.middlewares:CachingMiddleware",
+          "line": 76,
+          "bases": [
+            "Middleware"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "CachingMiddleware.__init__",
+              "entity": "tinydb.middlewares:CachingMiddleware.__init__",
+              "kind": "method",
+              "line": 88,
+              "params": [
+                "self",
+                "storage_cls"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__init__",
+                "super"
+              ]
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "CachingMiddleware.read",
+              "entity": "tinydb.middlewares:CachingMiddleware.read",
+              "kind": "method",
+              "line": 96,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "read"
+              ]
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "CachingMiddleware.write",
+              "entity": "tinydb.middlewares:CachingMiddleware.write",
+              "kind": "method",
+              "line": 104,
+              "params": [
+                "self",
+                "data"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "flush"
+              ]
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "CachingMiddleware.flush",
+              "entity": "tinydb.middlewares:CachingMiddleware.flush",
+              "kind": "method",
+              "line": 113,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "write"
+              ]
+            },
+            {
+              "module": "tinydb.middlewares",
+              "qualname": "CachingMiddleware.close",
+              "entity": "tinydb.middlewares:CachingMiddleware.close",
+              "kind": "method",
+              "line": 122,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "close",
+                "flush"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": [
+        "tinydb"
+      ]
+    },
+    {
+      "module": "tinydb.mypy_plugin",
+      "path": "tinydb/mypy_plugin.py",
+      "entity": "tinydb.mypy_plugin:<module>",
+      "loc": 26,
+      "imports": [
+        "collections.abc",
+        "mypy.nodes",
+        "mypy.options",
+        "mypy.plugin",
+        "typing"
+      ],
+      "functions": [
+        {
+          "module": "tinydb.mypy_plugin",
+          "qualname": "plugin",
+          "entity": "tinydb.mypy_plugin:plugin",
+          "kind": "function",
+          "line": 38,
+          "params": [
+            "_version"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        }
+      ],
+      "classes": [
+        {
+          "module": "tinydb.mypy_plugin",
+          "qualname": "TinyDBPlugin",
+          "entity": "tinydb.mypy_plugin:TinyDBPlugin",
+          "line": 13,
+          "bases": [
+            "Plugin"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.mypy_plugin",
+              "qualname": "TinyDBPlugin.__init__",
+              "entity": "tinydb.mypy_plugin:TinyDBPlugin.__init__",
+              "kind": "method",
+              "line": 14,
+              "params": [
+                "self",
+                "options"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__init__",
+                "super"
+              ]
+            },
+            {
+              "module": "tinydb.mypy_plugin",
+              "qualname": "TinyDBPlugin.get_dynamic_class_hook",
+              "entity": "tinydb.mypy_plugin:TinyDBPlugin.get_dynamic_class_hook",
+              "kind": "method",
+              "line": 19,
+              "params": [
+                "self",
+                "fullname"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "add_symbol_table_node",
+                "isinstance",
+                "lookup_fully_qualified"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": []
+    },
+    {
+      "module": "tinydb.operations",
+      "path": "tinydb/operations.py",
+      "entity": "tinydb.operations:<module>",
+      "loc": 50,
+      "imports": [
+        "collections.abc",
+        "typing"
+      ],
+      "functions": [
+        {
+          "module": "tinydb.operations",
+          "qualname": "delete",
+          "entity": "tinydb.operations:delete",
+          "kind": "function",
+          "line": 16,
+          "params": [
+            "field"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.operations",
+          "qualname": "add",
+          "entity": "tinydb.operations:add",
+          "kind": "function",
+          "line": 26,
+          "params": [
+            "field",
+            "n"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.operations",
+          "qualname": "subtract",
+          "entity": "tinydb.operations:subtract",
+          "kind": "function",
+          "line": 36,
+          "params": [
+            "field",
+            "n"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.operations",
+          "qualname": "set",
+          "entity": "tinydb.operations:set",
+          "kind": "function",
+          "line": 46,
+          "params": [
+            "field",
+            "val"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.operations",
+          "qualname": "increment",
+          "entity": "tinydb.operations:increment",
+          "kind": "function",
+          "line": 56,
+          "params": [
+            "field"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.operations",
+          "qualname": "decrement",
+          "entity": "tinydb.operations:decrement",
+          "kind": "function",
+          "line": 66,
+          "params": [
+            "field"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        }
+      ],
+      "classes": [],
+      "internal_imports": []
+    },
+    {
+      "module": "tinydb.queries",
+      "path": "tinydb/queries.py",
+      "entity": "tinydb.queries:<module>",
+      "loc": 398,
+      "imports": [
+        "collections.abc",
+        "re",
+        "tinydb.utils",
+        "typing"
+      ],
+      "functions": [
+        {
+          "module": "tinydb.queries",
+          "qualname": "is_sequence",
+          "entity": "tinydb.queries:is_sequence",
+          "kind": "function",
+          "line": 28,
+          "params": [
+            "obj"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": [
+            "hasattr"
+          ]
+        },
+        {
+          "module": "tinydb.queries",
+          "qualname": "where",
+          "entity": "tinydb.queries:where",
+          "kind": "function",
+          "line": 524,
+          "params": [
+            "key"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": [
+            "Query"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "module": "tinydb.queries",
+          "qualname": "QueryLike",
+          "entity": "tinydb.queries:QueryLike",
+          "line": 32,
+          "bases": [
+            "Protocol"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryLike.__call__",
+              "entity": "tinydb.queries:QueryLike.__call__",
+              "kind": "method",
+              "line": 51,
+              "params": [
+                "self",
+                "value"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryLike.__hash__",
+              "entity": "tinydb.queries:QueryLike.__hash__",
+              "kind": "method",
+              "line": 53,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            }
+          ]
+        },
+        {
+          "module": "tinydb.queries",
+          "qualname": "QueryInstance",
+          "entity": "tinydb.queries:QueryInstance",
+          "line": 56,
+          "bases": [],
+          "methods": [
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__init__",
+              "entity": "tinydb.queries:QueryInstance.__init__",
+              "kind": "method",
+              "line": 73,
+              "params": [
+                "self",
+                "test",
+                "hashval"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "hash"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.is_cacheable",
+              "entity": "tinydb.queries:QueryInstance.is_cacheable",
+              "kind": "method",
+              "line": 84,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__call__",
+              "entity": "tinydb.queries:QueryInstance.__call__",
+              "kind": "method",
+              "line": 87,
+              "params": [
+                "self",
+                "value"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__hash__",
+              "entity": "tinydb.queries:QueryInstance.__hash__",
+              "kind": "method",
+              "line": 96,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "hash"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__repr__",
+              "entity": "tinydb.queries:QueryInstance.__repr__",
+              "kind": "method",
+              "line": 102,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "format"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__eq__",
+              "entity": "tinydb.queries:QueryInstance.__eq__",
+              "kind": "method",
+              "line": 105,
+              "params": [
+                "self",
+                "other"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "isinstance"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__and__",
+              "entity": "tinydb.queries:QueryInstance.__and__",
+              "kind": "method",
+              "line": 113,
+              "params": [
+                "self",
+                "other"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "QueryInstance",
+                "frozenset",
+                "is_cacheable",
+                "other",
+                "self"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__or__",
+              "entity": "tinydb.queries:QueryInstance.__or__",
+              "kind": "method",
+              "line": 123,
+              "params": [
+                "self",
+                "other"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "QueryInstance",
+                "frozenset",
+                "is_cacheable",
+                "other",
+                "self"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "QueryInstance.__invert__",
+              "entity": "tinydb.queries:QueryInstance.__invert__",
+              "kind": "method",
+              "line": 133,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "QueryInstance",
+                "is_cacheable",
+                "self"
+              ]
+            }
+          ]
+        },
+        {
+          "module": "tinydb.queries",
+          "qualname": "Query",
+          "entity": "tinydb.queries:Query",
+          "line": 138,
+          "bases": [
+            "QueryInstance"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__init__",
+              "entity": "tinydb.queries:Query.__init__",
+              "kind": "method",
+              "line": 171,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [
+                "RuntimeError"
+              ],
+              "calls": [
+                "RuntimeError",
+                "__init__",
+                "super"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__repr__",
+              "entity": "tinydb.queries:Query.__repr__",
+              "kind": "method",
+              "line": 184,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "format",
+                "type"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__hash__",
+              "entity": "tinydb.queries:Query.__hash__",
+              "kind": "method",
+              "line": 187,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__hash__",
+                "super"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__getattr__",
+              "entity": "tinydb.queries:Query.__getattr__",
+              "kind": "method",
+              "line": 190,
+              "params": [
+                "self",
+                "item"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "is_cacheable",
+                "type"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__getitem__",
+              "entity": "tinydb.queries:Query.__getitem__",
+              "kind": "method",
+              "line": 204,
+              "params": [
+                "self",
+                "item"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__getattr__"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query._generate_test",
+              "entity": "tinydb.queries:Query._generate_test",
+              "kind": "method",
+              "line": 215,
+              "params": [
+                "self",
+                "test",
+                "hashval",
+                "allow_empty_path"
+              ],
+              "defaults": {
+                "allow_empty_path": "False"
+              },
+              "raises": [
+                "ValueError"
+              ],
+              "calls": [
+                "QueryInstance",
+                "ValueError",
+                "is_cacheable",
+                "isinstance",
+                "part",
+                "runner",
+                "test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__eq__",
+              "entity": "tinydb.queries:Query.__eq__",
+              "kind": "method",
+              "line": 251,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "freeze"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__ne__",
+              "entity": "tinydb.queries:Query.__ne__",
+              "kind": "method",
+              "line": 264,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "freeze"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__lt__",
+              "entity": "tinydb.queries:Query.__lt__",
+              "kind": "method",
+              "line": 277,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__le__",
+              "entity": "tinydb.queries:Query.__le__",
+              "kind": "method",
+              "line": 290,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__gt__",
+              "entity": "tinydb.queries:Query.__gt__",
+              "kind": "method",
+              "line": 303,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.__ge__",
+              "entity": "tinydb.queries:Query.__ge__",
+              "kind": "method",
+              "line": 316,
+              "params": [
+                "self",
+                "rhs"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.exists",
+              "entity": "tinydb.queries:Query.exists",
+              "kind": "method",
+              "line": 329,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.matches",
+              "entity": "tinydb.queries:Query.matches",
+              "kind": "method",
+              "line": 340,
+              "params": [
+                "self",
+                "regex",
+                "flags"
+              ],
+              "defaults": {
+                "flags": "0"
+              },
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "isinstance",
+                "match"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.search",
+              "entity": "tinydb.queries:Query.search",
+              "kind": "method",
+              "line": 357,
+              "params": [
+                "self",
+                "regex",
+                "flags"
+              ],
+              "defaults": {
+                "flags": "0"
+              },
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "isinstance",
+                "search"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.test",
+              "entity": "tinydb.queries:Query.test",
+              "kind": "method",
+              "line": 376,
+              "params": [
+                "self",
+                "func"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "freeze",
+                "func",
+                "tuple"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.any",
+              "entity": "tinydb.queries:Query.any",
+              "kind": "method",
+              "line": 401,
+              "params": [
+                "self",
+                "cond"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "any",
+                "callable",
+                "cond",
+                "freeze",
+                "is_sequence",
+                "test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.all",
+              "entity": "tinydb.queries:Query.all",
+              "kind": "method",
+              "line": 436,
+              "params": [
+                "self",
+                "cond"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "all",
+                "callable",
+                "cond",
+                "freeze",
+                "is_sequence",
+                "test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.one_of",
+              "entity": "tinydb.queries:Query.one_of",
+              "kind": "method",
+              "line": 469,
+              "params": [
+                "self",
+                "items"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "freeze"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.fragment",
+              "entity": "tinydb.queries:Query.fragment",
+              "kind": "method",
+              "line": 482,
+              "params": [
+                "self",
+                "document"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_generate_test",
+                "freeze",
+                "test"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.noop",
+              "entity": "tinydb.queries:Query.noop",
+              "kind": "method",
+              "line": 496,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "QueryInstance"
+              ]
+            },
+            {
+              "module": "tinydb.queries",
+              "qualname": "Query.map",
+              "entity": "tinydb.queries:Query.map",
+              "kind": "method",
+              "line": 508,
+              "params": [
+                "self",
+                "fn"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "type"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": [
+        "tinydb.utils"
+      ]
+    },
+    {
+      "module": "tinydb.storages",
+      "path": "tinydb/storages.py",
+      "entity": "tinydb.storages:<module>",
+      "loc": 133,
+      "imports": [
+        "abc",
+        "io",
+        "json",
+        "os",
+        "typing",
+        "warnings"
+      ],
+      "functions": [
+        {
+          "module": "tinydb.storages",
+          "qualname": "touch",
+          "entity": "tinydb.storages:touch",
+          "kind": "function",
+          "line": 16,
+          "params": [
+            "path",
+            "create_dirs"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": [
+            "dirname",
+            "exists",
+            "makedirs",
+            "open"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "module": "tinydb.storages",
+          "qualname": "Storage",
+          "entity": "tinydb.storages:Storage",
+          "line": 36,
+          "bases": [
+            "ABC"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.storages",
+              "qualname": "Storage.read",
+              "entity": "tinydb.storages:Storage.read",
+              "kind": "method",
+              "line": 48,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [
+                "NotImplementedError"
+              ],
+              "calls": [
+                "NotImplementedError"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "Storage.write",
+              "entity": "tinydb.storages:Storage.write",
+              "kind": "method",
+              "line": 60,
+              "params": [
+                "self",
+                "data"
+              ],
+              "defaults": {},
+              "raises": [
+                "NotImplementedError"
+              ],
+              "calls": [
+                "NotImplementedError"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "Storage.close",
+              "entity": "tinydb.storages:Storage.close",
+              "kind": "method",
+              "line": 71,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            }
+          ]
+        },
+        {
+          "module": "tinydb.storages",
+          "qualname": "JSONStorage",
+          "entity": "tinydb.storages:JSONStorage",
+          "line": 79,
+          "bases": [
+            "Storage"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.storages",
+              "qualname": "JSONStorage.__init__",
+              "entity": "tinydb.storages:JSONStorage.__init__",
+              "kind": "method",
+              "line": 84,
+              "params": [
+                "self",
+                "path",
+                "create_dirs",
+                "encoding",
+                "access_mode"
+              ],
+              "defaults": {
+                "create_dirs": "False",
+                "encoding": "None",
+                "access_mode": "'r+'"
+              },
+              "raises": [],
+              "calls": [
+                "__init__",
+                "any",
+                "open",
+                "super",
+                "touch",
+                "warn"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "JSONStorage.close",
+              "entity": "tinydb.storages:JSONStorage.close",
+              "kind": "method",
+              "line": 122,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "close"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "JSONStorage.read",
+              "entity": "tinydb.storages:JSONStorage.read",
+              "kind": "method",
+              "line": 125,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "load",
+                "seek",
+                "tell"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "JSONStorage.write",
+              "entity": "tinydb.storages:JSONStorage.write",
+              "kind": "method",
+              "line": 142,
+              "params": [
+                "self",
+                "data"
+              ],
+              "defaults": {},
+              "raises": [
+                "IOError"
+              ],
+              "calls": [
+                "IOError",
+                "dumps",
+                "fileno",
+                "flush",
+                "format",
+                "fsync",
+                "seek",
+                "truncate",
+                "write"
+              ]
+            }
+          ]
+        },
+        {
+          "module": "tinydb.storages",
+          "qualname": "MemoryStorage",
+          "entity": "tinydb.storages:MemoryStorage",
+          "line": 164,
+          "bases": [
+            "Storage"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.storages",
+              "qualname": "MemoryStorage.__init__",
+              "entity": "tinydb.storages:MemoryStorage.__init__",
+              "kind": "method",
+              "line": 169,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__init__",
+                "super"
+              ]
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "MemoryStorage.read",
+              "entity": "tinydb.storages:MemoryStorage.read",
+              "kind": "method",
+              "line": 177,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.storages",
+              "qualname": "MemoryStorage.write",
+              "entity": "tinydb.storages:MemoryStorage.write",
+              "kind": "method",
+              "line": 180,
+              "params": [
+                "self",
+                "data"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            }
+          ]
+        }
+      ],
+      "internal_imports": []
+    },
+    {
+      "module": "tinydb.table",
+      "path": "tinydb/table.py",
+      "entity": "tinydb.table:<module>",
+      "loc": 654,
+      "imports": [
+        "collections.abc",
+        "tinydb.queries",
+        "tinydb.storages",
+        "tinydb.utils",
+        "typing"
+      ],
+      "functions": [],
+      "classes": [
+        {
+          "module": "tinydb.table",
+          "qualname": "Document",
+          "entity": "tinydb.table:Document",
+          "line": 22,
+          "bases": [
+            "dict"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.table",
+              "qualname": "Document.__init__",
+              "entity": "tinydb.table:Document.__init__",
+              "kind": "method",
+              "line": 30,
+              "params": [
+                "self",
+                "value",
+                "doc_id"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "__init__",
+                "super"
+              ]
+            }
+          ]
+        },
+        {
+          "module": "tinydb.table",
+          "qualname": "Table",
+          "entity": "tinydb.table:Table",
+          "line": 35,
+          "bases": [],
+          "methods": [
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.__init__",
+              "entity": "tinydb.table:Table.__init__",
+              "kind": "method",
+              "line": 94,
+              "params": [
+                "self",
+                "storage",
+                "name",
+                "cache_size",
+                "persist_empty"
+              ],
+              "defaults": {
+                "persist_empty": "False"
+              },
+              "raises": [],
+              "calls": [
+                "_update_table",
+                "clear",
+                "query_cache_class"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.__repr__",
+              "entity": "tinydb.table:Table.__repr__",
+              "kind": "method",
+              "line": 114,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "format",
+                "join",
+                "len",
+                "type"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.name",
+              "entity": "tinydb.table:Table.name",
+              "kind": "method",
+              "line": 124,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.storage",
+              "entity": "tinydb.table:Table.storage",
+              "kind": "method",
+              "line": 131,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.insert",
+              "entity": "tinydb.table:Table.insert",
+              "kind": "method",
+              "line": 137,
+              "params": [
+                "self",
+                "document"
+              ],
+              "defaults": {},
+              "raises": [
+                "ValueError"
+              ],
+              "calls": [
+                "ValueError",
+                "_get_next_id",
+                "_update_table",
+                "dict",
+                "isinstance",
+                "str"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.insert_multiple",
+              "entity": "tinydb.table:Table.insert_multiple",
+              "kind": "method",
+              "line": 177,
+              "params": [
+                "self",
+                "documents"
+              ],
+              "defaults": {},
+              "raises": [
+                "ValueError"
+              ],
+              "calls": [
+                "ValueError",
+                "_get_next_id",
+                "_update_table",
+                "append",
+                "dict",
+                "isinstance",
+                "str"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.all",
+              "entity": "tinydb.table:Table.all",
+              "kind": "method",
+              "line": 221,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "iter",
+                "list"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.search",
+              "entity": "tinydb.table:Table.search",
+              "kind": "method",
+              "line": 235,
+              "params": [
+                "self",
+                "cond"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_read_table",
+                "cond",
+                "document_class",
+                "document_id_class",
+                "get",
+                "getattr",
+                "is_cacheable",
+                "items"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.get",
+              "entity": "tinydb.table:Table.get",
+              "kind": "method",
+              "line": 317,
+              "params": [
+                "self",
+                "cond",
+                "doc_id",
+                "doc_ids"
+              ],
+              "defaults": {
+                "cond": "None",
+                "doc_id": "None",
+                "doc_ids": "None"
+              },
+              "raises": [
+                "RuntimeError"
+              ],
+              "calls": [
+                "RuntimeError",
+                "_read_table",
+                "cond",
+                "document_class",
+                "document_id_class",
+                "get",
+                "items",
+                "set",
+                "str"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.contains",
+              "entity": "tinydb.table:Table.contains",
+              "kind": "method",
+              "line": 380,
+              "params": [
+                "self",
+                "cond",
+                "doc_id"
+              ],
+              "defaults": {
+                "cond": "None",
+                "doc_id": "None"
+              },
+              "raises": [
+                "RuntimeError"
+              ],
+              "calls": [
+                "RuntimeError",
+                "get"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.update",
+              "entity": "tinydb.table:Table.update",
+              "kind": "method",
+              "line": 404,
+              "params": [
+                "self",
+                "fields",
+                "cond",
+                "doc_ids"
+              ],
+              "defaults": {
+                "cond": "None",
+                "doc_ids": "None"
+              },
+              "raises": [],
+              "calls": [
+                "_cond",
+                "_update_table",
+                "append",
+                "callable",
+                "cast",
+                "extend",
+                "fields",
+                "keys",
+                "list",
+                "perform_update",
+                "update"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.update_multiple",
+              "entity": "tinydb.table:Table.update_multiple",
+              "kind": "method",
+              "line": 508,
+              "params": [
+                "self",
+                "updates"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_cond",
+                "_update_table",
+                "append",
+                "callable",
+                "cast",
+                "fields",
+                "keys",
+                "list",
+                "perform_update",
+                "update"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.upsert",
+              "entity": "tinydb.table:Table.upsert",
+              "kind": "method",
+              "line": 560,
+              "params": [
+                "self",
+                "document",
+                "cond"
+              ],
+              "defaults": {
+                "cond": "None"
+              },
+              "raises": [
+                "ValueError"
+              ],
+              "calls": [
+                "ValueError",
+                "hasattr",
+                "insert",
+                "isinstance",
+                "update"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.remove",
+              "entity": "tinydb.table:Table.remove",
+              "kind": "method",
+              "line": 602,
+              "params": [
+                "self",
+                "cond",
+                "doc_ids"
+              ],
+              "defaults": {
+                "cond": "None",
+                "doc_ids": "None"
+              },
+              "raises": [
+                "RuntimeError"
+              ],
+              "calls": [
+                "RuntimeError",
+                "_cond",
+                "_update_table",
+                "append",
+                "cast",
+                "extend",
+                "keys",
+                "list",
+                "pop"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.truncate",
+              "entity": "tinydb.table:Table.truncate",
+              "kind": "method",
+              "line": 675,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_update_table",
+                "clear"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.count",
+              "entity": "tinydb.table:Table.count",
+              "kind": "method",
+              "line": 686,
+              "params": [
+                "self",
+                "cond"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "len",
+                "search"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.clear_cache",
+              "entity": "tinydb.table:Table.clear_cache",
+              "kind": "method",
+              "line": 695,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "clear"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.__len__",
+              "entity": "tinydb.table:Table.__len__",
+              "kind": "method",
+              "line": 702,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_read_table",
+                "len"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table.__iter__",
+              "entity": "tinydb.table:Table.__iter__",
+              "kind": "method",
+              "line": 709,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_read_table",
+                "document_class",
+                "document_id_class",
+                "items"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table._get_next_id",
+              "entity": "tinydb.table:Table._get_next_id",
+              "kind": "method",
+              "line": 721,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "_read_table",
+                "document_id_class",
+                "keys",
+                "max"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table._read_table",
+              "entity": "tinydb.table:Table._read_table",
+              "kind": "method",
+              "line": 756,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "read"
+              ]
+            },
+            {
+              "module": "tinydb.table",
+              "qualname": "Table._update_table",
+              "entity": "tinydb.table:Table._update_table",
+              "kind": "method",
+              "line": 781,
+              "params": [
+                "self",
+                "updater"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "clear_cache",
+                "document_id_class",
+                "items",
+                "read",
+                "str",
+                "updater",
+                "write"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": [
+        "tinydb.queries",
+        "tinydb.storages",
+        "tinydb.utils"
+      ]
+    },
+    {
+      "module": "tinydb.utils",
+      "path": "tinydb/utils.py",
+      "entity": "tinydb.utils:<module>",
+      "loc": 123,
+      "imports": [
+        "collections",
+        "collections.abc",
+        "typing"
+      ],
+      "functions": [
+        {
+          "module": "tinydb.utils",
+          "qualname": "with_typehint",
+          "entity": "tinydb.utils:with_typehint",
+          "kind": "function",
+          "line": 17,
+          "params": [
+            "baseclass"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": []
+        },
+        {
+          "module": "tinydb.utils",
+          "qualname": "freeze",
+          "entity": "tinydb.utils:freeze",
+          "kind": "function",
+          "line": 144,
+          "params": [
+            "obj"
+          ],
+          "defaults": {},
+          "raises": [],
+          "calls": [
+            "FrozenDict",
+            "freeze",
+            "frozenset",
+            "isinstance",
+            "items",
+            "tuple"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "module": "tinydb.utils",
+          "qualname": "LRUCache",
+          "entity": "tinydb.utils:LRUCache",
+          "line": 39,
+          "bases": [
+            "abc.MutableMapping",
+            "Generic[K, V]"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__init__",
+              "entity": "tinydb.utils:LRUCache.__init__",
+              "kind": "method",
+              "line": 53,
+              "params": [
+                "self",
+                "capacity"
+              ],
+              "defaults": {
+                "capacity": "None"
+              },
+              "raises": [],
+              "calls": [
+                "OrderedDict"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.lru",
+              "entity": "tinydb.utils:LRUCache.lru",
+              "kind": "method",
+              "line": 58,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "keys",
+                "list"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.length",
+              "entity": "tinydb.utils:LRUCache.length",
+              "kind": "method",
+              "line": 62,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "len"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.clear",
+              "entity": "tinydb.utils:LRUCache.clear",
+              "kind": "method",
+              "line": 65,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "clear"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__len__",
+              "entity": "tinydb.utils:LRUCache.__len__",
+              "kind": "method",
+              "line": 68,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__contains__",
+              "entity": "tinydb.utils:LRUCache.__contains__",
+              "kind": "method",
+              "line": 71,
+              "params": [
+                "self",
+                "key"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__setitem__",
+              "entity": "tinydb.utils:LRUCache.__setitem__",
+              "kind": "method",
+              "line": 74,
+              "params": [
+                "self",
+                "key",
+                "value"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "set"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__delitem__",
+              "entity": "tinydb.utils:LRUCache.__delitem__",
+              "kind": "method",
+              "line": 77,
+              "params": [
+                "self",
+                "key"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": []
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__getitem__",
+              "entity": "tinydb.utils:LRUCache.__getitem__",
+              "kind": "method",
+              "line": 80,
+              "params": [
+                "self",
+                "key"
+              ],
+              "defaults": {},
+              "raises": [
+                "KeyError"
+              ],
+              "calls": [
+                "KeyError",
+                "get"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.__iter__",
+              "entity": "tinydb.utils:LRUCache.__iter__",
+              "kind": "method",
+              "line": 87,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "iter"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.get",
+              "entity": "tinydb.utils:LRUCache.get",
+              "kind": "method",
+              "line": 90,
+              "params": [
+                "self",
+                "key",
+                "default"
+              ],
+              "defaults": {
+                "default": "None"
+              },
+              "raises": [],
+              "calls": [
+                "get",
+                "move_to_end"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "LRUCache.set",
+              "entity": "tinydb.utils:LRUCache.set",
+              "kind": "method",
+              "line": 100,
+              "params": [
+                "self",
+                "key",
+                "value"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "move_to_end",
+                "popitem"
+              ]
+            }
+          ]
+        },
+        {
+          "module": "tinydb.utils",
+          "qualname": "FrozenDict",
+          "entity": "tinydb.utils:FrozenDict",
+          "line": 114,
+          "bases": [
+            "dict"
+          ],
+          "methods": [
+            {
+              "module": "tinydb.utils",
+              "qualname": "FrozenDict.__hash__",
+              "entity": "tinydb.utils:FrozenDict.__hash__",
+              "kind": "method",
+              "line": 123,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [],
+              "calls": [
+                "hash",
+                "items",
+                "sorted",
+                "tuple"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "FrozenDict._immutable",
+              "entity": "tinydb.utils:FrozenDict._immutable",
+              "kind": "method",
+              "line": 127,
+              "params": [
+                "self"
+              ],
+              "defaults": {},
+              "raises": [
+                "TypeError"
+              ],
+              "calls": [
+                "TypeError"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "FrozenDict.update",
+              "entity": "tinydb.utils:FrozenDict.update",
+              "kind": "method",
+              "line": 137,
+              "params": [
+                "self",
+                "e"
+              ],
+              "defaults": {
+                "e": "None"
+              },
+              "raises": [
+                "TypeError"
+              ],
+              "calls": [
+                "TypeError"
+              ]
+            },
+            {
+              "module": "tinydb.utils",
+              "qualname": "FrozenDict.pop",
+              "entity": "tinydb.utils:FrozenDict.pop",
+              "kind": "method",
+              "line": 140,
+              "params": [
+                "self",
+                "k",
+                "d"
+              ],
+              "defaults": {
+                "d": "None"
+              },
+              "raises": [
+                "TypeError"
+              ],
+              "calls": [
+                "TypeError"
+              ]
+            }
+          ]
+        }
+      ],
+      "internal_imports": []
+    },
+    {
+      "module": "tinydb.version",
+      "path": "tinydb/version.py",
+      "entity": "tinydb.version:<module>",
+      "loc": 1,
+      "imports": [],
+      "functions": [],
+      "classes": [],
+      "internal_imports": []
+    }
+  ],
+  "commit": "1e39ad3a2d9eca57efd9019fd089b5a04676da95"
+}

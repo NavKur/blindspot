@@ -105,6 +105,26 @@ def calls_of(fn) -> list:
     return sorted(names)
 
 
+def is_overload_stub(fn) -> bool:
+    """@typing.overload signatures are type hints only, not real definitions."""
+    for d in getattr(fn, "decorator_list", []):
+        target = d.func if isinstance(d, ast.Call) else d
+        if (isinstance(target, ast.Name) and target.id == "overload") or \
+           (isinstance(target, ast.Attribute) and target.attr == "overload"):
+            return True
+    return False
+
+
+def real_defs(body) -> list:
+    """Definitions in a body, skipping @overload stubs and keeping only the LAST definition
+    of each name (that is the one Python actually uses)."""
+    last = {}
+    for node in body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and not is_overload_stub(node):
+            last[node.name] = node
+    return [n for n in body if last.get(getattr(n, "name", None)) is n]
+
+
 def function_record(fn, module: str, qualname: str, kind: str) -> dict:
     return {
         "module": module,
@@ -135,12 +155,12 @@ def scan_module(path: Path, root: Path) -> dict:
                 imports.add(resolved)
 
     functions, classes = [], []
-    for node in tree.body:
+    for node in real_defs(tree.body):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
             functions.append(function_record(node, name, node.name, "function"))
         elif isinstance(node, ast.ClassDef):
             methods = [function_record(item, name, f"{node.name}.{item.name}", "method")
-                       for item in node.body if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))]
+                       for item in real_defs(node.body) if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))]
             classes.append({
                 "module": name, "qualname": node.name, "entity": f"{name}:{node.name}",
                 "line": node.lineno, "bases": [ast.unparse(b) for b in node.bases], "methods": methods,

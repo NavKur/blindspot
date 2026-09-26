@@ -84,3 +84,25 @@ def test_classes_and_entities(tmp_path):
     init = core["classes"][1]["methods"][0]
     assert init["defaults"] == {"indent": "4"}
     assert len(scan.all_functions(index)) == 4     # helper, __init__, run, _close
+
+
+def test_overload_stubs_are_ignored(tmp_path):
+    (tmp_path / "pkg").mkdir()
+    (tmp_path / "pkg" / "__init__.py").write_text("")
+    (tmp_path / "pkg" / "t.py").write_text(textwrap.dedent("""
+        from typing import overload
+
+        class T:
+            @overload
+            def get(self, cond: int) -> int: ...
+            @overload
+            def get(self, cond: str = "x") -> str: ...
+            def get(self, cond=None, doc_id=None):
+                if cond is None:
+                    raise ValueError("no cond")
+    """))
+    index = scan.scan_repo(tmp_path, "pkg")
+    methods = [m for c in by_module(index)["pkg.t"]["classes"] for m in c["methods"]]
+    assert len(methods) == 1
+    assert methods[0]["defaults"] == {"cond": "None", "doc_id": "None"}
+    assert methods[0]["raises"] == ["ValueError"]
