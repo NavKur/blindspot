@@ -7,6 +7,7 @@ from blindspot import config
 STEPS = {
     "target": "step 2",
     "gonogo": "step 3",
+    "scan": "step 5",
     "generate": "steps 5 to 9",
     "exam": "steps 15 to 19",
     "mark": "step 16",
@@ -23,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("--force", action="store_true", help="delete and re-clone")
     t.add_argument("--check", action="store_true", help="only verify commit and cleanliness")
 
+    sub.add_parser("scan", help="index the target repo's modules, functions, imports, defaults, raises, calls")
     sub.add_parser("gonogo", help="one test batch through bob run; records cost and capabilities")
 
     g = sub.add_parser("generate", help="generate the exam from the target repo")
@@ -47,6 +49,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "scan":
+        from blindspot import scan
+        return scan.main()
     if args.command == "gonogo":
         from blindspot import gonogo
         return gonogo.main()
