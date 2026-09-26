@@ -24,6 +24,8 @@ export default tseslint.config(
         module: "writable",
         __dirname: "readonly",
         Buffer: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
       },
     },
   },

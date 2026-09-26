@@ -51,11 +51,30 @@ from "Next".
   is shown, the context changes or a Bob run finishes; Run tests and Copy release notes).
   Verdict when tests have not run yet: "Ready, with items to check" asking to run them.
 
+- Phase 6: src/onboardingLogic.ts (question normalisation, answer cache, cost labels, three
+  suggested questions), src/onboarding.ts (setup lines, starter tasks, chat; runs Bob read-only
+  with the onboarding prompt, caches answers in workspaceState, warns if the tree changed).
+- scripts/smoke.js (npm run smoke): drives dist/extension.js against a stub of the VS Code API
+  in a scratch copy of ../demo-tinydb with fake Bob. Covers activation, panel state, queue,
+  CodeLens and hover commands, Release tab, onboarding chat and cache, approve + keep,
+  branch name collision, approve + discard, dirty tree refusal and modal cancel. All pass.
+- README.md: features, install from .vsix, settings, gate table, flow, development, demo setup.
+- Packaged: bob-readiness-0.0.1.vsix (version bump to 0.1.0 is phase 7, by Aziz).
+
 ## Next
-- Phase 6: src/onboarding.ts and the Onboarding tab chat.
+- Phase 7 (Aziz): go/no-go with real Bob, switch useFakeBob off for one approval and one
+  onboarding question, screenshots, version 0.1.0, tag.
 
 ## Known issues
-- none
+- Not yet run inside a real VS Code or Bob IDE window in this session (no display here). The
+  smoke script stubs the VS Code API, so layout, colours, hover rendering and the modal must be
+  checked by hand.
+- Hover cards use <span style="color:var(--vscode-...)"> which VS Code allows in supportHtml
+  markdown; if a Bob IDE build strips it, the text still shows, only without colour.
+- The Release tab recomputes when the tab is shown, the context changes or a Bob run ends. New
+  commits made in a terminal show up the next time the Release tab is opened.
+- Onboarding with real Bob: the read-only guarantee relies on the prompt and on the flags in
+  bobReadiness.bobCommand. Add Bob's flag that disables edits for onboarding if one exists.
 
 ## Needs Aziz
 - Phase 5 by hand: make two small commits touching tinydb/table.py in the demo workspace, open

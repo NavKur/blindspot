@@ -7,6 +7,7 @@ import { ContextStore } from "./contextStore";
 import { Decorations } from "./decorations";
 import { Diagnostics } from "./diagnostics";
 import { HighlightState } from "./highlightState";
+import { OnboardingFeature } from "./onboarding";
 import { Log } from "./output";
 import { registerHover } from "./hover";
 import { PanelProvider } from "./panel/PanelProvider";
@@ -50,8 +51,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     if (!approval.busy) void release.recompute();
   });
   const release = new ReleaseFeature(store, log, () => panel.currentTab === "release", () => panel.refresh());
+  const onboarding = new OnboardingFeature(context.workspaceState, store, runner, log, () => panel.refresh());
   panel.addExtras(approval);
   panel.addExtras(release);
+  panel.addExtras(onboarding);
   context.subscriptions.push(release);
   context.subscriptions.push(
     log,

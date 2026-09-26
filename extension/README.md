@@ -1,18 +1,79 @@
 # Bob Readiness
 
-A VS Code extension for IBM Bob IDE. It reads `.bob/context/readiness.json`, highlights code
-where Bob is sure but wrong or only partly right, and lets you send approved findings to Bob,
-which edits the code on a new branch.
+A VS Code extension for IBM Bob IDE. It reads `.bob/context/readiness.json`, produced by the
+Blindspot context manager, and shows where Bob is sure but wrong or only partly right. A
+developer ticks findings, approves in a modal, and Bob edits the code on a new git branch. Tests
+run, and the developer keeps or discards the result.
 
-Full documentation is written in phase 7. See BUILD_PLAN.md for the plan.
+Screenshots: see `references/` for the target look (real screenshots come in phase 7).
 
-## Commands
+## What you get
+
+- Highlighting in any open file listed in the context: red tint and left border for functions
+  where Bob was sure but wrong, blue for partly known, nothing for known. Yellow gutter dots on
+  lines with findings. A dimmed inline note on the def line of wrong functions.
+- Hover cards: readiness, what Bob believed and what is true, findings, "Add to Bob queue".
+- CodeLens above functions with findings: "Add to Bob queue (N)" and "Why Bob is unsure", or
+  "Needs a person".
+- Problems panel entries for every finding (high = Warning, medium = Information, low = Hint).
+- Status bar: "Readiness: On/Off" toggle on the left; overall readiness and Bobcoins spent this
+  session on the right.
+- Side panel with five tabs: Onboarding (setup, first tasks, chat answered by Bob), Review,
+  Testing, Release (computed from git plus the context), Modernize.
+- Human in the loop: tick findings across tabs, "Send to Bob", approve in a modal, Bob works on
+  a new branch, tests run, Keep or Discard.
+
+## Install from .vsix
+
+1. Build: `npm install && npm run package` produces `bob-readiness-<version>.vsix`.
+2. In Bob IDE: Extensions view, the "..." menu, "Install from VSIX", pick the file.
+3. Open a repository that has `.bob/context/readiness.json`. The panel is in the activity bar.
+
+## Settings
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `bobReadiness.contextPath` | `.bob/context/readiness.json` | Where the context file lives in the workspace |
+| `bobReadiness.highlightOnStartup` | `true` | Show highlights when the IDE opens |
+| `bobReadiness.bobCommand` | `bob run --format json` | Headless Bob command. The prompt is passed as the last argument and on stdin |
+| `bobReadiness.useFakeBob` | `true` | Use `scripts/fake-bob.js` instead of real Bob. Real Bob costs Bobcoins |
+| `bobReadiness.testCommand` | `pytest -q` | Run after Bob makes changes, and by "Run tests" in the Release tab |
+| `bobReadiness.baseBranch` | `main` | Branch to return to when discarding |
+
+## The readiness gate
+
+| Readiness of the function | `bob_allowed` | What the extension does |
+|---|---|---|
+| 85% or more | `yes` | "Bob can do this": can be sent to Bob |
+| 65% to 84% | `with_notes` | "Bob with notes, review needed": sent with the study notes, result flagged for review |
+| Below 65% | `no` | "Needs a person": checkbox disabled, never sent to Bob |
+
+## How the human-in-the-loop flow works
+
+1. Tick findings in the panel, from a hover card or from CodeLens. One shared queue.
+2. "Send to Bob" shows a modal: the findings, the new branch name
+   `bob/readiness-<yyyymmdd-hhmm>`, the estimated cost. Nothing runs until "Approve and run".
+3. The working tree must be clean, otherwise the extension refuses and explains.
+4. The branch is created. One prompt is built for all findings (with the study notes for
+   `with_notes` items) and Bob runs once, headless, in the repository root. Progress streams to
+   the "Bob Readiness" Output channel with timestamps.
+5. The panel shows the changed files with +/- counts, then the test result.
+6. "Keep changes" commits on the branch. "Discard" resets, returns to the base branch and
+   deletes the branch. Either way the queue is cleared.
+
+Onboarding questions are read-only, never on a new branch, and cached per question in the
+workspace, so repeated questions are free.
+
+## Development
 
     npm install
     npm run build        # esbuild bundle to dist/
-    npm test             # vitest
+    npm test             # vitest unit tests (pure logic) plus a git integration test
     npm run lint
+    npm run smoke        # drives the bundled extension with fake Bob in a scratch copy of ../demo-tinydb
     npm run package      # produces bob-readiness-<version>.vsix
+
+Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open.
 
 ## Demo workspace
 
@@ -27,9 +88,8 @@ placeholder (1 to 2) until `scripts/fix-fixture-lines.py` aligns it with a real 
     cd ../demo-tinydb && git branch -m master main && git add .bob && git commit -m "chore: add Bob readiness context"
 
 The demo workspace must be a git repository with a clean working tree, because the approval
-flow creates a branch named `bob/readiness-<yyyymmdd-hhmm>`. The `baseBranch` setting defaults
-to `main`, so rename tinydb's `master` branch as shown above or change the setting.
+flow creates a branch. The `baseBranch` setting defaults to `main`, so rename tinydb's `master`
+branch as shown above or change the setting.
 
-To run the tests in the demo workspace: `pip install -e ../demo-tinydb pytest`.
-
-Open `../demo-tinydb` in the Extension Development Host (F5 does this) or in Bob IDE.
+Tests in the demo workspace need a virtualenv: `python3 -m venv .venv && .venv/bin/pip install -e . pytest pytest-cov pyyaml`.
+The demo's `.vscode/settings.json` sets `bobReadiness.testCommand` to `.venv/bin/python -m pytest -q`.

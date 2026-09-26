@@ -156,7 +156,8 @@
     "test": "vitest run",
     "lint": "eslint .",
     "vscode:prepublish": "npm run build",
-    "package": "vsce package --no-dependencies"
+    "package": "vsce package --no-dependencies",
+    "smoke": "node scripts/smoke.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
