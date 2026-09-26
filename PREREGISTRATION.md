@@ -104,4 +104,4 @@ N_BOOT = 2000
 
 ## Deviations
 
-None yet. Format: `YYYY-MM-DD HH:MM UTC - what changed - why - was any result seen before the change?`
+2026-09-26 22:05:00 UTC - Excluded tinydb.version (1 line) and tinydb.mypy_plugin (type-checker plugin) from question generation; modules under 10 lines get no questions - they carry no testable structure - no exam results existed.
