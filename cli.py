@@ -27,9 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("scan", help="index the target repo's modules, functions, imports, defaults, raises, calls")
     sub.add_parser("gonogo", help="one test batch through bob run; records cost and capabilities")
 
-    g = sub.add_parser("generate", help="generate the exam from the target repo")
-    g.add_argument("--repo", default=str(config.TARGET_DIR))
-    g.add_argument("--seed", type=int, default=config.SEED)
+    sub.add_parser("generate", help="build question candidates from the scanned index")
 
     e = sub.add_parser("exam", help="have Bob sit the exam under one condition")
     e.add_argument("--condition", choices=config.CONDITIONS, required=True)
@@ -49,6 +47,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "generate":
+        from blindspot import generate
+        return generate.main()
     if args.command == "scan":
         from blindspot import scan
         return scan.main()

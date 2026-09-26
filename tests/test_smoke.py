@@ -10,7 +10,6 @@ def test_config_values():
 
 
 @pytest.mark.parametrize("argv", [
-    ["generate", "--seed", "7"],
     ["exam", "--condition", "C1", "--set", "pilot"],
     ["mark", "--condition", "C1", "--set", "pilot"],
     ["report"],
