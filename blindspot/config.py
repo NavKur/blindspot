@@ -2,7 +2,8 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-TARGET_DIR = ROOT / "target"          # demo repo lives here (step 2)
+TARGET_DIR = ROOT / "target" / "tinydb"   # demo repo, fetched by `python cli.py target` (step 2)
+TARGET_LOCK = ROOT / "target.lock.json"  # records exactly which commit we tested (committed)
 EXAMS_DIR = ROOT / "exams"            # questions + true answers; hidden from Bob by .bobignore
 RESULTS_DIR = ROOT / "results"        # answers + stats JSON, committed; hidden from Bob
 CACHE_DIR = ROOT / ".cache" / "bob"   # cached Bob responses, not committed

@@ -6,3 +6,6 @@ __pycache__/
 .DS_Store
 .env
 .env.*
+# demo repo is cloned on demand by `python cli.py target`, not committed
+target/*
+!target/.gitkeep
