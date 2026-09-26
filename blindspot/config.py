@@ -37,3 +37,12 @@ QUOTAS = {
     ("exists", "real"): 69,
     ("exists", "misplaced"): 27, ("exists", "near_miss"): 27, ("exists", "mutation"): 14,
 }
+
+# Pilot set (step 9): 30 questions to test the Bob pipeline end to end before real runs.
+# Drawn from candidates NOT in the exam. Defaults are all used by the exam, so the pilot borrows
+# a few from TRAIN (allowed: TRAIN is the development set). Never from TEST.
+PILOT_QUOTAS = {
+    ("exists", "real"): 8, ("exists", "misplaced"): 2, ("exists", "near_miss"): 2, ("exists", "mutation"): 1,
+    ("calls", "true"): 6, ("calls", "false"): 5, ("raises", "false"): 1, ("imports", "false"): 2,
+}
+PILOT_FROM_TRAIN = {("defaults", "value"): 3}
