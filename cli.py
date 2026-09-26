@@ -8,6 +8,7 @@ STEPS = {
     "target": "step 2",
     "gonogo": "step 3",
     "scan": "step 5",
+    "split": "step 8",
     "generate": "steps 5 to 9",
     "exam": "steps 15 to 19",
     "mark": "step 16",
@@ -28,6 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("gonogo", help="one test batch through bob run; records cost and capabilities")
 
     sub.add_parser("generate", help="build question candidates from the scanned index")
+    sub.add_parser("split", help="draw the balanced exam and split it into TRAIN and TEST")
 
     e = sub.add_parser("exam", help="have Bob sit the exam under one condition")
     e.add_argument("--condition", choices=config.CONDITIONS, required=True)
@@ -47,6 +49,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "split":
+        from blindspot import split
+        return split.main()
     if args.command == "generate":
         from blindspot import generate
         return generate.main()

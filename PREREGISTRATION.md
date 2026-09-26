@@ -104,4 +104,6 @@ N_BOOT = 2000
 
 ## Deviations
 
-2026-09-26 22:05:00 UTC - Excluded tinydb.version (1 line) and tinydb.mypy_plugin (type-checker plugin) from question generation; modules under 10 lines get no questions - they carry no testable structure - no exam results existed.
+2026-09-26 22:05 UTC - Excluded tinydb.version (1 line) and tinydb.mypy_plugin (type-checker plugin) from question generation; modules under 10 lines get no questions - they carry no testable structure - no exam results existed.
+2026-09-26 23:30 UTC - Fixed exam composition via config.QUOTAS (imports 22, raises 30, defaults 21, calls 110, exists 137 incl. 69 real / 27 misplaced / 27 near-miss / 14 mutation), module-then-entity round-robin sampling, systematic TRAIN/TEST split - specifies details the pre-registration left open - no exam results existed. 
+TEST SHA-256: 4bd2c649d54670e66ed798e7442f69ec472c129bb8796dbe204000c0357026ed
