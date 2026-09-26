@@ -16,13 +16,26 @@ from "Next".
   committed, .venv with tinydb, pytest, pytest-cov and pyyaml (226 tests pass),
   .vscode/settings.json sets testCommand to ".venv/bin/python -m pytest -q".
 
+- Phase 2: src/ranges.ts (pure ranges per decoration type, inline hint text, clamping),
+  src/decorations.ts (wrong red, part blue, finding gutter dot from media/finding.svg, dimmed
+  after-line hint on the def line of wrong functions), src/hoverText.ts + src/hover.ts (hover
+  cards with misconception, findings and Add to Bob queue command link), src/diagnostics.ts
+  (Problems panel, high Warning, medium Information, low Hint), src/codelensText.ts +
+  src/codelens.ts ("Add to Bob queue (N)" or "Needs a person", plus "Why Bob is unsure"),
+  src/highlightState.ts (toggle in workspaceState), src/statusBar.ts (left toggle, right
+  readiness and Bobcoins this session), src/queue.ts (shared selection in workspaceState,
+  refuses bob_allowed no), src/session.ts, src/commands.ts. Everything follows the toggle.
+
 ## Next
-- Phase 2, step 2.1: src/decorations.ts, media/finding.svg, status bar toggle.
+- Phase 3, step 3.1: side panel shell (PanelProvider.ts, html.ts) with five tabs.
 
 ## Known issues
 - none
 
 ## Needs Aziz
+- Phase 2 by hand in the demo workspace: open tinydb/table.py, update() is red with a dimmed
+  inline hint on the def line, search() blue, hover shows the card, CodeLens above update(),
+  Problems panel lists 10 findings, status bar toggle hides everything.
 - Install bob-readiness-<version>.vsix in Bob IDE and run "Bob Readiness: Hello" (phase 0 check).
 - Go/no-go (BUILD_PLAN.md section 4): confirm the exact headless command and that Bob edits files
   on disk. Put the command in the bobReadiness.bobCommand setting. Recorded output shape from

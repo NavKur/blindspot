@@ -22,6 +22,46 @@
         "command": "bobReadiness.hello",
         "title": "Hello",
         "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.toggleHighlights",
+        "title": "Toggle Readiness Highlights",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.reload",
+        "title": "Reload Context File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openPanel",
+        "title": "Open Panel",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFinding",
+        "title": "Add or Remove Finding in Bob Queue",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFunction",
+        "title": "Add Function Findings to Bob Queue",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.whyUnsure",
+        "title": "Why Bob Is Unsure",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openFinding",
+        "title": "Open Finding",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openFile",
+        "title": "Open File",
+        "category": "Bob Readiness"
       }
     ],
     "configuration": {
@@ -58,6 +98,30 @@
           "description": "Branch to return to when discarding Bob's changes."
         }
       }
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "bobReadiness.queueFinding",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.queueFunction",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.whyUnsure",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.openFinding",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.openFile",
+          "when": "false"
+        }
+      ]
     }
   },
   "scripts": {
