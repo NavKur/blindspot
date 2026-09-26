@@ -26,3 +26,14 @@ CONDITIONS = ("C0", "C1", "C2")   # no context | /init AGENTS.md | /init + Blind
 # Exam scope (step 6). Modules with fewer lines than this, or listed here, get no questions.
 MIN_MODULE_LOC = 10
 EXCLUDE_MODULES = ("tinydb.mypy_plugin",)   # type-checker add-on, not part of the library's behaviour
+
+# Exam composition (step 8). Keys are (family, stratum); values are how many questions to draw.
+# True/false families are 50/50 by construction. Totals must equal N_TRAIN + N_TEST.
+QUOTAS = {
+    ("imports", "true"): 11, ("imports", "false"): 11,
+    ("raises", "true"): 15, ("raises", "false"): 15,
+    ("defaults", "value"): 21,
+    ("calls", "true"): 55, ("calls", "false"): 55,
+    ("exists", "real"): 69,
+    ("exists", "misplaced"): 27, ("exists", "near_miss"): 27, ("exists", "mutation"): 14,
+}
