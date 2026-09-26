@@ -11,6 +11,7 @@ import { Log } from "./output";
 import { registerHover } from "./hover";
 import { PanelProvider } from "./panel/PanelProvider";
 import { Queue } from "./queue";
+import { ReleaseFeature } from "./release";
 import { SessionCoins } from "./session";
 import { StatusBar } from "./statusBar";
 
@@ -43,8 +44,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const log = new Log();
   const runner = new BobRunner(context.extensionPath, log, session);
-  const approval = new Approval(store, queue, runner, log, () => panel.refresh());
+  const approval = new Approval(store, queue, runner, log, () => {
+    panel.refresh();
+    // After Keep or Discard the git history changed, so the Release tab is stale.
+    if (!approval.busy) void release.recompute();
+  });
+  const release = new ReleaseFeature(store, log, () => panel.currentTab === "release", () => panel.refresh());
   panel.addExtras(approval);
+  panel.addExtras(release);
+  context.subscriptions.push(release);
   context.subscriptions.push(
     log,
     vscode.commands.registerCommand("bobReadiness.sendToBob", () => approval.sendToBob()),

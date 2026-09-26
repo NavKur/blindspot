@@ -45,13 +45,22 @@ from "Next".
   progress notification, diff stats, tests, Keep or Discard, queue cleared). Integration test
   in test/git.test.ts runs real git plus fake Bob in a temp repo.
 
+- Phase 5: src/releaseLogic.ts (pure: changed functions from -U0 ranges, changed files with
+  readiness, fixed verdict rules, commit grouping Fixed/Added/Other, notes markdown),
+  src/release.ts (reads git since the last tag or first commit, recomputes when the Release tab
+  is shown, the context changes or a Bob run finishes; Run tests and Copy release notes).
+  Verdict when tests have not run yet: "Ready, with items to check" asking to run them.
+
 ## Next
-- Phase 5: src/release.ts and the Release tab.
+- Phase 6: src/onboarding.ts and the Onboarding tab chat.
 
 ## Known issues
 - none
 
 ## Needs Aziz
+- Phase 5 by hand: make two small commits touching tinydb/table.py in the demo workspace, open
+  the Release tab: since v4.9.0, commits, changed functions, readiness bars, verdict and notes.
+  Run tests shows 226 passed. Copy release notes puts markdown on the clipboard.
 - Phase 4 by hand with fake Bob in the demo workspace: tick 2 findings, Send to Bob, approve;
   a bob/readiness-* branch exists, the files have "# fake-bob: reviewed", tests run, Keep commits.
   Repeat with Discard: back on main, branch gone. Dirty tree: refuses with a clear message.

@@ -105,6 +105,9 @@ export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposa
 
   private async onMessage(msg: PanelMessage): Promise<void> {
     if (!msg || typeof msg !== "object") return;
+    for (const extra of this.extras) {
+      if (extra.handle && (await extra.handle(msg))) return;
+    }
     switch (msg.type) {
       case "ready":
         this.refresh();
@@ -124,9 +127,7 @@ export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposa
         }
         return;
       default:
-        for (const extra of this.extras) {
-          if (extra.handle && (await extra.handle(msg))) return;
-        }
+        return;
     }
   }
 

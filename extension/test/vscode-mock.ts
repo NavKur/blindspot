@@ -65,3 +65,4 @@ export class CancellationTokenSource {
   dispose(): void {}
 }
 export enum ProgressLocation { Notification = 15 }
+export const env = { clipboard: { writeText: async () => undefined } };
