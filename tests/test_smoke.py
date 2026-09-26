@@ -5,7 +5,7 @@ from blindspot import config
 
 
 def test_config_values():
-    assert config.N_TRAIN + config.N_TEST == 240
+    assert config.N_TRAIN == 120 and config.N_TEST == 200
     assert config.CONDITIONS == ("C0", "C1", "C2")
 
 
