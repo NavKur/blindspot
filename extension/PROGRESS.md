@@ -26,13 +26,23 @@ from "Next".
   readiness and Bobcoins this session), src/queue.ts (shared selection in workspaceState,
   refuses bob_allowed no), src/session.ts, src/commands.ts. Everything follows the toggle.
 
+- Phase 3: src/panel/state.ts (pure: sorting by severity then readiness, rows, header, footer),
+  src/panel/html.ts (page with strict CSP, theme variables, tab strip, findings rows, footer,
+  plus the render code for release, onboarding and run result views used by later phases),
+  src/panel/PanelProvider.ts (WebviewViewProvider, postMessage only, remembers the active tab,
+  extras hook for later features). Activity bar container "Bob Readiness" with media/icon.svg.
+  Header shows session Bobcoins as "Bobcoins used" (tooltip has the study cost from the context).
+
 ## Next
-- Phase 3, step 3.1: side panel shell (PanelProvider.ts, html.ts) with five tabs.
+- Phase 4, step 4.1: scripts/fake-bob.js.
 
 ## Known issues
 - none
 
 ## Needs Aziz
+- Phase 3 by hand: panel opens from the activity bar, tabs switch, dark and light themes look
+  right, ticking in Review and Testing updates the shared footer, hover link and CodeLens tick
+  the same items, selections survive a reload.
 - Phase 2 by hand in the demo workspace: open tinydb/table.py, update() is red with a dimmed
   inline hint on the def line, search() blue, hover shows the card, CodeLens above update(),
   Problems panel lists 10 findings, status bar toggle hides everything.

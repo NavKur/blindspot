@@ -6,6 +6,7 @@ import { Decorations } from "./decorations";
 import { Diagnostics } from "./diagnostics";
 import { HighlightState } from "./highlightState";
 import { registerHover } from "./hover";
+import { PanelProvider } from "./panel/PanelProvider";
 import { Queue } from "./queue";
 import { SessionCoins } from "./session";
 import { StatusBar } from "./statusBar";
@@ -28,6 +29,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     registerCodeLens(store, state, queue),
   );
   registerCommands(context, store, state, queue);
+
+  const panel = new PanelProvider(context.extensionUri, context.workspaceState, store, queue, session);
+  context.subscriptions.push(
+    panel,
+    vscode.window.registerWebviewViewProvider(PanelProvider.viewType, panel, {
+      webviewOptions: { retainContextWhenHidden: true },
+    }),
+  );
 
   await store.load();
 }

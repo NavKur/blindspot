@@ -122,6 +122,26 @@
           "when": "false"
         }
       ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bobReadiness",
+          "title": "Bob Readiness",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "bobReadiness": [
+        {
+          "type": "webview",
+          "id": "bobReadiness.panel",
+          "name": "Bob Readiness",
+          "icon": "media/icon.svg",
+          "contextualTitle": "Bob Readiness"
+        }
+      ]
     }
   },
   "scripts": {
