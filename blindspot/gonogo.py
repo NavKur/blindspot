@@ -46,6 +46,7 @@ def bob_command() -> list:
     override = os.environ.get("BOB_BIN")
     if override:
         parts = shlex.split(override, posix=(os.name != "nt"))
+        # On Windows shlex keeps the surrounding quotes, which breaks the path. Strip them.
         return [part.strip('"') for part in parts]
     found = shutil.which("bob")
     if not found:
@@ -170,6 +171,12 @@ def check_batch(answer_text: str) -> dict:
 
 
 def main() -> int:
+    if not os.environ.get("BOB_API_KEY") and not os.environ.get("BOB_BIN"):
+        print("BOB_API_KEY is not set. Headless `bob run` needs it.\n"
+              "Create an API key (scope: Inference) in the Bob web portal, then in PowerShell:\n"
+              '  $env:BOB_API_KEY = "<your key>"\n'
+              "and run this again.")
+        return 2
     setup_workspace()
     results = {}
 
@@ -210,6 +217,15 @@ def main() -> int:
     costs = [r["cost"] for r in results.values() if isinstance(r["cost"], (int, float))]
     print(f"Total cost reported: {sum(costs) if costs else 'unknown'}   "
           f"20-question batch cost: {results['5_batch_json']['cost']}")
+
+    failed_calls = [k for k, r in results.items() if not r["parsed"]]
+    if failed_calls:
+        print("\nVERDICT: INCONCLUSIVE. Bob Shell returned an error instead of an answer for:",
+              ", ".join(failed_calls))
+        first = results[failed_calls[0]]
+        print(f"Return code {first['returncode']}. Error output:\n{first['stderr_tail'] or first['stdout_tail']}")
+        print(f"\nFull details saved to {out}")
+        return 1
 
     core = all(results[k]["pass"] for k in ("1_basic_call", "2_closed_book", "3_agents_md_loaded", "5_batch_json"))
     print("\nVERDICT:", "GO: use Bob Shell for exams." if core else "NO-GO on at least one core check. See below.")

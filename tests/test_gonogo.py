@@ -26,9 +26,17 @@ def test_check_batch_flags_missing_and_bad_p():
 
 def test_full_run_with_fake_bob(monkeypatch, tmp_path):
     fake = Path(__file__).with_name("fake_bob.py")
-    monkeypatch.setenv("BOB_BIN", f'"{sys.executable}" "{fake}"' if sys.platform == "win32" else f"{sys.executable} {fake}")
+    # Point the tool straight at the fake Bob as a ready-made argument list (no string parsing).
+    monkeypatch.setattr(gonogo, "bob_command", lambda: [sys.executable, str(fake)])
+    monkeypatch.setenv("BOB_API_KEY", "fake-key-for-tests")
     monkeypatch.setattr(gonogo.config, "RESULTS_DIR", tmp_path)
     monkeypatch.setattr(gonogo, "WS", tmp_path / "ws")
     assert gonogo.main() == 0
     saved = json.loads((tmp_path / "gonogo.json").read_text())
     assert all(r["pass"] for r in saved.values())
+
+
+def test_missing_api_key_stops_early(monkeypatch):
+    monkeypatch.delenv("BOB_API_KEY", raising=False)
+    monkeypatch.delenv("BOB_BIN", raising=False)
+    assert gonogo.main() == 2
