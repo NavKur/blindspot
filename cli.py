@@ -5,6 +5,7 @@ import sys
 from blindspot import config
 
 STEPS = {
+    "target": "step 2",
     "gonogo": "step 3",
     "generate": "steps 5 to 9",
     "exam": "steps 15 to 19",
@@ -17,6 +18,10 @@ STEPS = {
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="blindspot", description="Find out where Bob doesn't know your code.")
     sub = p.add_subparsers(dest="command", required=True)
+
+    t = sub.add_parser("target", help="fetch the demo repo (tinydb) at the pinned commit")
+    t.add_argument("--force", action="store_true", help="delete and re-clone")
+    t.add_argument("--check", action="store_true", help="only verify commit and cleanliness")
 
     sub.add_parser("gonogo", help="one test batch through bob run; records cost and capabilities")
 
@@ -39,6 +44,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "target":
+        from blindspot import target
+        return target.main(force=args.force, check_only=args.check)
     if args.command == "gonogo":
         from blindspot import gonogo
         return gonogo.main()
