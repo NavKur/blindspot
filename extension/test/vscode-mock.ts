@@ -52,3 +52,10 @@ export const window = {
   showErrorMessage: async () => undefined,
 };
 export const commands = { registerCommand: () => ({ dispose() {} }), executeCommand: async () => undefined };
+export class RelativePattern {
+  constructor(public base: unknown, public pattern: string) {}
+}
+(workspace as Record<string, unknown>).onDidChangeConfiguration = () => ({ dispose() {} });
+(workspace as Record<string, unknown>).createFileSystemWatcher = () => ({
+  onDidChange() {}, onDidCreate() {}, onDidDelete() {}, dispose() {},
+});

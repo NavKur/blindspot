@@ -8,8 +8,16 @@ from "Next".
   .vscodeignore, .gitignore, .vscode/launch.json (opens ../demo-tinydb), hello command.
   npm run build / test / lint / package all pass. Packaging tested: bob-readiness-0.0.1.vsix.
 
+- Phase 1: src/contract.ts (zod schema, types, labels), src/contextIndex.ts (pure lookups),
+  src/contextStore.ts (load, validate, watch, one error popup, keeps last valid context),
+  src/settings.ts, settings contributed in package.json. scripts/fix-fixture-lines.py aligned all
+  20 functions and 10 findings with the tinydb checkout. Demo workspace ../demo-tinydb: cloned,
+  branch renamed master to main, .bob/context/readiness.json and .bob/rules/readiness-context.md
+  committed, .venv with tinydb, pytest, pytest-cov and pyyaml (226 tests pass),
+  .vscode/settings.json sets testCommand to ".venv/bin/python -m pytest -q".
+
 ## Next
-- Phase 1, step 1.1: src/contract.ts (zod) and src/contextStore.ts with tests.
+- Phase 2, step 2.1: src/decorations.ts, media/finding.svg, status bar toggle.
 
 ## Known issues
 - none

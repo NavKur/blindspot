@@ -23,7 +23,42 @@
         "title": "Hello",
         "category": "Bob Readiness"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Bob Readiness",
+      "properties": {
+        "bobReadiness.contextPath": {
+          "type": "string",
+          "default": ".bob/context/readiness.json",
+          "description": "Where the context file lives in the workspace."
+        },
+        "bobReadiness.highlightOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show highlights when the IDE opens."
+        },
+        "bobReadiness.bobCommand": {
+          "type": "string",
+          "default": "bob run --format json",
+          "description": "Headless Bob command. The prompt is passed as the last argument and on stdin."
+        },
+        "bobReadiness.useFakeBob": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use scripts/fake-bob.js instead of real Bob. Real Bob costs Bobcoins."
+        },
+        "bobReadiness.testCommand": {
+          "type": "string",
+          "default": "pytest -q",
+          "description": "Run after Bob makes changes."
+        },
+        "bobReadiness.baseBranch": {
+          "type": "string",
+          "default": "main",
+          "description": "Branch to return to when discarding Bob's changes."
+        }
+      }
+    }
   },
   "scripts": {
     "build": "node esbuild.mjs",
