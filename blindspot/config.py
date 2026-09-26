@@ -20,4 +20,5 @@ CONFIDENT_P = 0.8         # "confident" means stated probability >= this
 RED_ACC_LOWER = 0.60      # module is red if the Wilson lower bound on accuracy is below this ...
 RED_CW_RATE = 0.20        # ... or its confidently-wrong rate is above this
 MAX_CARTO_MODULES = 5
+N_BOOT = 2000             # bootstrap resamples (paired and cluster)
 CONDITIONS = ("C0", "C1", "C2")   # no context | /init AGENTS.md | /init + Blindspot context
