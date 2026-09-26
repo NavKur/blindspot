@@ -1,10 +1,13 @@
 import * as vscode from "vscode";
+import { Approval } from "./approval";
+import { BobRunner } from "./bobRunner";
 import { registerCodeLens } from "./codelens";
 import { registerCommands } from "./commands";
 import { ContextStore } from "./contextStore";
 import { Decorations } from "./decorations";
 import { Diagnostics } from "./diagnostics";
 import { HighlightState } from "./highlightState";
+import { Log } from "./output";
 import { registerHover } from "./hover";
 import { PanelProvider } from "./panel/PanelProvider";
 import { Queue } from "./queue";
@@ -36,6 +39,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.window.registerWebviewViewProvider(PanelProvider.viewType, panel, {
       webviewOptions: { retainContextWhenHidden: true },
     }),
+  );
+
+  const log = new Log();
+  const runner = new BobRunner(context.extensionPath, log, session);
+  const approval = new Approval(store, queue, runner, log, () => panel.refresh());
+  panel.addExtras(approval);
+  context.subscriptions.push(
+    log,
+    vscode.commands.registerCommand("bobReadiness.sendToBob", () => approval.sendToBob()),
   );
 
   await store.load();

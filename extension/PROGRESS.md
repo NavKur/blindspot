@@ -33,13 +33,28 @@ from "Next".
   extras hook for later features). Activity bar container "Bob Readiness" with media/icon.svg.
   Header shows session Bobcoins as "Bobcoins used" (tooltip has the study cost from the context).
 
+- Phase 4: scripts/fake-bob.js (edits after FILE/LINE targets, canned onboarding answers,
+  prints the recorded Bob JSON shape with cost 0.0; prompt from last argument or stdin),
+  docs/gonogo.md (draft from results/gonogo.json, Aziz fills the rest), src/bobOutput.ts
+  (result and cost parsing, command splitting), src/prompt.ts (one prompt for all findings,
+  onboarding prompt, branch name, commit message), src/gitParse.ts + src/git.ts (isClean,
+  createBranch, diffStat with untracked files, commitAll, discardAndReturn, tags, log, -U0
+  ranges), src/shell.ts (streaming process runner with timeout and cancel), src/output.ts
+  (timestamped Output channel), src/bobRunner.ts (10 minute timeout, cancel, session coin
+  total), src/testRunner.ts, src/approval.ts (modal, clean tree check, branch, one prompt,
+  progress notification, diff stats, tests, Keep or Discard, queue cleared). Integration test
+  in test/git.test.ts runs real git plus fake Bob in a temp repo.
+
 ## Next
-- Phase 4, step 4.1: scripts/fake-bob.js.
+- Phase 5: src/release.ts and the Release tab.
 
 ## Known issues
 - none
 
 ## Needs Aziz
+- Phase 4 by hand with fake Bob in the demo workspace: tick 2 findings, Send to Bob, approve;
+  a bob/readiness-* branch exists, the files have "# fake-bob: reviewed", tests run, Keep commits.
+  Repeat with Discard: back on main, branch gone. Dirty tree: refuses with a clear message.
 - Phase 3 by hand: panel opens from the activity bar, tabs switch, dark and light themes look
   right, ticking in Review and Testing updates the shared footer, hover link and CodeLens tick
   the same items, selections survive a reload.

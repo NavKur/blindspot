@@ -59,3 +59,9 @@ export class RelativePattern {
 (workspace as Record<string, unknown>).createFileSystemWatcher = () => ({
   onDidChange() {}, onDidCreate() {}, onDidDelete() {}, dispose() {},
 });
+export class CancellationTokenSource {
+  token = { isCancellationRequested: false, onCancellationRequested: () => ({ dispose() {} }) };
+  cancel(): void { this.token.isCancellationRequested = true; }
+  dispose(): void {}
+}
+export enum ProgressLocation { Notification = 15 }
