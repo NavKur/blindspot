@@ -1,0 +1,493 @@
+{
+  "version": 1,
+  "repo": {
+    "name": "tinydb",
+    "commit": "SAMPLE",
+    "generated_at": "2026-09-26T21:05:00Z"
+  },
+  "summary": {
+    "readiness": 0.73,
+    "questions": 160,
+    "sure_but_wrong": 7,
+    "bobcoins_spent": 14.2
+  },
+  "setup": {
+    "install": [
+      "pip install -e ."
+    ],
+    "test": "pytest -q"
+  },
+  "notes_markdown_path": ".bob/rules/readiness-context.md",
+  "files": [
+    {
+      "path": "tinydb/table.py",
+      "readiness": 0.7,
+      "status": "review",
+      "imports": [
+        "tinydb/utils.py",
+        "tinydb/queries.py"
+      ]
+    },
+    {
+      "path": "tinydb/queries.py",
+      "readiness": 0.55,
+      "status": "not_ready",
+      "imports": [
+        "tinydb/utils.py"
+      ]
+    },
+    {
+      "path": "tinydb/database.py",
+      "readiness": 0.93,
+      "status": "ready",
+      "imports": [
+        "tinydb/storages.py",
+        "tinydb/table.py",
+        "tinydb/utils.py"
+      ]
+    },
+    {
+      "path": "tinydb/storages.py",
+      "readiness": 0.86,
+      "status": "ready",
+      "imports": []
+    },
+    {
+      "path": "tinydb/middlewares.py",
+      "readiness": 0.62,
+      "status": "not_ready",
+      "imports": [
+        "tinydb/storages.py"
+      ]
+    },
+    {
+      "path": "tinydb/utils.py",
+      "readiness": 0.88,
+      "status": "ready",
+      "imports": []
+    },
+    {
+      "path": "tinydb/operations.py",
+      "readiness": 0.83,
+      "status": "review",
+      "imports": []
+    }
+  ],
+  "functions": [
+    {
+      "id": "tinydb/table.py::Table.insert",
+      "file": "tinydb/table.py",
+      "name": "Table.insert",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.search",
+      "file": "tinydb/table.py",
+      "name": "Table.search",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.75,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.update",
+      "file": "tinydb/table.py",
+      "name": "Table.update",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "update() raises ValueError when no condition is given",
+          "truth": "It raises nothing: with no condition it updates every document",
+          "confidence": 0.92
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.update_multiple",
+      "file": "tinydb/table.py",
+      "name": "Table.update_multiple",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "update_multiple() does not exist (Bob guessed update_all)",
+          "truth": "update_multiple() exists; there is no update_all()",
+          "confidence": 0.88
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.upsert",
+      "file": "tinydb/table.py",
+      "name": "Table.upsert",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.remove",
+      "file": "tinydb/table.py",
+      "name": "Table.remove",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table._read_table",
+      "file": "tinydb/table.py",
+      "name": "Table._read_table",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "_read_table() is only used by search()",
+          "truth": "Almost every method reads the table through it",
+          "confidence": 0.9
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::Query.matches",
+      "file": "tinydb/queries.py",
+      "name": "Query.matches",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.75,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.search",
+      "file": "tinydb/queries.py",
+      "name": "Query.search",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "search() and matches() behave the same",
+          "truth": "search() finds a match anywhere; matches() only at the start",
+          "confidence": 0.87
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::Query.fragment",
+      "file": "tinydb/queries.py",
+      "name": "Query.fragment",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": false,
+      "misconceptions": [
+        {
+          "believed": "fragment() does not exist",
+          "truth": "It exists: it matches documents containing a set of fields",
+          "confidence": 0.89
+        }
+      ]
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.table",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.table",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.close",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.close",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.__init__",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.__init__",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.75,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.write",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.write",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::MemoryStorage.write",
+      "file": "tinydb/storages.py",
+      "name": "MemoryStorage.write",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.write",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.write",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.25,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "write() never saves to disk",
+          "truth": "It saves automatically once the write cache is full",
+          "confidence": 0.84
+        }
+      ]
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.flush",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.flush",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.75,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.close",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.close",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::freeze",
+      "file": "tinydb/utils.py",
+      "name": "freeze",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::decrement",
+      "file": "tinydb/operations.py",
+      "name": "decrement",
+      "line_start": 1,
+      "line_end": 2,
+      "readiness": 0.75,
+      "status": "part",
+      "tested": true,
+      "misconceptions": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "type": "review_risk",
+      "severity": "high",
+      "file": "tinydb/table.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/table.py::Table.update",
+      "title": "Bob was sure but wrong about update()",
+      "detail": "Bob believed update() raises ValueError with no condition. It updates every document.",
+      "recommendation": "Review any Bob change to update() closely and add a test for the no-condition case.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.9
+    },
+    {
+      "id": "F002",
+      "type": "review_risk",
+      "severity": "high",
+      "file": "tinydb/middlewares.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/middlewares.py::CachingMiddleware.write",
+      "title": "Bob was sure but wrong about when data is saved",
+      "detail": "Bob believed write() never saves to disk. It saves once the write cache is full.",
+      "recommendation": "Check any change to caching behaviour against the study notes.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.9
+    },
+    {
+      "id": "F003",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/queries.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/queries.py::Query.search",
+      "title": "search() and matches() confused",
+      "detail": "Bob treated search() and matches() as the same. They differ in where the match can start.",
+      "recommendation": "Review query changes; Bob needs a person here.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.0
+    },
+    {
+      "id": "F004",
+      "type": "test_gap",
+      "severity": "high",
+      "file": "tinydb/table.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/table.py::Table.upsert",
+      "title": "upsert() has no tests",
+      "detail": "No test covers updating an existing document through upsert().",
+      "recommendation": "Add a test that upserts an existing document and checks it was updated, not duplicated.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 1.0
+    },
+    {
+      "id": "F005",
+      "type": "test_gap",
+      "severity": "high",
+      "file": "tinydb/middlewares.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/middlewares.py::CachingMiddleware.close",
+      "title": "close() has no tests",
+      "detail": "No test closes the database with unsaved cached changes.",
+      "recommendation": "Add a test that closes with unsaved changes and checks they persist.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 1.1
+    },
+    {
+      "id": "F006",
+      "type": "test_gap",
+      "severity": "high",
+      "file": "tinydb/queries.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/queries.py::Query.fragment",
+      "title": "fragment() has no tests, and Bob is not ready here",
+      "detail": "Bob wrongly believed fragment() does not exist.",
+      "recommendation": "A person should write this test.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.0
+    },
+    {
+      "id": "F007",
+      "type": "test_gap",
+      "severity": "low",
+      "file": "tinydb/storages.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/storages.py::MemoryStorage.write",
+      "title": "MemoryStorage.write() has no direct test",
+      "detail": "Small function in an area Bob knows well.",
+      "recommendation": "Add a direct test for writing and reading back.",
+      "bob_allowed": "yes",
+      "estimated_coins": 0.6
+    },
+    {
+      "id": "F008",
+      "type": "modernize",
+      "severity": "low",
+      "file": "tinydb/utils.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/utils.py::freeze",
+      "title": "freeze() has no type hints",
+      "detail": "Old style: no type hints; builds a dict from a generator of tuples.",
+      "recommendation": "Add type hints and use a dict comprehension. Keep behaviour identical.",
+      "bob_allowed": "yes",
+      "estimated_coins": 0.9
+    },
+    {
+      "id": "F009",
+      "type": "modernize",
+      "severity": "medium",
+      "file": "tinydb/middlewares.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/middlewares.py::CachingMiddleware.flush",
+      "title": "Broad exception handling",
+      "detail": "Catches errors too broadly around the write.",
+      "recommendation": "Catch only the specific errors raised by the storage write.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 1.0
+    },
+    {
+      "id": "F010",
+      "type": "modernize",
+      "severity": "low",
+      "file": "tinydb/operations.py",
+      "line_start": 1,
+      "line_end": 2,
+      "function_id": "tinydb/operations.py::decrement",
+      "title": "Helpers without type hints",
+      "detail": "The operations helpers have no type hints.",
+      "recommendation": "Add type hints to all six helpers.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.8
+    }
+  ],
+  "starter_tasks": [
+    {
+      "title": "Add a test for MemoryStorage.write()",
+      "file": "tinydb/storages.py",
+      "why": "ready area, small function"
+    },
+    {
+      "title": "Add type hints to utils.freeze()",
+      "file": "tinydb/utils.py",
+      "why": "ready area, has tests"
+    },
+    {
+      "title": "Improve the error message in Table.remove()",
+      "file": "tinydb/table.py",
+      "why": "one file, clear behaviour"
+    }
+  ]
+}

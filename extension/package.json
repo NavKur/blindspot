@@ -1,0 +1,55 @@
+{
+  "name": "bob-readiness",
+  "displayName": "Bob Readiness",
+  "description": "Shows where Bob is sure but wrong, and lets you send approved fixes to Bob on a new branch.",
+  "version": "0.0.1",
+  "publisher": "blindspot",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "bobReadiness.hello",
+        "title": "Hello",
+        "category": "Bob Readiness"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.3",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.11.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.2"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NavKur/blindspot"
+  }
+}
