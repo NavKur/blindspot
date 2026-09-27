@@ -22,6 +22,8 @@ def test_exam_mark_publish_parse():
     assert (a.qset, a.condition, a.repeat, a.allow_ide) == ("pilot", "C1", 2, False)
     a = p.parse_args(["mark", "--condition", "C2", "--set", "train"])
     assert a.repeat == 1
+    a = p.parse_args(["publish", "--sim"])
+    assert a.sim and a.run is None and a.dest is None
 
 
 def test_exam_refuses_without_api_key(monkeypatch):
