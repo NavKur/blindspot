@@ -12,11 +12,17 @@ def test_config_values():
 @pytest.mark.parametrize("argv", [
     ["exam", "--condition", "C1", "--set", "pilot"],
     ["mark", "--condition", "C1", "--set", "pilot"],
-    ["report"],
     ["cartographer"],
 ])
 def test_every_subcommand_parses(argv):
     assert cli.main(argv) == 0
+
+
+def test_report_parses_and_needs_a_run():
+    args = cli.build_parser().parse_args(["report", "--set", "train", "--condition", "C1"])
+    assert (args.qset, args.condition, args.repeat) == ("train", "C1", 1)
+    with pytest.raises(SystemExit):
+        cli.main(["report"])          # set and condition are required
 
 
 def test_bad_condition_rejected():
