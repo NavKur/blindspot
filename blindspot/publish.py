@@ -220,10 +220,11 @@ def agents_block(ctx) -> str:
     ]) + "\n"
 
 
-def merge_block(existing: str, block: str) -> str:
-    if BLOCK_START in existing and BLOCK_END in existing:
-        head, rest = existing.split(BLOCK_START, 1)
-        tail = rest.split(BLOCK_END, 1)[1].lstrip("\n")
+def merge_block(existing: str, block: str, start: str = BLOCK_START, end: str = BLOCK_END) -> str:
+    """Replace the marked block in `existing`, or append it; text outside the markers is kept."""
+    if start in existing and end in existing:
+        head, rest = existing.split(start, 1)
+        tail = rest.split(end, 1)[1].lstrip("\n")
         return head + block + tail
     sep = "" if not existing or existing.endswith("\n\n") else ("\n" if existing.endswith("\n") else "\n\n")
     return existing + sep + block
@@ -250,6 +251,28 @@ def bobcoins_spent() -> float:
     return total
 
 
+EXCLUDE_START = "# blindspot:start (written by `python cli.py publish`; keeps the tree clean for the plugin)"
+EXCLUDE_END = "# blindspot:end"
+EXCLUDE_ENTRIES = (".bob/", "AGENTS.md")
+
+
+def exclude_from_git(dest) -> Path | None:
+    """Add the published files to <dest>/.git/info/exclude so `git status` stays clean.
+
+    The plugin's "Send to Bob" flow refuses to start on a dirty tree, and the published files are
+    not the developer's work, so they should not show up as untracked. Only a real clone (a .git
+    folder) is touched; the exclude file is local metadata and is never pushed. Idempotent."""
+    git_dir = dest / ".git"
+    if not git_dir.is_dir():
+        return None
+    exclude = git_dir / "info" / "exclude"
+    exclude.parent.mkdir(parents=True, exist_ok=True)
+    old = exclude.read_text(encoding="utf-8") if exclude.exists() else ""
+    block = "\n".join([EXCLUDE_START, *EXCLUDE_ENTRIES, EXCLUDE_END]) + "\n"
+    exclude.write_text(merge_block(old, block, EXCLUDE_START, EXCLUDE_END), encoding="utf-8", newline="\n")
+    return exclude
+
+
 def publish(rows, source, results_base, dest, commit, simulated) -> list:
     ctx = build_context(rows, dest, commit, 0.0 if simulated else bobcoins_spent(), simulated)
     written = []
@@ -271,6 +294,7 @@ def publish(rows, source, results_base, dest, commit, simulated) -> list:
         if f.exists():
             shutil.copyfile(f, rep_dir / f.name)
             written.append(rep_dir / f.name)
+    exclude_from_git(dest)
     return written
 
 
@@ -290,5 +314,7 @@ def main(sim=False, run=None, dest=None) -> int:
     print(f"Published {'SIMULATED ' if simulated else ''}context from {src.stem} into {dest}:")
     for p in written:
         print(f"  {p.relative_to(dest).as_posix()}")
+    if (dest / ".git").is_dir():
+        print("These files are listed in .git/info/exclude there, so the working tree stays clean for the plugin.")
     print("Exams are not affected: they run in fresh copies with agent files removed.")
     return 0

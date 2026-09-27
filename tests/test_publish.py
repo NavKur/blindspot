@@ -86,3 +86,21 @@ def test_simulated_is_labelled(tmp_path):
     d = dest(tmp_path)
     publish.publish(ROWS, "sim", tmp_path, d, None, simulated=True)
     assert "SIMULATED" in (d / ".bob" / "rules" / "readiness-context.md").read_text(encoding="utf-8")
+
+
+def test_published_files_are_excluded_from_git(tmp_path):
+    d = dest(tmp_path)
+    (d / ".git" / "info").mkdir(parents=True)
+    (d / ".git" / "info" / "exclude").write_text("*.swp\n", encoding="utf-8")
+    publish.publish(ROWS, "train_C1_r1", tmp_path, d, "abc", simulated=False)
+    publish.publish(ROWS, "train_C1_r1", tmp_path, d, "abc", simulated=False)     # idempotent
+    text = (d / ".git" / "info" / "exclude").read_text(encoding="utf-8")
+    assert text.startswith("*.swp\n") and text.count(publish.EXCLUDE_START) == 1
+    assert ".bob/\n" in text and "AGENTS.md\n" in text
+
+
+def test_no_git_folder_means_no_exclude(tmp_path):
+    d = dest(tmp_path)
+    assert publish.exclude_from_git(d) is None
+    publish.publish(ROWS, "train_C1_r1", tmp_path, d, "abc", simulated=False)
+    assert not (d / ".git").exists()

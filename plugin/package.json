@@ -1,0 +1,387 @@
+{
+  "name": "bob-readiness",
+  "displayName": "Bob Readiness",
+  "description": "Shows where Bob is sure but wrong, and lets you send approved fixes to Bob on a new branch.",
+  "version": "0.0.1",
+  "publisher": "blindspot",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "bobReadiness.hello",
+        "title": "Hello",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.toggleHighlights",
+        "title": "Toggle Readiness Highlights",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.reload",
+        "title": "Reload Context File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openPanel",
+        "title": "Open Panel",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFinding",
+        "title": "Add or Remove Finding in Bob Queue",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFunction",
+        "title": "Add Function Findings to Bob Queue",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.whyUnsure",
+        "title": "Why Bob Is Unsure",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openFinding",
+        "title": "Open Finding",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openFile",
+        "title": "Open File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.sendToBob",
+        "title": "Send Selected Findings to Bob",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openExam",
+        "title": "Open Exam Tab",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.reloadReport",
+        "title": "Reload Blindspot Report",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openHeatmap",
+        "title": "Open Heatmap",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.copyFileContext",
+        "title": "Copy Bob Context for This File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFile",
+        "title": "Queue All Allowed Findings in This File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.explainFile",
+        "title": "Why Is Bob Risky Here",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openNotes",
+        "title": "Open Study Notes",
+        "category": "Bob Readiness"
+      }
+    ],
+    "configuration": {
+      "title": "Bob Readiness",
+      "properties": {
+        "bobReadiness.contextPath": {
+          "type": "string",
+          "default": ".bob/context/readiness.json",
+          "description": "Where the context file lives in the workspace."
+        },
+        "bobReadiness.highlightOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show highlights when the IDE opens."
+        },
+        "bobReadiness.bobCommand": {
+          "type": "string",
+          "default": "bob run --format json",
+          "description": "Headless Bob command. The prompt is passed as the last argument and on stdin."
+        },
+        "bobReadiness.useFakeBob": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use scripts/fake-bob.js instead of real Bob. Real Bob costs Bobcoins."
+        },
+        "bobReadiness.testCommand": {
+          "type": "string",
+          "default": "pytest -q",
+          "description": "Run after Bob makes changes."
+        },
+        "bobReadiness.baseBranch": {
+          "type": "string",
+          "default": "main",
+          "description": "Branch to return to when discarding Bob's changes."
+        },
+        "bobReadiness.resultsPath": {
+          "type": "string",
+          "default": "results",
+          "description": "Folder with report_latest.json and history.jsonl from the Blindspot engine, relative to the workspace. Falls back to <folder>/sim when only simulated data exists, then to .bob/blindspot (the copies written by python cli.py publish into the examined repository)."
+        },
+        "bobReadiness.targetRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Folder the report paths map onto. Empty means target/<repo> from target.lock.json when present, otherwise the workspace root."
+        },
+        "bobReadiness.publishCommand": {
+          "type": "string",
+          "default": "python cli.py publish",
+          "description": "Command run by the Publish button in the Exam tab. It runs in the Blindspot engine folder (the workspace or the nearest parent with cli.py), uses that folder's .venv python automatically, and adds --dest for the repository the reports map onto."
+        },
+        "bobReadiness.sessionBudget": {
+          "type": "number",
+          "default": 5,
+          "description": "Bobcoins this session may spend through the plugin. Send to Bob refuses when the estimate would go over it. 0 means no limit. Ignored while useFakeBob is on."
+        },
+        "bobReadiness.openDiffAfterRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the diff of the first changed file as soon as Bob and the tests finish."
+        }
+      }
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "bobReadiness.queueFinding",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.queueFunction",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.whyUnsure",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.openFinding",
+          "when": "false"
+        },
+        {
+          "command": "bobReadiness.openFile",
+          "when": "false"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1"
+        },
+        {
+          "command": "bobReadiness.queueFile",
+          "group": "bobReadiness@2"
+        },
+        {
+          "command": "bobReadiness.explainFile",
+          "group": "bobReadiness@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "bobReadiness.queueFile",
+          "group": "bobReadiness@2",
+          "when": "!explorerResourceIsFolder"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bobReadiness",
+          "title": "Bob Readiness",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "bobReadiness": [
+        {
+          "type": "webview",
+          "id": "bobReadiness.panel",
+          "name": "Bob Readiness",
+          "icon": "media/icon.svg",
+          "contextualTitle": "Bob Readiness"
+        }
+      ]
+    },
+    "colors": [
+      {
+        "id": "blindspot.red",
+        "description": "Explorer colour for red modules (over the Blindspot thresholds).",
+        "defaults": {
+          "dark": "#fa4d56",
+          "light": "#da1e28",
+          "highContrast": "#ff8389"
+        }
+      },
+      {
+        "id": "blindspot.heat0",
+        "description": "Explorer colour for examined files with heat below 0.2.",
+        "defaults": {
+          "dark": "#42be65",
+          "light": "#198038",
+          "highContrast": "#6fdc8c"
+        }
+      },
+      {
+        "id": "blindspot.heat1",
+        "description": "Explorer colour for heat 0.2 to 0.4.",
+        "defaults": {
+          "dark": "#8fd14f",
+          "light": "#4d8c1f",
+          "highContrast": "#b5e27a"
+        }
+      },
+      {
+        "id": "blindspot.heat2",
+        "description": "Explorer colour for heat 0.4 to 0.6.",
+        "defaults": {
+          "dark": "#f1c21b",
+          "light": "#b28600",
+          "highContrast": "#fddc69"
+        }
+      },
+      {
+        "id": "blindspot.heat3",
+        "description": "Explorer colour for heat 0.6 to 0.8.",
+        "defaults": {
+          "dark": "#ff832b",
+          "light": "#ba4e00",
+          "highContrast": "#ffb784"
+        }
+      },
+      {
+        "id": "blindspot.heat4",
+        "description": "Explorer colour for heat 0.8 and above.",
+        "defaults": {
+          "dark": "#fa4d56",
+          "light": "#da1e28",
+          "highContrast": "#ff8389"
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "bobReadiness.toggleHighlights",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      },
+      {
+        "command": "bobReadiness.sendToBob",
+        "key": "ctrl+alt+b",
+        "mac": "cmd+alt+b"
+      },
+      {
+        "command": "bobReadiness.copyFileContext",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "bobReadiness.gettingStarted",
+        "title": "Bob Readiness: know where Bob is wrong",
+        "description": "Four steps from the exam results to a safe Bob change.",
+        "steps": [
+          {
+            "id": "exam",
+            "title": "See where Bob is weak",
+            "description": "Open the Exam tab.\n[Open Exam tab](command:bobReadiness.openExam)",
+            "media": {
+              "markdown": "media/walkthrough/exam.md"
+            }
+          },
+          {
+            "id": "heatmap",
+            "title": "Read the heatmap",
+            "description": "One square per file per run, one per function.\n[Open Heatmap](command:bobReadiness.openHeatmap)",
+            "media": {
+              "markdown": "media/walkthrough/heatmap.md"
+            }
+          },
+          {
+            "id": "editor",
+            "title": "Work in the editor",
+            "description": "Highlights, hover cards, the status bar warning and Copy Bob context.\n[Toggle highlights](command:bobReadiness.toggleHighlights)",
+            "media": {
+              "markdown": "media/walkthrough/editor.md"
+            }
+          },
+          {
+            "id": "approve",
+            "title": "Let Bob fix what it is allowed to fix",
+            "description": "Tick, approve, run on a branch, test, keep or discard.\n[Open panel](command:bobReadiness.openPanel)",
+            "media": {
+              "markdown": "media/walkthrough/approve.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package --no-dependencies",
+    "smoke": "node scripts/smoke.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.3",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.11.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.2"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NavKur/blindspot"
+  }
+}
