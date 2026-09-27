@@ -4,7 +4,7 @@ Owner: Aziz (extension). Partner: context manager (teammate).
 Deadline: Sunday 27 September, 15:00 UTC (4pm UK). Aim to freeze features by Sunday 10am.
 
 How to use this file (autonomous mode):
-1. Put this folder at `extension/` and open Claude Code inside it.
+1. Put this folder at `plugin/` and open Claude Code inside it.
 2. Paste the kickoff prompt from KICKOFF.md. Claude Code reads CLAUDE.md, this plan and the
    images in references/, then builds phases 0 to 6 on its own, testing as it goes and
    committing once per phase. Progress is tracked in PROGRESS.md.
@@ -116,7 +116,7 @@ Who produces what (default, change if you agree otherwise):
 ## 3. Architecture of the extension
 
 ```
-extension/
+plugin/
   package.json            # contributes: commands, settings, views, status bar
   src/
     extension.ts          # activate(): wires everything together

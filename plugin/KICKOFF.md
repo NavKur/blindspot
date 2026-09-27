@@ -1,6 +1,6 @@
 # Kickoff prompt for Claude Code
 
-Open a terminal in the extension/ folder, start Claude Code, and paste everything in the box.
+Open a terminal in the plugin/ folder, start Claude Code, and paste everything in the box.
 
 ```
 Read CLAUDE.md and BUILD_PLAN.md fully. Then open every image in references/ one by one
