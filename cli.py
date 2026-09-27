@@ -11,7 +11,7 @@ STEPS = {
     "split": "step 8",
     "pilot": "step 9",
     "generate": "steps 5 to 9",
-    "exam": "steps 15 to 19",
+    "exam": "step 16",
     "mark": "step 16",
     "report": "step 11",
     "cartographer": "steps 20 to 22",
@@ -34,13 +34,16 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("split", help="draw the balanced exam and split it into TRAIN and TEST")
     sub.add_parser("pilot", help="build the 30-question pilot set (never uses TEST)")
 
-    e = sub.add_parser("exam", help="have Bob sit the exam under one condition")
+    e = sub.add_parser("exam", help="Bob sits one set under one condition, then mark and report (costs Bobcoins)")
     e.add_argument("--condition", choices=config.CONDITIONS, required=True)
     e.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
+    e.add_argument("--repeat", type=int, default=1)
+    e.add_argument("--allow-ide", action="store_true", help="run even from the Bob IDE terminal (not recommended)")
 
     m = sub.add_parser("mark", help="mark answers against the truth")
     m.add_argument("--condition", choices=config.CONDITIONS, required=True)
     m.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
+    m.add_argument("--repeat", type=int, default=1)
 
     r = sub.add_parser("report", help="per-module statistics and the dashboard report for one marked run")
     r.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
@@ -57,6 +60,12 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "exam":
+        from blindspot import exam
+        return exam.main(args.qset, args.condition, args.repeat, args.allow_ide)
+    if args.command == "mark":
+        from blindspot import mark
+        return mark.main(args.qset, args.condition, args.repeat)
     if args.command == "simulate":
         from blindspot import simulate
         return simulate.main(args.qset)
