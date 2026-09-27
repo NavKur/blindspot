@@ -14,7 +14,7 @@ STEPS = {
     "exam": "step 16",
     "mark": "step 16",
     "report": "step 11",
-    "cartographer": "steps 20 to 22",
+    "cartographer": "step 19",
     "simulate": "step 12",
     "publish": "step 17",
 }
@@ -52,7 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--repeat", type=int, default=1)
     s = sub.add_parser("simulate", help="fake examinee (no Bob) writing SIMULATED reports to results/sim/ for the plugin")
     s.add_argument("--set", dest="qset", choices=("pilot", "train"), default="train")
-    sub.add_parser("cartographer", help="write targeted context for red modules (condition C2)")
+    c = sub.add_parser("cartographer", help="Bob writes targeted notes for the worst TRAIN modules -> contexts/C2/AGENTS.md")
+    c.add_argument("--dry-run", action="store_true", help="print the prompts, call nothing")
+    c.add_argument("--allow-ide", action="store_true")
     pb = sub.add_parser("publish", help="write readiness.json, rules and an AGENTS.md block into the target repo")
     pb.add_argument("--sim", action="store_true", help="publish the simulated data in results/sim")
     pb.add_argument("--run", help="marked run to publish, e.g. train_C1_r1 (default: newest)")
@@ -65,6 +67,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "cartographer":
+        from blindspot import cartographer
+        return cartographer.main(dry_run=args.dry_run, allow_ide=args.allow_ide)
     if args.command == "exam":
         from blindspot import exam
         return exam.main(args.qset, args.condition, args.repeat, args.allow_ide)
