@@ -1,0 +1,13 @@
+{
+  "returncode": 0,
+  "seconds": 6.2,
+  "parsed": true,
+  "status": "success",
+  "cost": 0.00937,
+  "tool_calls": 0,
+  "tokens": null,
+  "reply": "I'll answer these questions based on my knowledge of the TinyDB codebase.\n\n[{\"id\": \"q5235ea76d2\", \"answer\": false, \"p\": 0.7}, {\"id\": \"qbecf664276\", \"answer\": false, \"p\": 0.75}, {\"id\": \"qeb9e3bf777\", \"answer\": false, \"p\": 0.75}, {\"id\": \"q5d14b4560f\", \"answer\": false, \"p\": 0.85}, {\"id\": \"qc739fe9d2c\", \"answer\": false, \"p\": 0.8}, {\"id\": \"qd5ed113557\", \"answer\": true, \"p\": 0.85}, {\"id\": \"qf1f1ff1847\", \"answer\": false, \"p\": 0.9}, {\"id\": \"q682d5d079a\", \"answer\": \"None\", \"p\": 0.6}, {\"id\": \"qa0d7989fa0\", \"answer\": false, \"p\": 0.8}, {\"id\": \"qa73bbbba01\", \"answer\": true, \"p\": 0.75}, {\"id\": \"q205b07a638\", \"answer\": true, \"p\": 0.8}, {\"id\": \"q4ca34e2628\", \"answer\": true, \"p\": 0.9}, {\"id\": \"qbdae68bed3\", \"answer\": true, \"p\": 0.8}, {\"id\": \"q4d5698e686\", \"answer\": \"0\", \"p\": 0.75}, {\"id\": \"q5c92f08981\", \"answer\": \"None\", \"p\": 0.8}, {\"id\": \"q6eb3b6e7fb\", \"answer\": false, \"p\": 0.7}, {\"id\": \"q9042abe941\", \"answer\": true, \"p\": 0.85}, {\"id\": \"q9303231101\", \"answer\": true, \"p\": 0.75}, {\"id\": \"q604ccc95c0\", \"answer\": true, \"p\": 0.98}, {\"id\": \"q8648bd7c58\", \"answer\": true, \"p\": 0.8}]",
+  "stdout_tail": "",
+  "stderr_tail": "",
+  "cached": false
+}

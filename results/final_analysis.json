@@ -1,0 +1,90 @@
+{
+  "n_paired": 200,
+  "dropped_unpaired": 0,
+  "primary": {
+    "n": 200,
+    "only_a": 5,
+    "only_b": 17,
+    "discordant": 22,
+    "acc_a": 0.89,
+    "acc_b": 0.95,
+    "diff_b_minus_a": 0.05999999999999994,
+    "p_value": 0.01690053939819336,
+    "significant": true,
+    "direction": "C2 better"
+  },
+  "secondary": {
+    "brier_C2_vs_C1": {
+      "mean_diff": -0.044849999999999994,
+      "ci_low": -0.07092013749999998,
+      "ci_high": -0.018126812500000002,
+      "p_value": 0.0,
+      "n": 200,
+      "p_holm": 0.0
+    },
+    "cw_C2_vs_C1": {
+      "n": 200,
+      "only_a": 4,
+      "only_b": 4,
+      "discordant": 8,
+      "acc_a": 0.97,
+      "acc_b": 0.97,
+      "diff_b_minus_a": 0.0,
+      "p_value": 1.0,
+      "p_holm": 1.0
+    }
+  },
+  "sensitivity": {
+    "entity": {
+      "mean": 0.06,
+      "ci_low": 0.020615913296325672,
+      "ci_high": 0.10050317726197124,
+      "se_cluster": 0.020794815408869554,
+      "se_iid": 0.023123005142804662,
+      "design_effect": 0.808763582987808,
+      "n_questions": 200,
+      "n_clusters": 103,
+      "few_clusters_warning": false
+    },
+    "module": {
+      "mean": 0.06,
+      "ci_low": 0.034817292846114276,
+      "ci_high": 0.08108108108108109,
+      "se_cluster": 0.011713669556079151,
+      "se_iid": 0.023123005142804662,
+      "design_effect": 0.25662406803885424,
+      "n_questions": 200,
+      "n_clusters": 8,
+      "few_clusters_warning": true
+    }
+  },
+  "by_condition": {
+    "C1": {
+      "k": 178,
+      "n": 200,
+      "accuracy": 0.89,
+      "ci_low": 0.839073090026985,
+      "ci_high": 0.926227555398747,
+      "brier": 0.08565149999999999,
+      "ece": 0.11305000000000015,
+      "cw_rate": 0.03,
+      "cw_count": 6,
+      "mean_p": 0.84395,
+      "overconfidence": -0.046050000000000035
+    },
+    "C2": {
+      "k": 190,
+      "n": 200,
+      "accuracy": 0.95,
+      "ci_low": 0.9104218518612239,
+      "ci_high": 0.972617354399236,
+      "brier": 0.040801500000000004,
+      "ece": 0.028250000000000094,
+      "cw_rate": 0.03,
+      "cw_count": 6,
+      "mean_p": 0.93595,
+      "overconfidence": -0.014050000000000007
+    }
+  },
+  "alpha": 0.05
+}
