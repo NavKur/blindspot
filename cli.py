@@ -17,6 +17,7 @@ STEPS = {
     "cartographer": "step 19",
     "simulate": "step 12",
     "publish": "step 17",
+    "analyze": "step 20",
 }
 
 
@@ -59,6 +60,7 @@ def build_parser() -> argparse.ArgumentParser:
     pb.add_argument("--sim", action="store_true", help="publish the simulated data in results/sim")
     pb.add_argument("--run", help="marked run to publish, e.g. train_C1_r1 (default: newest)")
     pb.add_argument("--dest", help="repo to publish into (default: target/tinydb)")
+    sub.add_parser("analyze", help="pre-registered analysis of the TEST runs -> results/final_analysis.json")
     return p
 
 
@@ -67,6 +69,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "analyze":
+        from blindspot import analyze
+        return analyze.main()
     if args.command == "cartographer":
         from blindspot import cartographer
         return cartographer.main(dry_run=args.dry_run, allow_ide=args.allow_ide)
