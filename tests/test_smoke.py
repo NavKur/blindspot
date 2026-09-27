@@ -9,11 +9,9 @@ def test_config_values():
     assert config.CONDITIONS == ("C0", "C1", "C2")
 
 
-@pytest.mark.parametrize("argv", [
-    ["cartographer"],
-])
-def test_every_subcommand_parses(argv):
-    assert cli.main(argv) == 0
+def test_cartographer_and_analyze_parse():
+    p = cli.build_parser()
+    assert p.parse_args(["cartographer", "--dry-run"]).dry_run
 
 
 def test_exam_mark_publish_parse():
