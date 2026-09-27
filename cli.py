@@ -13,7 +13,7 @@ STEPS = {
     "generate": "steps 5 to 9",
     "exam": "steps 15 to 19",
     "mark": "step 16",
-    "report": "steps 10 to 12",
+    "report": "step 11",
     "cartographer": "steps 20 to 22",
 }
 
@@ -41,7 +41,10 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--condition", choices=config.CONDITIONS, required=True)
     m.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
 
-    sub.add_parser("report", help="compute statistics for all available results")
+    r = sub.add_parser("report", help="per-module statistics and the dashboard report for one marked run")
+    r.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
+    r.add_argument("--condition", choices=config.CONDITIONS, required=True)
+    r.add_argument("--repeat", type=int, default=1)
     sub.add_parser("cartographer", help="write targeted context for red modules (condition C2)")
     return p
 
@@ -51,6 +54,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "report":
+        from blindspot import report
+        return report.main(args.qset, args.condition, args.repeat)
     if args.command == "pilot":
         from blindspot import pilot
         return pilot.main()
