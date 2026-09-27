@@ -15,7 +15,6 @@ import { Queue } from "./queue";
 import { ExamFeature } from "./report/examFeature";
 import { ReportStore } from "./report/reportStore";
 import { ReportTreeDecorations } from "./report/treeDecorations";
-import { guessRepoName } from "./report/reportLogic";
 import { ReleaseFeature } from "./release";
 import { SessionCoins } from "./session";
 import { StatusBar } from "./statusBar";
@@ -60,10 +59,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const release = new ReleaseFeature(store, log, () => panel.currentTab === "release", () => panel.refresh());
   const onboarding = new OnboardingFeature(context.workspaceState, store, runner, log, () => panel.refresh());
   const exam = new ExamFeature(reports, log, () => panel.refresh());
-  exam.repoName = () => {
-    const r = reports.getReport();
-    return r ? guessRepoName(r) : undefined;
-  };
   panel.addExtras(approval);
   panel.addExtras(release);
   panel.addExtras(onboarding);

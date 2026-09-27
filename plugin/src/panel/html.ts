@@ -167,6 +167,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const post = (msg) => vscode.postMessage(msg);
 
+  // The extension posts { type: "state", state } after every change; we re-render everything from it.
   window.addEventListener("message", (e) => {
     const m = e.data;
     if (m && m.type === "state") { state = m.state; render(); }
@@ -184,8 +185,8 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
     const h = state.header;
     $("title").textContent = "BOB READINESS: " + h.repoName.toUpperCase();
     $("stats").innerHTML =
-      '<div class="stat"><b>' + esc(h.readiness) + '</b><span>readiness</span></div>' +
-      '<div class="stat"><b>' + esc(h.sureButWrong) + '</b><span>sure but wrong</span></div>' +
+      '<div class="stat"><b>' + esc(h.readiness) + '</b><span>' + esc(h.readinessLabel) + '</span></div>' +
+      '<div class="stat"><b>' + esc(h.sureButWrong) + '</b><span>' + esc(h.sureButWrongLabel) + '</span></div>' +
       '<div class="stat" title="' + esc(h.sessionCoins) + ' Bobcoins spent by this extension in this session. The study that produced the context cost ' + esc(h.studyCoins) + ' Bobcoins."><b>' + esc(h.sessionCoins) + '</b><span>Bobcoins used</span></div>';
   }
 
@@ -194,6 +195,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       '<button class="tab' + (state.activeTab === id ? " active" : "") + '" data-tab="' + id + '">' + label + "</button>").join("");
   }
 
+  // The main area shows the active tab, or the Bob run result while a run is in progress.
   function renderMain() {
     const main = $("main");
     if (state.run && state.activeTab !== "onboarding" && state.activeTab !== "release") { main.innerHTML = renderRun(state.run); return; }
@@ -405,6 +407,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       '<button class="btn" id="send"' + (f.canSend ? "" : " disabled") + ">Send to Bob</button>";
   }
 
+  // One delegated click handler: every clickable element carries a data attribute or an id.
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-tab],[data-open],[data-diff],[data-ask],[data-target],#send,#keep,#discard,#cancel,#dismiss,#run-tests,#copy-notes,#ask-btn,#publish,#reload-report,#cmp-go");
     if (!t) return;

@@ -6,6 +6,8 @@ __pycache__/
 .DS_Store
 .env
 .env.*
+# the template holds placeholders only, so it is safe to commit
+!.env.example
 # demo repo is cloned on demand by `python cli.py target`, not committed
 target/*
 !target/.gitkeep

@@ -4,7 +4,7 @@ import type { ContextStore } from "../contextStore";
 import type { Queue } from "../queue";
 import type { SessionCoins } from "../session";
 import { nonce, panelHtml } from "./html";
-import { buildPanelState, TAB_IDS, type PanelState, type TabId } from "./state";
+import { buildPanelState, TAB_IDS, type HeaderFallback, type PanelState, type TabId } from "./state";
 
 const TAB_KEY = "bobReadiness.activeTab";
 
@@ -34,8 +34,8 @@ export interface PanelExtras {
   extraState?: () => Partial<PanelState>;
   /** Handle a message. Return true when handled. */
   handle?: (msg: PanelMessage) => Promise<boolean> | boolean;
-  /** Repo name to show in the header when there is no readiness context. */
-  repoName?: () => string | undefined;
+  /** Header numbers to show when there is no readiness context. */
+  headerFallback?: () => HeaderFallback | undefined;
 }
 
 export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposable {
@@ -53,8 +53,8 @@ export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposa
     private readonly queue: Queue,
     private readonly session: SessionCoins,
   ) {
-    const remembered = memento.get<string>(TAB_KEY, "review");
-    this.activeTab = (TAB_IDS as string[]).includes(remembered) ? (remembered as TabId) : "review";
+    const remembered = memento.get<string>(TAB_KEY, "exam");
+    this.activeTab = (TAB_IDS as string[]).includes(remembered) ? (remembered as TabId) : "exam";
     this.disposables.push(
       store.onDidChange(() => this.refresh()),
       queue.onDidChange(() => this.refresh()),
@@ -102,7 +102,7 @@ export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposa
 
   refresh(): void {
     if (!this.view) return;
-    const fallback = this.extras.map((e) => e.repoName?.()).find((n) => !!n);
+    const fallback = this.extras.map((e) => e.headerFallback?.()).find((n) => !!n);
     const state = buildPanelState(this.store.getIndex(), this.queue.selected, this.session.spent, this.activeTab, fallback);
     for (const extra of this.extras) {
       if (extra.extraState) Object.assign(state, extra.extraState());

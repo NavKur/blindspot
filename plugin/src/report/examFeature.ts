@@ -3,6 +3,7 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import type { Log } from "../output";
 import type { PanelExtras, PanelMessage } from "../panel/PanelProvider";
+import type { HeaderFallback } from "../panel/state";
 import { getSettings } from "../settings";
 import { runProcess } from "../shell";
 import type { ModuleEntry, Report, WorstEntity } from "./reportContract";
@@ -11,6 +12,7 @@ import {
   compareReports,
   fileSparkline,
   formatWhen,
+  guessRepoName,
   heatBucket,
   historySeries,
   modulesWorstFirst,
@@ -94,7 +96,6 @@ const CHART_H = 60;
 
 /** The Exam tab: overview, modules, worst entities, history chart, run comparison and Publish. */
 export class ExamFeature implements PanelExtras, vscode.Disposable {
-  repoName?: () => string | undefined;
   private compare: { a: string; b: string; rows: CompareRow[] } | undefined;
   private publish: ExamView["publish"] | undefined;
   private readonly disposables: vscode.Disposable[] = [];
@@ -109,6 +110,19 @@ export class ExamFeature implements PanelExtras, vscode.Disposable {
 
   extraState(): { exam?: ExamView } {
     return { exam: this.view() };
+  }
+
+  /** Header numbers when there is no readiness context: accuracy and confidently wrong count. */
+  headerFallback(): HeaderFallback | undefined {
+    const r = this.store.getReport();
+    if (!r) return undefined;
+    return {
+      repoName: guessRepoName(r),
+      readiness: pct(r.overall.accuracy),
+      readinessLabel: `accuracy, ${r.run.condition}`,
+      sureButWrong: String(r.overall.cw_count),
+      sureButWrongLabel: "confidently wrong",
+    };
   }
 
   async handle(msg: PanelMessage): Promise<boolean> {

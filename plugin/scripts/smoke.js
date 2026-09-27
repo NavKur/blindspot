@@ -235,7 +235,7 @@ async function waitFor(pred, label, ms = 120000) { const t0 = Date.now(); while 
   check(x && x.modules.map((m) => m.module).slice(0, 2).join(",") === "tinydb,tinydb.utils", "modules worst first");
   check(x && x.runs.length === 3, "three run reports found: " + (x && x.runs.join(",")));
   check(x && x.history.axis.length === 3 && x.history.accuracy.length === 3, "history chart has three conditions");
-  check(last().header.repoName === "tinydb" && !last().hasContext, "header falls back to the report's repo name");
+  check(last().header.repoName === "tinydb" && !last().hasContext && last().header.readiness === "89%" && last().header.sureButWrongLabel === "confidently wrong", "header falls back to the report numbers");
   await send({ type: "compareRuns", a: "train_C1_r1", b: "train_C2_r1" });
   await waitFor(() => last().exam && last().exam.compare, "comparison", 10000);
   check(last().exam.compare.rows.length === 8 && last().exam.compare.rows.some((r) => r.delta.startsWith("+")), "comparison rows with deltas");

@@ -20,3 +20,9 @@ The VS Code extension for Bob IDE lives in `plugin/`. It reads `results/report_l
 for the build, the settings and the demo workspace.
 
     cd plugin && npm install && npm run build && npm test && npm run package
+
+## Data and credentials
+
+Every external source and what we do with it is listed in docs/DATA_SOURCES.md. The only
+credential is `BOB_API_KEY`: copy `.env.example` to `.env` and fill it in. `.env` is ignored by
+git and by Bob. Never paste keys into prompts or code.

@@ -26,9 +26,20 @@ export const TAB_IDS: TabId[] = ["exam", "onboarding", "review", "testing", "rel
 export interface HeaderState {
   repoName: string;
   readiness: string;
-  sureButWrong: number;
+  readinessLabel: string;
+  sureButWrong: string;
+  sureButWrongLabel: string;
   sessionCoins: string;
   studyCoins: string;
+}
+
+/** Numbers another data source (the exam report) can offer for the header when there is no context. */
+export interface HeaderFallback {
+  repoName: string;
+  readiness: string;
+  readinessLabel: string;
+  sureButWrong: string;
+  sureButWrongLabel: string;
 }
 
 export interface FindingRow {
@@ -95,13 +106,26 @@ export function toRow(finding: Finding, index: ContextIndex, selected: ReadonlyS
   };
 }
 
-export function buildHeader(ctx: ReadinessContext | undefined, sessionCoins: number, fallbackRepoName?: string): HeaderState {
+export function buildHeader(ctx: ReadinessContext | undefined, sessionCoins: number, fallback?: HeaderFallback): HeaderState {
+  if (ctx) {
+    return {
+      repoName: ctx.repo.name,
+      readiness: percent(ctx.summary.readiness),
+      readinessLabel: "readiness",
+      sureButWrong: String(ctx.summary.sure_but_wrong),
+      sureButWrongLabel: "sure but wrong",
+      sessionCoins: sessionCoins.toFixed(1),
+      studyCoins: ctx.summary.bobcoins_spent.toFixed(1),
+    };
+  }
   return {
-    repoName: ctx?.repo.name ?? fallbackRepoName ?? "no context",
-    readiness: ctx ? percent(ctx.summary.readiness) : "--",
-    sureButWrong: ctx?.summary.sure_but_wrong ?? 0,
+    repoName: fallback?.repoName ?? "no context",
+    readiness: fallback?.readiness ?? "--",
+    readinessLabel: fallback?.readinessLabel ?? "readiness",
+    sureButWrong: fallback?.sureButWrong ?? "--",
+    sureButWrongLabel: fallback?.sureButWrongLabel ?? "sure but wrong",
     sessionCoins: sessionCoins.toFixed(1),
-    studyCoins: ctx ? ctx.summary.bobcoins_spent.toFixed(1) : "--",
+    studyCoins: "--",
   };
 }
 
@@ -116,13 +140,13 @@ export function buildPanelState(
   selected: ReadonlySet<string>,
   sessionCoins: number,
   activeTab: TabId,
-  fallbackRepoName?: string,
+  fallback?: HeaderFallback,
 ): PanelState {
   const ctx = index?.context;
   const rows = (type: FindingType) => (index ? findingsOfType(index, type).map((f) => toRow(f, index, selected)) : []);
   return {
     hasContext: !!ctx,
-    header: buildHeader(ctx, sessionCoins, fallbackRepoName),
+    header: buildHeader(ctx, sessionCoins, fallback),
     tabs: { review: rows("review_risk"), testing: rows("test_gap"), modernize: rows("modernize") },
     footer: buildFooter(ctx, selected),
     activeTab,

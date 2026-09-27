@@ -45,6 +45,12 @@ describe("panel state", () => {
     expect(state.header.repoName).toBe("tinydb");
     expect(state.header.readiness).toBe("73%");
     expect(state.header.sessionCoins).toBe("1.3");
+    expect(state.header.sureButWrong).toBe("7");
+    const fallback = buildPanelState(undefined, new Set(), 0, "exam", {
+      repoName: "tinydb", readiness: "89%", readinessLabel: "accuracy, C2", sureButWrong: "9", sureButWrongLabel: "confidently wrong",
+    });
+    expect(fallback.header.repoName).toBe("tinydb");
+    expect(fallback.header.readinessLabel).toBe("accuracy, C2");
     expect(state.tabs.review.length).toBe(3);
     const empty = buildPanelState(undefined, new Set(), 0, "onboarding");
     expect(empty.hasContext).toBe(false);
