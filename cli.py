@@ -15,6 +15,7 @@ STEPS = {
     "mark": "step 16",
     "report": "step 11",
     "cartographer": "steps 20 to 22",
+    "simulate": "step 12",
 }
 
 
@@ -45,6 +46,8 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
     r.add_argument("--condition", choices=config.CONDITIONS, required=True)
     r.add_argument("--repeat", type=int, default=1)
+    s = sub.add_parser("simulate", help="fake examinee (no Bob) writing SIMULATED reports to results/sim/ for the plugin")
+    s.add_argument("--set", dest="qset", choices=("pilot", "train"), default="train")
     sub.add_parser("cartographer", help="write targeted context for red modules (condition C2)")
     return p
 
@@ -54,6 +57,9 @@ def main(argv=None) -> int:
     if args.command == "target":
         from blindspot import target
         return target.main(force=args.force, check_only=args.check)
+    if args.command == "simulate":
+        from blindspot import simulate
+        return simulate.main(args.qset)
     if args.command == "report":
         from blindspot import report
         return report.main(args.qset, args.condition, args.repeat)

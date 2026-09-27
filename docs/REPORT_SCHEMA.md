@@ -13,12 +13,14 @@ so they map directly onto the workspace file tree.
 | `results/report_latest.json` | Newest report, full detail | Watch it; recolour the tree when it changes |
 | `results/report_<set>_<condition>_r<repeat>.json` | One report per run | Compare runs (e.g. C1 vs C2) |
 | `results/history.jsonl` | One compact line per report, appended | Change-over-time chart |
+| `results/sim/...` | The same three files, SIMULATED (step 12) | Build and test the plugin before real runs exist |
 
 ## `report_latest.json`
 
 ```jsonc
 {
   "schema_version": 1,
+  "simulated": false,                             // true = fake data from `cli.py simulate`; show a clear banner
   "generated_at": "2026-09-27T12:00:00+00:00",   // UTC
   "target_commit": "1e39ad3a...",                 // commit of the repo that was examined
   "run": {"set": "train", "condition": "C1", "repeat": 1, "name": "train_C1_r1"},
@@ -32,7 +34,7 @@ so they map directly onto the workspace file tree.
       "by_family": {"calls": 0.71, "exists": 0.9} }
   ],
   "directories": [ { "path": "tinydb", /* metrics */ } ],
-  "red_modules": ["tinydb.queries"],
+  "red_modules": ["tinydb.queries"],   // worst first (highest confidently-wrong rate, then lowest ci_low)
   "worst_entities": [ {"entity": "Query.test", "module": "tinydb.queries", "path": "tinydb/queries.py",
                        "n": 6, "accuracy": 0.33, "cw_count": 3} ]
 }
@@ -49,7 +51,7 @@ Show a "few answers" marker when `low_n` is true. Files with no entry were not e
 ## `history.jsonl` (one JSON object per line)
 
 ```jsonc
-{"generated_at": "...", "target_commit": "...", "run": "train_C1_r1", "set": "train", "condition": "C1", "repeat": 1,
+{"generated_at": "...", "simulated": false, "target_commit": "...", "run": "train_C1_r1", "set": "train", "condition": "C1", "repeat": 1,
  "accuracy": 0.74, "brier": 0.18, "cw_rate": 0.12, "n": 118,
  "modules": {"tinydb/table.py": {"accuracy": 0.7, "cw_rate": 0.2, "heat": 0.45, "red": true}}}
 ```

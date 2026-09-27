@@ -48,6 +48,11 @@ def group_metrics(rows) -> dict:
     return s
 
 
+def severity(m) -> tuple:
+    """Worst first: highest confidently-wrong rate, then lowest accuracy lower bound, then name (stable)."""
+    return (-m["cw_rate"], m["ci_low"], m["module"])
+
+
 def red_rule(m) -> list:
     """PREREGISTRATION.md section 5. Returns the reasons a module is red (empty list = not red)."""
     reasons = []
@@ -75,7 +80,7 @@ def directory_nodes(rows) -> list:
     return [dict(path=d, **group_metrics(rs)) for d, rs in sorted(groups.items())]
 
 
-def build_report(marked, qset, condition, repeat, commit=None, now=None) -> dict:
+def build_report(marked, qset, condition, repeat, commit=None, now=None, simulated=False) -> dict:
     scored = [r for r in marked if not r.get("excluded")]
     if not scored:
         raise ValueError("no scored answers: nothing to report")
@@ -98,6 +103,7 @@ def build_report(marked, qset, condition, repeat, commit=None, now=None) -> dict
     overall = stats.summarise([r["p"] for r in scored], [int(r["correct"]) for r in scored])
     return {
         "schema_version": SCHEMA_VERSION,
+        "simulated": simulated,          # True for step 12 fake data; the plugin must label it
         "generated_at": (now or datetime.now(timezone.utc)).isoformat(timespec="seconds"),
         "target_commit": commit,
         "run": {"set": qset, "condition": condition, "repeat": repeat, "name": run_name(qset, condition, repeat)},
@@ -107,7 +113,7 @@ def build_report(marked, qset, condition, repeat, commit=None, now=None) -> dict
         "overall": overall,
         "modules": modules,
         "directories": directory_nodes(scored),
-        "red_modules": [m["module"] for m in modules if m["red"]],
+        "red_modules": [m["module"] for m in sorted(modules, key=severity) if m["red"]],   # worst first
         "worst_entities": entities[:TOP_ENTITIES],
     }
 
@@ -117,6 +123,7 @@ def history_line(report) -> dict:
     o = report["overall"]
     return {
         "generated_at": report["generated_at"],
+        "simulated": report["simulated"],
         "target_commit": report["target_commit"],
         "run": report["run"]["name"],
         "set": report["run"]["set"], "condition": report["run"]["condition"], "repeat": report["run"]["repeat"],
