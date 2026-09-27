@@ -109,3 +109,5 @@ N_BOOT = 2000
 TEST SHA-256: 4bd2c649d54670e66ed798e7442f69ec472c129bb8796dbe204000c0357026ed
 2026-09-27 00:00 UTC - Added .gitattributes forcing LF line endings after Windows Git converted exams/test.jsonl to CRLF. Content unchanged, SHA-256 re-verified.
 2026-09-27 01:14 UTC - When more than MAX_CARTO_MODULES modules are red, the Cartographer targets the worst first, ranked by confidently-wrong rate then by the Wilson lower bound. The rule did not specify an order. Found with simulated data only, no Bob results seen.
+2026-09-27 13:00 UTC - Cartographer targets are the modules where Bob made at least one mistake on TRAIN, worst first, at most MAX_CARTO_MODULES, instead of red modules. On TRAIN the only red module (tinydb, 3 of 3 correct) was red purely because of its tiny sample. Decided after TRAIN, before any TEST answer existed.
+2026-09-27 13:43 UTC - Results reported. C0 was not run on TEST because of time, so secondary test 1 (C1 vs C0) was not computed. Holm correction applied across the two secondary tests that were run.

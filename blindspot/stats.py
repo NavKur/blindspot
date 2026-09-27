@@ -1,8 +1,8 @@
 """Statistics for Blindspot.
 
-Step 10 (this file so far): Wilson intervals, Brier score, reliability bins, ECE,
-confidently-wrong rate, and the cluster bootstrap (sensitivity check).
-Step 12 adds McNemar and the paired bootstrap.
+Step 10: Wilson intervals, Brier score, reliability bins, ECE, confidently-wrong rate,
+and the cluster bootstrap (sensitivity check).
+Step 13: exact McNemar, paired bootstrap and Holm correction (PREREGISTRATION.md section 5).
 
 Conventions used everywhere:
   p       : Bob's stated probability that ITS OWN ANSWER is correct, in [0, 1].
@@ -12,7 +12,7 @@ Unanswered or excluded questions must be removed by the caller before calling th
 import math
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import binom, norm
 
 from blindspot.config import CONFIDENT_P
 
@@ -188,3 +188,51 @@ def cluster_bootstrap_mean(values, clusters, n_boot=2000, seed=7, level=0.95) ->
         "n_clusters": int(k),
         "few_clusters_warning": k < 20,
     }
+
+
+def mcnemar_exact(a_correct, b_correct) -> dict:
+    """Exact two-sided McNemar test on paired 0/1 outcomes (same questions, two conditions).
+
+    Only discordant pairs carry information: b = right under A only, c = right under B only.
+    Under the null each discordant pair is a fair coin, so p = 2 * P(Binomial(b + c, 0.5) <= min(b, c)).
+    Exact rather than chi-square because b + c may be small.
+    """
+    a = np.asarray(a_correct, dtype=int)
+    b_ = np.asarray(b_correct, dtype=int)
+    if a.shape != b_.shape or a.ndim != 1 or a.size == 0:
+        raise ValueError("both runs must be 1-D, non-empty and the same length (same questions, same order)")
+    only_a = int(((a == 1) & (b_ == 0)).sum())
+    only_b = int(((a == 0) & (b_ == 1)).sum())
+    n_disc = only_a + only_b
+    p = 1.0 if n_disc == 0 else float(min(1.0, 2 * binom.cdf(min(only_a, only_b), n_disc, 0.5)))
+    return {"n": int(a.size), "only_a": only_a, "only_b": only_b, "discordant": n_disc,
+            "acc_a": float(a.mean()), "acc_b": float(b_.mean()),
+            "diff_b_minus_a": float(b_.mean() - a.mean()), "p_value": p}
+
+
+def paired_bootstrap_diff(a_values, b_values, n_boot=2000, seed=7, level=0.95) -> dict:
+    """Percentile interval for mean(b - a), resampling questions (pairs stay together)."""
+    a = np.asarray(a_values, dtype=float)
+    b_ = np.asarray(b_values, dtype=float)
+    if a.shape != b_.shape or a.ndim != 1 or a.size == 0:
+        raise ValueError("both runs must be 1-D, non-empty and the same length")
+    d = b_ - a
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, d.size, size=(n_boot, d.size))
+    boot = d[idx].mean(axis=1)
+    alpha = 1 - level
+    lo, hi = np.quantile(boot, [alpha / 2, 1 - alpha / 2])
+    # two-sided bootstrap p: how often the resampled mean falls on the other side of 0
+    p = float(min(1.0, 2 * min((boot <= 0).mean(), (boot >= 0).mean())))
+    return {"mean_diff": float(d.mean()), "ci_low": float(lo), "ci_high": float(hi), "p_value": p, "n": int(d.size)}
+
+
+def holm(p_values: dict) -> dict:
+    """Holm step-down adjusted p-values. Input and output: {name: p}."""
+    items = sorted(p_values.items(), key=lambda kv: kv[1])
+    m = len(items)
+    out, running = {}, 0.0
+    for i, (name, p) in enumerate(items):
+        running = max(running, min(1.0, (m - i) * p))
+        out[name] = running
+    return out

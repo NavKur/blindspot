@@ -9,13 +9,26 @@ def test_config_values():
     assert config.CONDITIONS == ("C0", "C1", "C2")
 
 
-@pytest.mark.parametrize("argv", [
-    ["exam", "--condition", "C1", "--set", "pilot"],
-    ["mark", "--condition", "C1", "--set", "pilot"],
-    ["cartographer"],
-])
-def test_every_subcommand_parses(argv):
-    assert cli.main(argv) == 0
+def test_cartographer_and_analyze_parse():
+    p = cli.build_parser()
+    assert p.parse_args(["cartographer", "--dry-run"]).dry_run
+    assert p.parse_args(["analyze"]).command == "analyze"
+
+
+def test_exam_mark_publish_parse():
+    p = cli.build_parser()
+    a = p.parse_args(["exam", "--condition", "C1", "--set", "pilot", "--repeat", "2"])
+    assert (a.qset, a.condition, a.repeat, a.allow_ide) == ("pilot", "C1", 2, False)
+    a = p.parse_args(["mark", "--condition", "C2", "--set", "train"])
+    assert a.repeat == 1
+    a = p.parse_args(["publish", "--sim"])
+    assert a.sim and a.run is None and a.dest is None
+
+
+def test_exam_refuses_without_api_key(monkeypatch):
+    monkeypatch.delenv("BOB_API_KEY", raising=False)
+    monkeypatch.delenv("BOB_BIN", raising=False)
+    assert cli.main(["exam", "--condition", "C1", "--set", "pilot"]) == 2
 
 
 def test_report_parses_and_needs_a_run():

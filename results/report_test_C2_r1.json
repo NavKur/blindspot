@@ -1,0 +1,398 @@
+{
+  "schema_version": 1,
+  "simulated": false,
+  "generated_at": "2026-09-27T12:33:05+00:00",
+  "target_commit": "1e39ad3a2d9eca57efd9019fd089b5a04676da95",
+  "run": {
+    "set": "test",
+    "condition": "C2",
+    "repeat": 1,
+    "name": "test_C2_r1"
+  },
+  "counts": {
+    "answers": 200,
+    "scored": 200,
+    "excluded": 0
+  },
+  "thresholds": {
+    "confident_p": 0.8,
+    "red_acc_lower": 0.6,
+    "red_cw_rate": 0.2
+  },
+  "overall": {
+    "k": 190,
+    "n": 200,
+    "accuracy": 0.95,
+    "ci_low": 0.9104218518612239,
+    "ci_high": 0.972617354399236,
+    "brier": 0.040801500000000004,
+    "ece": 0.028250000000000094,
+    "cw_rate": 0.03,
+    "cw_count": 6,
+    "mean_p": 0.93595,
+    "overconfidence": -0.014050000000000007,
+    "reliability": [
+      {
+        "bin": 0,
+        "lo": 0.0,
+        "hi": 0.2,
+        "n": 0,
+        "mean_p": null,
+        "accuracy": null,
+        "ci_low": null,
+        "ci_high": null
+      },
+      {
+        "bin": 1,
+        "lo": 0.2,
+        "hi": 0.4,
+        "n": 0,
+        "mean_p": null,
+        "accuracy": null,
+        "ci_low": null,
+        "ci_high": null
+      },
+      {
+        "bin": 2,
+        "lo": 0.4,
+        "hi": 0.6,
+        "n": 0,
+        "mean_p": null,
+        "accuracy": null,
+        "ci_low": null,
+        "ci_high": null
+      },
+      {
+        "bin": 3,
+        "lo": 0.6,
+        "hi": 0.8,
+        "n": 9,
+        "mean_p": 0.7133333333333334,
+        "accuracy": 0.5555555555555556,
+        "ci_low": 0.26665129349549305,
+        "ci_high": 0.8112214789023355
+      },
+      {
+        "bin": 4,
+        "lo": 0.8,
+        "hi": 1.0,
+        "n": 191,
+        "mean_p": 0.9464397905759161,
+        "accuracy": 0.9685863874345549,
+        "ci_low": 0.9331707287133241,
+        "ci_high": 0.9855249179084121
+      }
+    ]
+  },
+  "modules": [
+    {
+      "module": "tinydb",
+      "path": "tinydb/__init__.py",
+      "k": 5,
+      "n": 6,
+      "accuracy": 0.8333333333333334,
+      "ci_low": 0.43649717781352987,
+      "ci_high": 0.9699466302516935,
+      "brier": 0.155,
+      "ece": 0.11666666666666656,
+      "cw_rate": 0.16666666666666666,
+      "cw_count": 1,
+      "mean_p": 0.8666666666666666,
+      "overconfidence": 0.033333333333333215,
+      "low_n": true,
+      "heat": 0.5635028221864702,
+      "red_reasons": [
+        "accuracy lower bound 0.44 < 0.6"
+      ],
+      "red": true,
+      "by_family": {
+        "exists": 1.0,
+        "imports": 0.6666666666666666
+      }
+    },
+    {
+      "module": "tinydb.database",
+      "path": "tinydb/database.py",
+      "k": 29,
+      "n": 30,
+      "accuracy": 0.9666666666666667,
+      "ci_low": 0.8332960900859082,
+      "ci_high": 0.9940914096183874,
+      "brier": 0.033170000000000005,
+      "ece": 0.0003333333333336297,
+      "cw_rate": 0.03333333333333333,
+      "cw_count": 1,
+      "mean_p": 0.966333333333333,
+      "overconfidence": -0.0003333333333336297,
+      "low_n": false,
+      "heat": 0.16670390991409179,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 0.9166666666666666,
+        "exists": 1.0,
+        "imports": 1.0,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.middlewares",
+      "path": "tinydb/middlewares.py",
+      "k": 23,
+      "n": 23,
+      "accuracy": 1.0,
+      "ci_low": 0.8568833815495731,
+      "ci_high": 1.0,
+      "brier": 0.024991304347826083,
+      "ece": 0.14173913043478265,
+      "cw_rate": 0.0,
+      "cw_count": 0,
+      "mean_p": 0.8582608695652173,
+      "overconfidence": -0.1417391304347827,
+      "low_n": false,
+      "heat": 0.1431166184504269,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 1.0,
+        "exists": 1.0,
+        "imports": 1.0,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.operations",
+      "path": "tinydb/operations.py",
+      "k": 11,
+      "n": 13,
+      "accuracy": 0.8461538461538461,
+      "ci_low": 0.5776536898051745,
+      "ci_high": 0.9567418216419186,
+      "brier": 0.10167692307692308,
+      "ece": 0.14615384615384613,
+      "cw_rate": 0.0,
+      "cw_count": 0,
+      "mean_p": 0.823076923076923,
+      "overconfidence": -0.023076923076923106,
+      "low_n": false,
+      "heat": 0.4223463101948255,
+      "red_reasons": [
+        "accuracy lower bound 0.58 < 0.6"
+      ],
+      "red": true,
+      "by_family": {
+        "calls": 1.0,
+        "exists": 0.6666666666666666,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.queries",
+      "path": "tinydb/queries.py",
+      "k": 33,
+      "n": 35,
+      "accuracy": 0.9428571428571428,
+      "ci_low": 0.8139294257983507,
+      "ci_high": 0.9841868381428913,
+      "brier": 0.03769999999999999,
+      "ece": 0.03685714285714306,
+      "cw_rate": 0.02857142857142857,
+      "cw_count": 1,
+      "mean_p": 0.9488571428571428,
+      "overconfidence": 0.006000000000000005,
+      "low_n": false,
+      "heat": 0.1860705742016493,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 0.8571428571428571,
+        "defaults": 1.0,
+        "exists": 1.0,
+        "imports": 1.0,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.storages",
+      "path": "tinydb/storages.py",
+      "k": 27,
+      "n": 27,
+      "accuracy": 1.0,
+      "ci_low": 0.8754449702581328,
+      "ci_high": 1.0,
+      "brier": 0.0015037037037037054,
+      "ece": 0.02666666666666684,
+      "cw_rate": 0.0,
+      "cw_count": 0,
+      "mean_p": 0.9733333333333332,
+      "overconfidence": -0.02666666666666684,
+      "low_n": false,
+      "heat": 0.12455502974186716,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 1.0,
+        "defaults": 1.0,
+        "exists": 1.0,
+        "imports": 1.0,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.table",
+      "path": "tinydb/table.py",
+      "k": 37,
+      "n": 40,
+      "accuracy": 0.925,
+      "ci_low": 0.8013576647568946,
+      "ci_high": 0.9741639742254119,
+      "brier": 0.0534,
+      "ece": 0.02300000000000009,
+      "cw_rate": 0.05,
+      "cw_count": 2,
+      "mean_p": 0.9480000000000001,
+      "overconfidence": 0.02300000000000002,
+      "low_n": false,
+      "heat": 0.19864233524310537,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 0.8461538461538461,
+        "defaults": 1.0,
+        "exists": 1.0,
+        "imports": 0.6666666666666666,
+        "raises": 1.0
+      }
+    },
+    {
+      "module": "tinydb.utils",
+      "path": "tinydb/utils.py",
+      "k": 25,
+      "n": 26,
+      "accuracy": 0.9615384615384616,
+      "ci_low": 0.8110722109696524,
+      "ci_high": 0.9931780150064564,
+      "brier": 0.03240384615384616,
+      "ece": 0.005769230769230638,
+      "cw_rate": 0.038461538461538464,
+      "cw_count": 1,
+      "mean_p": 0.9673076923076922,
+      "overconfidence": 0.005769230769230638,
+      "low_n": false,
+      "heat": 0.18892778903034757,
+      "red_reasons": [],
+      "red": false,
+      "by_family": {
+        "calls": 0.8333333333333334,
+        "defaults": 1.0,
+        "exists": 1.0,
+        "imports": 1.0,
+        "raises": 1.0
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": "tinydb",
+      "k": 190,
+      "n": 200,
+      "accuracy": 0.95,
+      "ci_low": 0.9104218518612239,
+      "ci_high": 0.972617354399236,
+      "brier": 0.040801500000000004,
+      "ece": 0.028250000000000094,
+      "cw_rate": 0.03,
+      "cw_count": 6,
+      "mean_p": 0.93595,
+      "overconfidence": -0.014050000000000007,
+      "low_n": false,
+      "heat": 0.08957814813877607
+    }
+  ],
+  "red_modules": [
+    "tinydb",
+    "tinydb.operations"
+  ],
+  "worst_entities": [
+    {
+      "entity": "tinydb.queries:Query.one_of",
+      "module": "tinydb.queries",
+      "path": "tinydb/queries.py",
+      "n": 1,
+      "accuracy": 0.0,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb.table:Table.__init__",
+      "module": "tinydb.table",
+      "path": "tinydb/table.py",
+      "n": 1,
+      "accuracy": 0.0,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb.database:TinyDB.drop_tables",
+      "module": "tinydb.database",
+      "path": "tinydb/database.py",
+      "n": 2,
+      "accuracy": 0.5,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb.utils:LRUCache.set",
+      "module": "tinydb.utils",
+      "path": "tinydb/utils.py",
+      "n": 2,
+      "accuracy": 0.5,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb.table:<module>",
+      "module": "tinydb.table",
+      "path": "tinydb/table.py",
+      "n": 4,
+      "accuracy": 0.75,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb:<module>",
+      "module": "tinydb",
+      "path": "tinydb/__init__.py",
+      "n": 6,
+      "accuracy": 0.8333333333333334,
+      "cw_count": 1
+    },
+    {
+      "entity": "tinydb.operations:subtract",
+      "module": "tinydb.operations",
+      "path": "tinydb/operations.py",
+      "n": 1,
+      "accuracy": 0.0,
+      "cw_count": 0
+    },
+    {
+      "entity": "tinydb.queries:Query.__eq__",
+      "module": "tinydb.queries",
+      "path": "tinydb/queries.py",
+      "n": 1,
+      "accuracy": 0.0,
+      "cw_count": 0
+    },
+    {
+      "entity": "tinydb.table:Table._get_next_id",
+      "module": "tinydb.table",
+      "path": "tinydb/table.py",
+      "n": 1,
+      "accuracy": 0.0,
+      "cw_count": 0
+    },
+    {
+      "entity": "tinydb.operations:decrement",
+      "module": "tinydb.operations",
+      "path": "tinydb/operations.py",
+      "n": 2,
+      "accuracy": 0.5,
+      "cw_count": 0
+    }
+  ]
+}
