@@ -6,5 +6,14 @@ __pycache__/
 .DS_Store
 .env
 .env.*
+# demo repo is cloned on demand by `python cli.py target`, not committed
+target/*
+!target/.gitkeep
+# extension build output
+plugin/node_modules/
+plugin/out/
+plugin/dist/
+*.vsix
+# tinydb checkout used by the plugin's demo workspace and a stray zip
 demo-tinydb/
 extension.zip

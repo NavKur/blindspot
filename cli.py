@@ -5,12 +5,17 @@ import sys
 from blindspot import config
 
 STEPS = {
+    "target": "step 2",
     "gonogo": "step 3",
+    "scan": "step 5",
+    "split": "step 8",
+    "pilot": "step 9",
     "generate": "steps 5 to 9",
     "exam": "steps 15 to 19",
     "mark": "step 16",
-    "report": "steps 10 to 12",
+    "report": "step 11",
     "cartographer": "steps 20 to 22",
+    "simulate": "step 12",
 }
 
 
@@ -18,11 +23,16 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="blindspot", description="Find out where Bob doesn't know your code.")
     sub = p.add_subparsers(dest="command", required=True)
 
+    t = sub.add_parser("target", help="fetch the demo repo (tinydb) at the pinned commit")
+    t.add_argument("--force", action="store_true", help="delete and re-clone")
+    t.add_argument("--check", action="store_true", help="only verify commit and cleanliness")
+
+    sub.add_parser("scan", help="index the target repo's modules, functions, imports, defaults, raises, calls")
     sub.add_parser("gonogo", help="one test batch through bob run; records cost and capabilities")
 
-    g = sub.add_parser("generate", help="generate the exam from the target repo")
-    g.add_argument("--repo", default=str(config.TARGET_DIR))
-    g.add_argument("--seed", type=int, default=config.SEED)
+    sub.add_parser("generate", help="build question candidates from the scanned index")
+    sub.add_parser("split", help="draw the balanced exam and split it into TRAIN and TEST")
+    sub.add_parser("pilot", help="build the 30-question pilot set (never uses TEST)")
 
     e = sub.add_parser("exam", help="have Bob sit the exam under one condition")
     e.add_argument("--condition", choices=config.CONDITIONS, required=True)
@@ -32,13 +42,39 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--condition", choices=config.CONDITIONS, required=True)
     m.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
 
-    sub.add_parser("report", help="compute statistics for all available results")
+    r = sub.add_parser("report", help="per-module statistics and the dashboard report for one marked run")
+    r.add_argument("--set", dest="qset", choices=("pilot", "train", "test"), required=True)
+    r.add_argument("--condition", choices=config.CONDITIONS, required=True)
+    r.add_argument("--repeat", type=int, default=1)
+    s = sub.add_parser("simulate", help="fake examinee (no Bob) writing SIMULATED reports to results/sim/ for the plugin")
+    s.add_argument("--set", dest="qset", choices=("pilot", "train"), default="train")
     sub.add_parser("cartographer", help="write targeted context for red modules (condition C2)")
     return p
 
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "target":
+        from blindspot import target
+        return target.main(force=args.force, check_only=args.check)
+    if args.command == "simulate":
+        from blindspot import simulate
+        return simulate.main(args.qset)
+    if args.command == "report":
+        from blindspot import report
+        return report.main(args.qset, args.condition, args.repeat)
+    if args.command == "pilot":
+        from blindspot import pilot
+        return pilot.main()
+    if args.command == "split":
+        from blindspot import split
+        return split.main()
+    if args.command == "generate":
+        from blindspot import generate
+        return generate.main()
+    if args.command == "scan":
+        from blindspot import scan
+        return scan.main()
     if args.command == "gonogo":
         from blindspot import gonogo
         return gonogo.main()

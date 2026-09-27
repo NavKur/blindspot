@@ -24,3 +24,5 @@ __pycache__/
 .git/
 *.zip
 bob_sessions/
+plugin/
+node_modules/

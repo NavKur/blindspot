@@ -1,0 +1,19 @@
+{
+  "repo": "https://github.com/msiemens/tinydb.git",
+  "ref": "v4.9.0",
+  "commit": "1e39ad3a2d9eca57efd9019fd089b5a04676da95",
+  "package": "tinydb",
+  "python_files": [
+    "tinydb/__init__.py",
+    "tinydb/database.py",
+    "tinydb/middlewares.py",
+    "tinydb/mypy_plugin.py",
+    "tinydb/operations.py",
+    "tinydb/queries.py",
+    "tinydb/storages.py",
+    "tinydb/table.py",
+    "tinydb/utils.py",
+    "tinydb/version.py"
+  ],
+  "fetched_at": "2026-09-26T22:26:33+00:00"
+}

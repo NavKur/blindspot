@@ -1,0 +1,50 @@
+{
+  "n_train": 120,
+  "n_test": 200,
+  "family_train": {
+    "calls": 42,
+    "defaults": 8,
+    "exists": 51,
+    "imports": 8,
+    "raises": 11
+  },
+  "family_test": {
+    "calls": 68,
+    "defaults": 13,
+    "exists": 86,
+    "imports": 14,
+    "raises": 19
+  },
+  "truth_train": {
+    "False": 56,
+    "True": 56
+  },
+  "truth_test": {
+    "False": 93,
+    "True": 94
+  },
+  "module_train": {
+    "tinydb": 3,
+    "tinydb.database": 19,
+    "tinydb.middlewares": 13,
+    "tinydb.operations": 7,
+    "tinydb.queries": 20,
+    "tinydb.storages": 16,
+    "tinydb.table": 26,
+    "tinydb.utils": 16
+  },
+  "module_test": {
+    "tinydb": 6,
+    "tinydb.database": 30,
+    "tinydb.middlewares": 23,
+    "tinydb.operations": 13,
+    "tinydb.queries": 35,
+    "tinydb.storages": 27,
+    "tinydb.table": 40,
+    "tinydb.utils": 26
+  },
+  "entities": 121,
+  "seed": 7,
+  "sha256_train": "272f0ddda563ffd8067946591bf615f753b3232252d81052cb557a2ed8d19ce1",
+  "sha256_test": "4bd2c649d54670e66ed798e7442f69ec472c129bb8796dbe204000c0357026ed"
+}
