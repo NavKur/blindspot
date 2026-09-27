@@ -17,11 +17,12 @@ export interface PanelState {
   onboarding?: unknown;
   run?: unknown;
   exam?: unknown;
+  heatmap?: unknown;
   activeTab: TabId;
 }
 
-export type TabId = "exam" | "onboarding" | "review" | "testing" | "release" | "modernize";
-export const TAB_IDS: TabId[] = ["exam", "onboarding", "review", "testing", "release", "modernize"];
+export type TabId = "exam" | "heatmap" | "onboarding" | "review" | "testing" | "release" | "modernize";
+export const TAB_IDS: TabId[] = ["exam", "heatmap", "onboarding", "review", "testing", "release", "modernize"];
 
 export interface HeaderState {
   repoName: string;

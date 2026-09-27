@@ -133,6 +133,30 @@ select { font-family: inherit; font-size: 12px; background: var(--vscode-dropdow
 .bins .bin { flex: 1; text-align: center; font-size: 10px; color: var(--vscode-descriptionForeground); display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
 .bins .bin i { display: block; background: var(--blue); min-height: 1px; }
 .bins .bin.empty i { background: transparent; border-top: 1px dashed var(--vscode-descriptionForeground); }
+.hm { overflow-x: auto; }
+.hm table { border-collapse: separate; border-spacing: 3px; }
+.hm td, .hm th { padding: 0; font-size: 11px; color: var(--vscode-descriptionForeground); font-weight: normal; white-space: nowrap; }
+.hm th.col { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 2px 0; }
+.hm td.lbl { padding-right: 8px; text-align: right; }
+.hm td.lbl a { color: var(--vscode-foreground); text-decoration: none; cursor: pointer; }
+.hm td.lbl a:hover { text-decoration: underline; }
+.cell { display: inline-block; width: 13px; height: 13px; border-radius: 2px; vertical-align: middle; cursor: pointer; }
+.cell.none { background: var(--vscode-panel-border, #3c3c3c); opacity: 0.35; cursor: default; }
+.cell.b0 { background: #24a148; } .cell.b1 { background: #8fd14f; } .cell.b2 { background: #f1c21b; } .cell.b3 { background: #ff832b; } .cell.b4 { background: #da1e28; }
+.cell.red { box-shadow: 0 0 0 2px var(--red); }
+.cell:hover { outline: 2px solid var(--vscode-focusBorder); }
+.cells { display: flex; flex-wrap: wrap; gap: 3px; }
+.hmrow { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.hmrow .lbl { width: 120px; flex: none; text-align: right; font-size: 11px; color: var(--vscode-descriptionForeground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hmrow .lbl a { color: var(--vscode-foreground); text-decoration: none; cursor: pointer; }
+.hmrow .lbl a:hover { text-decoration: underline; }
+.hmrow .lbl small { display: block; }
+.legend2 { display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--vscode-descriptionForeground); margin: 4px 0 10px; flex-wrap: wrap; }
+.legend2 .cell { cursor: default; }
+.counts { display: flex; gap: 14px; margin: 6px 0; }
+.roles { display: flex; gap: 4px; margin: 6px 0; flex-wrap: wrap; }
+.roles button { background: none; border: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #6f6f6f)); color: var(--vscode-descriptionForeground); padding: 2px 8px; font-size: 12px; }
+.roles button.active { color: var(--vscode-foreground); border-color: var(--vscode-focusBorder, var(--blue)); }
 pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.15)); padding: 8px; font-size: 11px; white-space: pre-wrap; max-height: 200px; overflow: auto; margin: 6px 0; }
 .files .kv span:last-child { font-family: var(--vscode-editor-font-family), monospace; font-size: 12px; }
 .files .kv a { cursor: pointer; text-decoration: none; color: var(--vscode-foreground); }
@@ -158,7 +182,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
 (function () {
   const vscode = acquireVsCodeApi();
   const TABS = [
-    ["exam", "Exam"], ["onboarding", "Onboarding"], ["review", "Review"], ["testing", "Testing"], ["release", "Release"], ["modernize", "Modernize"],
+    ["exam", "Exam"], ["heatmap", "Heatmap"], ["onboarding", "Onboarding"], ["review", "Review"], ["testing", "Testing"], ["release", "Release"], ["modernize", "Modernize"],
   ];
   let state = null;
   let draft = "";
@@ -205,6 +229,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       case "modernize": main.innerHTML = renderFindings(state.tabs.modernize, "No modernization findings in the context file."); break;
       case "release": main.innerHTML = renderRelease(state.release); break;
       case "exam": main.innerHTML = renderExam(state.exam); break;
+      case "heatmap": main.innerHTML = renderHeatmap(state.heatmap); break;
       case "onboarding": main.innerHTML = renderOnboarding(state.onboarding); break;
     }
     if (state.activeTab === "onboarding") {
@@ -271,6 +296,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       }
     }
     html += "<h3>Ask about this codebase</h3>";
+    if (o.roles) html += '<div class="roles">' + o.roles.map((r) => '<button data-role="' + esc(r.id) + '"' + (r.id === o.role ? ' class="active"' : "") + ">" + esc(r.label) + "</button>").join("") + "</div>";
     html += '<div class="chat">';
     for (const m of o.messages) {
       html += '<div class="msg q">' + esc(m.question) + "</div>";
@@ -343,6 +369,33 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
     html += '<div class="muted" style="font-size:11px;margin-top:10px">Reading ' + esc(x.resultsDir) + "</div>";
     return html;
   }
+  function renderHeatmap(h) {
+    if (!h || (h.runs.rows.length === 0 && h.functions.rows.length === 0)) {
+      return '<div class="empty">No data for a heatmap yet. It fills from results/history.jsonl (files over exam runs) and from .bob/context/readiness.json (functions by file).</div>';
+    }
+    const legend = '<div class="legend2">' + h.legend.map((l, i) => '<span><i class="cell b' + i + '"></i> ' + esc(l) + "</span>").join("") + '<span><i class="cell b2 red"></i> red outline: sure but wrong</span><span><i class="cell none"></i> not examined</span></div>';
+    let html = "";
+    if (h.runs.rows.length) {
+      html += "<h3>Files over exam runs</h3>" + legend + '<div class="muted" style="font-size:11px;margin-bottom:6px">Each column is one exam run, oldest left. Each square is how well Bob knew that file in that run. Hover for numbers, click a file name to open it.</div>';
+      html += '<div class="hm"><table><tr><th></th>' + h.runs.columns.map((c) => '<th class="col" title="' + esc(c.run + ", " + c.when) + '">' + esc(c.condition) + "</th>").join("") + "</tr>";
+      for (const r of h.runs.rows) {
+        html += '<tr><td class="lbl"><a data-target="' + esc(r.path) + '" title="' + esc(r.path) + '">' + esc(r.label) + "</a></td>" +
+          r.cells.map((c) => c ? '<td><i class="cell b' + c.bucket + (c.red ? " red" : "") + '" data-target="' + esc(r.path) + '" title="' + esc(c.tooltip) + '"></i></td>' : '<td><i class="cell none" title="not examined in this run"></i></td>').join("") + "</tr>";
+      }
+      html += "</table></div>";
+    }
+    if (h.functions.rows.length) {
+      const f = h.functions;
+      html += "<h3>Functions by file</h3>" + (h.runs.rows.length ? "" : legend) +
+        '<div class="counts"><div class="stat"><b>' + f.total + '</b><span>functions studied</span></div><div class="stat"><b>' + f.wrong + '</b><span>sure but wrong</span></div><div class="stat"><b>' + f.part + '</b><span>partly known</span></div><div class="stat"><b>' + f.ok + "</b><span>known</span></div></div>" +
+        '<div class="muted" style="font-size:11px;margin-bottom:6px">One square per function, in file order. Click a square to jump to the function. Worst files first.</div>';
+      for (const r of f.rows) {
+        html += '<div class="hmrow"><div class="lbl"><a data-open="' + esc(r.path) + '" data-line="1" title="' + esc(r.path) + '">' + esc(r.label) + "</a>" + (r.fileReadiness ? "<small>" + esc(r.fileReadiness) + " ready</small>" : "") + '</div><div class="cells">' +
+          r.cells.map((c) => '<i class="cell b' + c.bucket + (c.red ? " red" : "") + '" data-open="' + esc(r.path) + '" data-line="' + c.line + '" title="' + esc(c.tooltip) + '"></i>').join("") + "</div></div>";
+      }
+    }
+    return html;
+  }
   function stat(value, label) { return '<div class="stat"><b>' + esc(value) + "</b><span>" + esc(label) + "</span></div>"; }
   function chart(title, lines, x) {
     const w = x.history.width, h = x.history.height;
@@ -382,7 +435,8 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
     if (state.run && state.activeTab !== "onboarding" && state.activeTab !== "release") {
       foot.style.display = "";
       if (state.run.canDecide) {
-        foot.innerHTML = '<div class="btns"><button class="btn" id="keep">Keep changes</button><button class="btn secondary" id="discard">Discard</button></div>';
+        foot.innerHTML = (state.run.files.length ? '<button class="btn secondary" id="review-all" style="margin-bottom:8px">Review all changes</button>' : "") +
+          '<div class="btns"><button class="btn" id="keep">Keep changes</button><button class="btn secondary" id="discard">Discard</button></div>';
       } else if (state.run.error) {
         foot.innerHTML = '<button class="btn secondary" id="dismiss">Back to findings</button>';
       } else {
@@ -390,7 +444,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       }
       return;
     }
-    if (state.activeTab === "onboarding") { foot.style.display = "none"; return; }
+    if (state.activeTab === "onboarding" || state.activeTab === "heatmap") { foot.style.display = "none"; return; }
     foot.style.display = "";
     if (state.activeTab === "exam") {
       foot.innerHTML = '<div class="btns"><button class="btn" id="publish"' + (!state.exam || (state.exam.publish && state.exam.publish.running) ? " disabled" : "") + ' title="Runs the publish command and shows its output. Never publish while an exam is running.">Publish context</button>' +
@@ -409,8 +463,9 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
 
   // One delegated click handler: every clickable element carries a data attribute or an id.
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-tab],[data-open],[data-diff],[data-ask],[data-target],#send,#keep,#discard,#cancel,#dismiss,#run-tests,#copy-notes,#ask-btn,#publish,#reload-report,#cmp-go");
+    const t = e.target.closest("[data-tab],[data-open],[data-diff],[data-ask],[data-target],[data-role],#send,#keep,#discard,#cancel,#dismiss,#run-tests,#copy-notes,#ask-btn,#publish,#reload-report,#cmp-go,#review-all");
     if (!t) return;
+    if (t.dataset.role) { post({ type: "setRole", role: t.dataset.role }); return; }
     if (t.dataset.tab) { post({ type: "setTab", tab: t.dataset.tab }); return; }
     if (t.dataset.target) { post({ type: "openTargetFile", file: t.dataset.target }); return; }
     if (t.dataset.open) { post({ type: "openFile", file: t.dataset.open, line: Number(t.dataset.line || 1) }); return; }
@@ -428,6 +483,7 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
       case "publish": post({ type: "publish" }); break;
       case "reload-report": post({ type: "reloadReport" }); break;
       case "cmp-go": post({ type: "compareRuns", a: $("cmp-a").value, b: $("cmp-b").value }); break;
+      case "review-all": post({ type: "openAllDiffs" }); break;
     }
   });
   document.addEventListener("change", (e) => {

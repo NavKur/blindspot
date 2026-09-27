@@ -3,6 +3,7 @@ import * as path from "node:path";
 import * as vscode from "vscode";
 import { normalizePath, relativeTo } from "../contextIndex";
 import { getSettings, workspaceRoot } from "../settings";
+import { exists, resolveTargetRoot } from "../targetRoot";
 import { parseHistory, parseReport, type DirectoryEntry, type HistoryLine, type ModuleEntry, type Report } from "./reportContract";
 
 export interface ReportLoadInfo {
@@ -33,6 +34,9 @@ export class ReportStore implements vscode.Disposable {
   private modulesByPath = new Map<string, ModuleEntry>();
   private dirsByPath = new Map<string, DirectoryEntry>();
   private readonly emitter = new vscode.EventEmitter<Report | undefined>();
+  private readonly reloadEmitter = new vscode.EventEmitter<{ previous: Report | undefined; current: Report }>();
+  /** Fires after every successful load with the previous report, for "what changed" toasts. */
+  readonly onDidReload = this.reloadEmitter.event;
   private readonly disposables: vscode.Disposable[] = [];
   private watchers: vscode.FileSystemWatcher[] = [];
   private timer: NodeJS.Timeout | undefined;
@@ -41,7 +45,7 @@ export class ReportStore implements vscode.Disposable {
   readonly onDidChange = this.emitter.event;
 
   constructor(private readonly root: string | undefined = workspaceRoot()) {
-    this.disposables.push(this.emitter);
+    this.disposables.push(this.emitter, this.reloadEmitter);
     this.disposables.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration("bobReadiness.resultsPath") || e.affectsConfiguration("bobReadiness.targetRoot")) {
@@ -117,7 +121,8 @@ export class ReportStore implements vscode.Disposable {
         return false;
       }
     }
-    const targetRoot = await this.resolveTargetRoot(settings.targetRoot);
+    const previous = this.report;
+    const targetRoot = await resolveTargetRoot(this.root, settings.targetRoot);
     let text: string;
     try {
       text = await fs.readFile(path.join(resultsDir, "report_latest.json"), "utf8");
@@ -149,23 +154,8 @@ export class ReportStore implements vscode.Disposable {
     const runs = await listRuns(resultsDir);
     this.info = { resultsDir, usingSim, targetRoot, runs, historySkipped };
     this.emitter.fire(this.report);
+    this.reloadEmitter.fire({ previous, current: parsed.report });
     return true;
-  }
-
-  private async resolveTargetRoot(setting: string): Promise<string> {
-    const root = this.root!;
-    if (setting.trim()) return path.resolve(root, setting.trim());
-    try {
-      const lock = JSON.parse(await fs.readFile(path.join(root, "target.lock.json"), "utf8")) as { repo?: string };
-      const name = (lock.repo ?? "").split("/").pop()?.replace(/\.git$/, "");
-      if (name) {
-        const candidate = path.join(root, "target", name);
-        if (await exists(candidate)) return candidate;
-      }
-    } catch {
-      // no lock file: the workspace itself is the target
-    }
-    return root;
   }
 
   private clear(): void {
@@ -215,11 +205,3 @@ async function listRuns(resultsDir: string): Promise<string[]> {
   }
 }
 
-async function exists(p: string): Promise<boolean> {
-  try {
-    await fs.access(p);
-    return true;
-  } catch {
-    return false;
-  }
-}

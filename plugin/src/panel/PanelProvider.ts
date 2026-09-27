@@ -26,7 +26,9 @@ export type PanelMessage =
   | { type: "openTargetFile"; file: string }
   | { type: "compareRuns"; a: string; b: string }
   | { type: "publish" }
-  | { type: "reloadReport" };
+  | { type: "reloadReport" }
+  | { type: "openAllDiffs" }
+  | { type: "setRole"; role: string };
 
 /** Other features plug in here so the provider stays small. */
 export interface PanelExtras {

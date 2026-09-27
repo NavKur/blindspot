@@ -1,7 +1,10 @@
-import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as vscode from "vscode";
 import type { BobRunner } from "./bobRunner";
+import { budgetMessage, withinBudget } from "./budget";
+import { pullRequestBody, pullRequestTitle } from "./pullRequest";
+import { runProcess } from "./shell";
+import type { SessionCoins } from "./session";
 import type { Finding } from "./contract";
 import type { ContextStore } from "./contextStore";
 import { Git } from "./git";
@@ -51,6 +54,7 @@ export class Approval implements PanelExtras {
     private readonly runner: BobRunner,
     private readonly log: Log,
     private readonly onChange: () => void,
+    private readonly session?: SessionCoins,
   ) {}
 
   extraState(): { run?: RunView } {
@@ -79,6 +83,9 @@ export class Approval implements PanelExtras {
         return true;
       case "openDiff":
         await this.openDiff(msg.file);
+        return true;
+      case "openAllDiffs":
+        await this.openAllDiffs();
         return true;
       default:
         return false;
@@ -110,13 +117,19 @@ export class Approval implements PanelExtras {
     const branch = branchName(new Date());
     const files = new Set(findings.map((f) => f.file));
     const totals = queueTotals(findings);
+    const spent = this.session?.spent ?? 0;
+    if (!settings.useFakeBob && !withinBudget(spent, totals.coins, settings.sessionBudget)) {
+      void vscode.window.showWarningMessage(`Bob Readiness: over budget. ${budgetMessage(spent, totals.coins, settings.sessionBudget)}`);
+      this.log.line(`Refused: ${budgetMessage(spent, totals.coins, settings.sessionBudget)}`);
+      return;
+    }
     const detail = [
       `Bob will change ${findings.length} place${findings.length === 1 ? "" : "s"} in ${files.size} file${files.size === 1 ? "" : "s"}:`,
       ...findings.map((f) => `- ${findingSummaryLine(f)}`),
       "",
       `Work happens on a new branch ${branch}. Your current branch is not touched.`,
       "",
-      `Estimated cost: ${formatCoins(totals.coins)}.`,
+      `Estimated cost: ${formatCoins(totals.coins)}.${settings.sessionBudget > 0 ? ` Session so far ${spent.toFixed(1)} of a ${settings.sessionBudget.toFixed(1)} Bobcoin budget.` : ""}`,
       settings.useFakeBob ? "Fake Bob is on: no real Bobcoins are spent." : "",
     ]
       .filter((l) => l !== undefined)
@@ -155,12 +168,9 @@ export class Approval implements PanelExtras {
 
       let notes: string | undefined;
       if (findings.some((f) => f.bob_allowed === "with_notes")) {
-        try {
-          notes = await fs.readFile(path.join(root, ...ctx.notes_markdown_path.split("/")), "utf8");
-          this.log.line(`Bob: reading ${ctx.notes_markdown_path}`);
-        } catch {
-          this.log.line(`Warning: could not read ${ctx.notes_markdown_path}; sending without study notes`);
-        }
+        notes = await this.store.readNotes();
+        if (notes) this.log.line(`Bob: reading ${ctx.notes_markdown_path}`);
+        else this.log.line(`Warning: could not read ${ctx.notes_markdown_path}; sending without study notes`);
       }
       const index = this.store.getIndex()!;
       const prompt = buildBobPrompt(findings, index, notes);
@@ -197,6 +207,8 @@ export class Approval implements PanelExtras {
       this.run.canDecide = true;
       this.log.line("Waiting for your decision: Keep or Discard");
       this.onChange();
+      // Show the first change straight away so Keep is never a leap of faith.
+      if (settings.openDiffAfterRun && this.run.files.length > 0) await this.openDiff(this.run.files[0].path);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.log.line(`Error: ${message}`);
@@ -223,12 +235,63 @@ export class Approval implements PanelExtras {
         await git.commitAll(commitMessageFor(run.findings));
         this.log.line(`Committed on ${run.branch}: ${commitMessageFor(run.findings)}`);
       }
-      void vscode.window.showInformationMessage(`Kept Bob's changes on ${run.branch}. Review and merge them when ready.`);
+      const choice = await vscode.window.showInformationMessage(
+        `Kept Bob's changes on ${run.branch}.`,
+        run.files.length ? "Create pull request" : "OK",
+      );
+      if (choice === "Create pull request") await this.createPullRequest(run, git);
     } catch (err) {
       void vscode.window.showErrorMessage(`Bob Readiness: commit failed. ${err instanceof Error ? err.message : String(err)}`);
       return;
     }
     await this.finish();
+  }
+
+  /**
+   * Draft pull request from the run. Uses the GitHub CLI when it is installed and the branch has
+   * a remote; otherwise the title and body land on the clipboard and in an untitled document.
+   */
+  async createPullRequest(run: RunState, git: Git): Promise<"gh" | "clipboard"> {
+    const tests = run.tests && run.tests !== "running" ? { passed: run.tests.passed, summary: run.tests.summary } : undefined;
+    const title = pullRequestTitle(run.findings);
+    const body = pullRequestBody({
+      branch: run.branch,
+      base: run.base,
+      findings: run.findings,
+      files: run.files,
+      cost: run.cost,
+      tests,
+      bobSummary: run.summary,
+      fake: getSettings().useFakeBob,
+    });
+    this.log.line("Creating a draft pull request");
+    const result = await runProcess("gh", ["pr", "create", "--draft", "--base", run.base, "--head", run.branch, "--title", title, "--body", body], {
+      cwd: git.cwd,
+      timeoutMs: 60_000,
+      onLine: (line) => this.log.line(`gh: ${line}`),
+    });
+    if (result.code === 0) {
+      const url = result.stdout.trim().split("\n").pop() ?? "";
+      void vscode.window.showInformationMessage(`Draft pull request created. ${url}`);
+      return "gh";
+    }
+    this.log.line("GitHub CLI not available or no remote. Putting the pull request text on the clipboard instead.");
+    await vscode.env.clipboard.writeText(`${title}\n\n${body}`);
+    try {
+      const doc = await vscode.workspace.openTextDocument({ language: "markdown", content: `# ${title}\n\n${body}` });
+      await vscode.window.showTextDocument(doc, { preview: false });
+    } catch {
+      // headless or no editor available: the clipboard still has it
+    }
+    void vscode.window.showInformationMessage("Pull request title and description copied to the clipboard. Push the branch and paste them into your pull request.");
+    return "clipboard";
+  }
+
+  /** Open a diff for every changed file of the current run. */
+  private async openAllDiffs(): Promise<void> {
+    const run = this.run;
+    if (!run) return;
+    for (const f of run.files) await this.openDiff(f.path);
   }
 
   private async discard(): Promise<void> {

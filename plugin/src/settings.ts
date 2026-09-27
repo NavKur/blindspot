@@ -11,6 +11,8 @@ export interface Settings {
   resultsPath: string;
   targetRoot: string;
   publishCommand: string;
+  sessionBudget: number;
+  openDiffAfterRun: boolean;
 }
 
 export function getSettings(): Settings {
@@ -25,6 +27,8 @@ export function getSettings(): Settings {
     resultsPath: cfg.get<string>("resultsPath", "results"),
     targetRoot: cfg.get<string>("targetRoot", ""),
     publishCommand: cfg.get<string>("publishCommand", "python cli.py publish"),
+    sessionBudget: cfg.get<number>("sessionBudget", 5),
+    openDiffAfterRun: cfg.get<boolean>("openDiffAfterRun", true),
   };
 }
 

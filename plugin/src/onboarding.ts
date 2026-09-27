@@ -1,11 +1,9 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import * as vscode from "vscode";
 import type { BobRunner } from "./bobRunner";
 import type { StarterTask } from "./contract";
 import type { ContextStore } from "./contextStore";
 import { Git } from "./git";
-import { costLabel, lookupAnswer, setupLines, SUGGESTED_QUESTIONS, withAnswer, type AnswerCache } from "./onboardingLogic";
+import { costLabel, lookupAnswer, ROLE_LABELS, setupLines, SUGGESTED_BY_ROLE, withAnswer, type AnswerCache, type OnboardingRole } from "./onboardingLogic";
 import type { Log } from "./output";
 import type { PanelExtras, PanelMessage } from "./panel/PanelProvider";
 import { buildOnboardingPrompt } from "./prompt";
@@ -24,12 +22,15 @@ export interface OnboardingView {
   starterTasks: StarterTask[];
   messages: ChatMessage[];
   suggested: string[];
+  roles: { id: OnboardingRole; label: string }[];
+  role: OnboardingRole;
   busy: boolean;
 }
 
 /** Onboarding tab: setup, starter tasks and a chat answered by Bob, read-only, cached per question. */
 export class OnboardingFeature implements PanelExtras {
   private readonly messages: ChatMessage[] = [];
+  private role: OnboardingRole = "new";
   private busy = false;
   private cancel: vscode.CancellationTokenSource | undefined;
 
@@ -49,13 +50,22 @@ export class OnboardingFeature implements PanelExtras {
         setup: setupLines(ctx),
         starterTasks: ctx.starter_tasks,
         messages: this.messages,
-        suggested: SUGGESTED_QUESTIONS,
+        suggested: SUGGESTED_BY_ROLE[this.role],
+        roles: (Object.keys(ROLE_LABELS) as OnboardingRole[]).map((id) => ({ id, label: ROLE_LABELS[id] })),
+        role: this.role,
         busy: this.busy,
       },
     };
   }
 
   async handle(msg: PanelMessage): Promise<boolean> {
+    if (msg.type === "setRole") {
+      if (msg.role in ROLE_LABELS) {
+        this.role = msg.role as OnboardingRole;
+        this.onChange();
+      }
+      return true;
+    }
     if (msg.type !== "ask") return false;
     if (typeof msg.question === "string" && msg.question.trim()) await this.ask(msg.question.trim());
     return true;
@@ -87,12 +97,7 @@ export class OnboardingFeature implements PanelExtras {
     this.onChange();
 
     try {
-      let notes: string | undefined;
-      try {
-        notes = await fs.readFile(path.join(root, ...ctx.notes_markdown_path.split("/")), "utf8");
-      } catch {
-        notes = undefined;
-      }
+      const notes = await this.store.readNotes();
       const prompt = buildOnboardingPrompt(question, ctx, notes);
       this.log.line(`Onboarding question: ${question}`);
       const git = new Git(root);

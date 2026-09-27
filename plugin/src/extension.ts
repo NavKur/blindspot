@@ -1,5 +1,10 @@
 import * as vscode from "vscode";
+import { ActiveFileWarning } from "./activeFileWarning";
 import { Approval } from "./approval";
+import { registerCodeActions } from "./codeActions";
+import { copyFileContext, explainFile, queueFile } from "./fileCommands";
+import { HeatmapFeature } from "./heatmapFeature";
+import { watchUpdates } from "./updates";
 import { BobRunner } from "./bobRunner";
 import { registerCodeLens } from "./codelens";
 import { registerCommands } from "./commands";
@@ -35,7 +40,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     new Diagnostics(store, state),
     new StatusBar(store, state, session, reports),
     reports,
-    new ReportTreeDecorations(reports),
+    new ReportTreeDecorations(reports, store),
+    new ActiveFileWarning(store, reports),
+    registerCodeActions(store, queue),
     registerHover(store, state, queue),
     registerCodeLens(store, state, queue),
   );
@@ -51,11 +58,18 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const log = new Log();
   const runner = new BobRunner(context.extensionPath, log, session);
-  const approval = new Approval(store, queue, runner, log, () => {
-    panel.refresh();
-    // After Keep or Discard the git history changed, so the Release tab is stale.
-    if (!approval.busy) void release.recompute();
-  });
+  const approval = new Approval(
+    store,
+    queue,
+    runner,
+    log,
+    () => {
+      panel.refresh();
+      // After Keep or Discard the git history changed, so the Release tab is stale.
+      if (!approval.busy) void release.recompute();
+    },
+    session,
+  );
   const release = new ReleaseFeature(store, log, () => panel.currentTab === "release", () => panel.refresh());
   const onboarding = new OnboardingFeature(context.workspaceState, store, runner, log, () => panel.refresh());
   const exam = new ExamFeature(reports, log, () => panel.refresh());
@@ -63,8 +77,22 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   panel.addExtras(release);
   panel.addExtras(onboarding);
   panel.addExtras(exam);
+  panel.addExtras(new HeatmapFeature(store, reports));
   context.subscriptions.push(
     exam,
+    watchUpdates(store, reports, log),
+    vscode.commands.registerCommand("bobReadiness.openHeatmap", () => panel.reveal("heatmap")),
+    vscode.commands.registerCommand("bobReadiness.copyFileContext", (arg?: unknown) => copyFileContext(store, reports, arg)),
+    vscode.commands.registerCommand("bobReadiness.queueFile", (arg?: unknown) => queueFile(store, queue, arg)),
+    vscode.commands.registerCommand("bobReadiness.explainFile", (arg?: unknown) => explainFile(store, reports, arg)),
+    vscode.commands.registerCommand("bobReadiness.openNotes", async () => {
+      const abs = await store.notesPath();
+      if (!abs) {
+        void vscode.window.showInformationMessage("No study notes: the readiness context is not loaded.");
+        return;
+      }
+      await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(vscode.Uri.file(abs)), { preview: false });
+    }),
     vscode.commands.registerCommand("bobReadiness.openExam", () => panel.reveal("exam")),
     vscode.commands.registerCommand("bobReadiness.reloadReport", () => reports.load()),
   );

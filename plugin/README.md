@@ -1,117 +1,136 @@
 # Bob Readiness (the Blindspot plugin)
 
-A VS Code extension for IBM Bob IDE, living in `plugin/` at the root of the Blindspot repository.
-It reads two files produced by the Blindspot engine and never calls the statistics code:
+A VS Code extension for IBM Bob IDE, in `plugin/` at the root of the Blindspot repository. It
+shows a developer where Bob is sure but wrong before they rely on it, and lets them hand Bob
+only the work Bob is ready for, with a person approving every step.
 
-- `results/report_latest.json` plus `results/history.jsonl` (docs/REPORT_SCHEMA.md): the exam
-  results. The plugin colours the file tree by heat, marks red modules, and shows the Exam tab
-  with overall metrics, reliability, modules worst first, worst functions, change over time,
-  run comparison and a Publish button. While no real run exists, `results/sim/` (simulated data
-  from `python cli.py simulate`) is used and labelled with a banner.
-- `.bob/context/readiness.json` (BUILD_PLAN.md section 2): per-function readiness and findings.
-  This drives line highlighting, hover cards, CodeLens, the Problems panel and the Review,
-  Testing, Release, Modernize and Onboarding tabs, and the human-in-the-loop flow where a
-  developer approves findings and Bob edits the code on a new git branch.
+The plugin never calls the statistics code and never calls Bob on its own. It reads two files
+written by the Blindspot engine, and it spawns Bob only after an explicit approval.
 
-Either file may be missing: each part of the plugin simply stays empty until its file exists.
+| File | Written by | What the plugin does with it |
+|---|---|---|
+| `results/report_latest.json`, `results/history.jsonl`, `results/report_<run>.json` (docs/REPORT_SCHEMA.md) | `python cli.py report` (or `simulate` for fake data in `results/sim/`) | Explorer colours by heat, red badges, Exam tab, Heatmap over runs, status bar item, update toasts |
+| `.bob/context/readiness.json` and the notes file it names (BUILD_PLAN.md section 2) | The Cartographer (in progress on the engine side) | Line highlights, hover cards, CodeLens, Problems entries and quick fixes, Heatmap of functions, Review, Testing, Release, Modernize and Onboarding tabs, the approval flow |
 
-Screenshots: see `references/` for the target look (real screenshots come in phase 7).
+Either file may be missing. Each part stays empty until its file exists. Paths in both files are
+relative to the examined repository, which the plugin finds as `target/<repo>` from
+`target.lock.json`, or the workspace root, or the `bobReadiness.targetRoot` setting.
 
-## Exam tab and tree colouring (report contract)
+## Features
 
-- Explorer: red badge `!` for modules where `red` is true, colour by `heat` otherwise (five
-  bands, green to red), `?` when `low_n` is true (few answers). Files with no entry stay neutral.
-  Folders use the `directories` entries. Colours are theme colours `blindspot.red` and
-  `blindspot.heat0` to `blindspot.heat4`, so they can be changed in `workbench.colorCustomizations`.
-- Exam tab: banner when the data is simulated, run name, condition, generated time, target
-  commit, overall accuracy with the 95% interval, confidently wrong rate, Brier, ECE,
-  overconfidence, reliability bins, change over time (one line per condition), modules worst
-  first with per-file sparklines and family accuracy, worst functions and classes (click opens
-  the file), Compare runs (any two `report_<run>.json`), Publish context (runs
-  `bobReadiness.publishCommand` and shows its output) and Reload report.
-- Status bar: "Blindspot 89% C2" opens the Exam tab.
-- Paths in the report are relative to the examined repository. The plugin maps them onto
-  `target/<repo>` when `target.lock.json` exists (fetch it with `python cli.py target`), or onto
-  the workspace root, or onto `bobReadiness.targetRoot`.
+**Explorer and editor**
 
-## What you get from the readiness context
+- File tree coloured by exam heat (five bands, green to red), `!` badge on red modules, `?` when
+  there were few answers, folders from the report's directory entries, neutral when a file was
+  not examined. Files only in the readiness context are coloured by their readiness status.
+  Tabs carry the same colour and badge.
+- Whole-function line tints: red with a left border where Bob was sure but wrong, blue where it
+  was only partly right, nothing where it knows the code. Yellow gutter dots on lines with
+  findings. A dimmed note on the def line: "Sure but wrong (92%): Bob believed ... Actually ...".
+- Hover cards: function, readiness, what Bob believed against the truth, findings with
+  recommendations, "Add to Bob queue" or "Needs a person".
+- CodeLens above functions with findings: "Add to Bob queue (N)" and "Why Bob is unsure".
+- Problems panel entry per finding, with quick fixes: add to the queue, open the study notes,
+  copy context for the file.
+- Status bar: "Readiness: On/Off" toggle (Cmd+Alt+R), overall readiness, Bobcoins this session,
+  "Blindspot 89% C2" for the exam, and a warning "Bob: confidently wrong here N times" while a
+  risky file is active. Clicking the warning explains why and offers to copy the context.
+- Right click a file or editor: "Copy Bob Context for This File" (Cmd+Alt+C) puts a prompt
+  preamble on the clipboard with the exam numbers, every misconception and its truth, open
+  findings and the study notes. "Queue All Allowed Findings in This File" adds them in one go.
 
-- Highlighting in any open file listed in the context: red tint and left border for functions
-  where Bob was sure but wrong, blue for partly known, nothing for known. Yellow gutter dots on
-  lines with findings. A dimmed inline note on the def line of wrong functions.
-- Hover cards: readiness, what Bob believed and what is true, findings, "Add to Bob queue".
-- CodeLens above functions with findings: "Add to Bob queue (N)" and "Why Bob is unsure", or
-  "Needs a person".
-- Problems panel entries for every finding (high = Warning, medium = Information, low = Hint).
-- Status bar: "Readiness: On/Off" toggle on the left; overall readiness and Bobcoins spent this
-  session on the right.
-- Side panel with five tabs: Onboarding (setup, first tasks, chat answered by Bob), Review,
-  Testing, Release (computed from git plus the context), Modernize.
-- Human in the loop: tick findings across tabs, "Send to Bob", approve in a modal, Bob works on
-  a new branch, tests run, Keep or Discard.
+**Side panel** (activity bar "Bob Readiness", seven tabs)
+
+- Exam: banner when the data is simulated, run, counts, accuracy with the 95% interval,
+  confidently wrong rate, Brier, ECE, overconfidence, reliability bins, change over time (one
+  line per condition), modules worst first with sparklines and family accuracy, worst functions
+  and classes, Compare runs, Publish context, Reload report.
+- Heatmap: GitHub style squares. Files over exam runs (one column per run) and functions by
+  file (one square per function from the readiness context). Hover for numbers, click to jump.
+- Onboarding: setup commands, good first tasks, a chat answered by Bob from the study notes and
+  the architecture list, three question presets (new to the repo, reviewing a change, about to
+  release), answers cached so repeats are free.
+- Review, Testing, Modernize: findings sorted by severity then readiness, with the gate label
+  ("Bob can do this", "Bob with notes, review needed", "Needs a person"), one shared queue
+  across tabs, hover links and CodeLens, and a footer with the count and the estimated cost.
+- Release: commits since the last tag, changed functions mapped to the context, readiness bars,
+  a fixed verdict ("Ready to release", "Ready, with items to check", "Not ready"), draft release
+  notes grouped Fixed / Added / Other, Run tests, Copy release notes.
+
+**Human in the loop**
+
+1. Tick findings anywhere. "Send to Bob" (Cmd+Alt+B) shows a modal with each item, the new
+   branch `bob/readiness-<yyyymmdd-hhmm>`, the estimated cost and the session budget.
+2. The plugin refuses when the working tree is dirty, when the branch exists, or when the
+   estimate would take the session over `bobReadiness.sessionBudget`.
+3. One prompt for all items, with the study notes for `with_notes` items and the rule to change
+   only what is listed. Bob runs headless in the repository, streaming to the "Bob Readiness"
+   Output channel with timestamps. Cancel from the progress notification.
+4. Changed files with +/- counts, the diff of the first file opens automatically, "Review all
+   changes" opens the rest. The test command runs and the result box shows pass or fail.
+5. "Keep changes" commits on the branch and offers a draft pull request: through the GitHub CLI
+   when available, otherwise the title and body go to the clipboard and an editor. "Discard"
+   resets, returns to the base branch and deletes the branch. The queue clears either way.
+6. Findings with `bob_allowed: no` can never be sent. Fake Bob (`scripts/fake-bob.js`) is the
+   default; real Bob costs Bobcoins and is switched on by the `useFakeBob` setting.
+
+**Feedback loop**: when the engine rewrites the report or the context, a toast says what changed
+("1 function improved, 2 new sure but wrong", "no longer red: tinydb.queries") with a button to
+the Heatmap or Exam tab.
+
+A "Getting started" walkthrough (Help, Welcome) covers the four steps.
 
 ## Install from .vsix
 
-1. Build: `npm install && npm run package` produces `bob-readiness-<version>.vsix`.
+1. `npm install && npm run package` produces `bob-readiness-<version>.vsix`.
 2. In Bob IDE: Extensions view, the "..." menu, "Install from VSIX", pick the file.
-3. Open a repository that has `.bob/context/readiness.json`. The panel is in the activity bar.
+3. Open the Blindspot repository (Exam and Heatmap from `results/sim`, files under
+   `target/tinydb` after `python cli.py target`) or a repository that has
+   `.bob/context/readiness.json` (highlights and the approval flow).
 
 ## Settings
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `bobReadiness.contextPath` | `.bob/context/readiness.json` | Where the context file lives in the workspace |
+| `bobReadiness.contextPath` | `.bob/context/readiness.json` | Readiness context, looked up in the target repository first, then the workspace |
 | `bobReadiness.highlightOnStartup` | `true` | Show highlights when the IDE opens |
 | `bobReadiness.bobCommand` | `bob run --format json` | Headless Bob command. The prompt is passed as the last argument and on stdin |
-| `bobReadiness.useFakeBob` | `true` | Use `scripts/fake-bob.js` instead of real Bob. Real Bob costs Bobcoins |
-| `bobReadiness.testCommand` | `pytest -q` | Run after Bob makes changes, and by "Run tests" in the Release tab |
+| `bobReadiness.useFakeBob` | `true` | Use `scripts/fake-bob.js` instead of real Bob |
+| `bobReadiness.testCommand` | `pytest -q` | Run after Bob makes changes, and by "Run tests" |
 | `bobReadiness.baseBranch` | `main` | Branch to return to when discarding |
+| `bobReadiness.sessionBudget` | `5` | Bobcoins the plugin may spend this session. 0 means no limit. Ignored with fake Bob |
+| `bobReadiness.openDiffAfterRun` | `true` | Open the first changed file's diff when Bob and the tests finish |
 | `bobReadiness.resultsPath` | `results` | Folder with `report_latest.json` and `history.jsonl`. Falls back to `<folder>/sim` |
-| `bobReadiness.targetRoot` | empty | Folder the report paths map onto. Empty means `target/<repo>` from `target.lock.json`, else the workspace root |
-| `bobReadiness.publishCommand` | `python cli.py publish` | Run by the Publish button, in the workspace root. A workspace `.venv` python is used automatically |
+| `bobReadiness.targetRoot` | empty | Folder the report and context paths map onto |
+| `bobReadiness.publishCommand` | `python cli.py publish` | Run by the Publish button. A workspace `.venv` python is used automatically |
 
 ## The readiness gate
 
-| Readiness of the function | `bob_allowed` | What the extension does |
+| Readiness of the function | `bob_allowed` | What the plugin does |
 |---|---|---|
 | 85% or more | `yes` | "Bob can do this": can be sent to Bob |
-| 65% to 84% | `with_notes` | "Bob with notes, review needed": sent with the study notes, result flagged for review |
-| Below 65% | `no` | "Needs a person": checkbox disabled, never sent to Bob |
-
-## How the human-in-the-loop flow works
-
-1. Tick findings in the panel, from a hover card or from CodeLens. One shared queue.
-2. "Send to Bob" shows a modal: the findings, the new branch name
-   `bob/readiness-<yyyymmdd-hhmm>`, the estimated cost. Nothing runs until "Approve and run".
-3. The working tree must be clean, otherwise the extension refuses and explains.
-4. The branch is created. One prompt is built for all findings (with the study notes for
-   `with_notes` items) and Bob runs once, headless, in the repository root. Progress streams to
-   the "Bob Readiness" Output channel with timestamps.
-5. The panel shows the changed files with +/- counts, then the test result.
-6. "Keep changes" commits on the branch. "Discard" resets, returns to the base branch and
-   deletes the branch. Either way the queue is cleared.
-
-Onboarding questions are read-only, never on a new branch, and cached per question in the
-workspace, so repeated questions are free.
+| 65% to 84% | `with_notes` | "Bob with notes, review needed": sent with the study notes, flagged for review |
+| Below 65% | `no` | "Needs a person": checkbox disabled, never sent |
 
 ## Development
 
     npm install
     npm run build        # esbuild bundle to dist/
-    npm test             # vitest unit tests (pure logic) plus a git integration test
+    npm test             # vitest: pure logic plus a git integration test
     npm run lint
-    npm run smoke        # drives the bundled extension with fake Bob in a scratch copy of ../demo-tinydb,
-                         # then the Exam tab and tree colouring from ../results/sim
-    npm run package      # produces bob-readiness-<version>.vsix
+    npm run smoke        # drives the bundled plugin against a stub VS Code API: fake Bob in a copy of
+                         # ../demo-tinydb, then results/sim plus a fake context in a copy of the repo layout
+    npm run package      # bob-readiness-<version>.vsix
 
-Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open. To see the
-Exam tab and tree colouring instead, open the Blindspot repository root as the workspace (after
-`python cli.py target`), or point `bobReadiness.resultsPath` at the results folder.
+Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open.
+
+Layout: one feature per file in `src/`. Pure logic (parsing, ranges, sorting, prompts, verdicts,
+heatmap, diffs) has no VS Code dependency and is unit tested; the VS Code facing modules are thin.
 
 ## Demo workspace
 
-The sample context is `fixtures/readiness.sample.json`. Every line number in it starts as a
-placeholder (1 to 2) until `scripts/fix-fixture-lines.py` aligns it with a real tinydb checkout.
+The sample context is `fixtures/readiness.sample.json`. Line numbers start as placeholders until
+`scripts/fix-fixture-lines.py` aligns them with a tinydb checkout.
 
     git clone https://github.com/msiemens/tinydb ../demo-tinydb
     python3 scripts/fix-fixture-lines.py ../demo-tinydb fixtures/readiness.sample.json
@@ -119,10 +138,7 @@ placeholder (1 to 2) until `scripts/fix-fixture-lines.py` aligns it with a real 
     cp fixtures/readiness.sample.json ../demo-tinydb/.bob/context/readiness.json
     cp fixtures/readiness-context.sample.md ../demo-tinydb/.bob/rules/readiness-context.md
     cd ../demo-tinydb && git branch -m master main && git add .bob && git commit -m "chore: add Bob readiness context"
+    python3 -m venv .venv && .venv/bin/pip install -e . pytest pytest-cov pyyaml
 
-The demo workspace must be a git repository with a clean working tree, because the approval
-flow creates a branch. The `baseBranch` setting defaults to `main`, so rename tinydb's `master`
-branch as shown above or change the setting.
-
-Tests in the demo workspace need a virtualenv: `python3 -m venv .venv && .venv/bin/pip install -e . pytest pytest-cov pyyaml`.
-The demo's `.vscode/settings.json` sets `bobReadiness.testCommand` to `.venv/bin/python -m pytest -q`.
+The demo's `.vscode/settings.json` points `testCommand` at that virtualenv. The approval flow
+needs a clean git working tree.

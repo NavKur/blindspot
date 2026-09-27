@@ -73,6 +73,22 @@ from "Next".
   reload), status bar "Blindspot 89% C2". Smoke script scenario 2 covers all of it against
   results/sim and target/tinydb. Python suite on the merged tree: 68 passed, 1 skipped.
 
+- 27 Sep, developer workflow batch: Heatmap tab (src/heatmap.ts, heatmapFeature.ts: files over
+  exam runs from history.jsonl, functions by file from the readiness context, GitHub style
+  squares, click to jump); status bar warning while a risky file is active
+  (activeFileWarning.ts) with an explanation dialog; "Copy Bob Context for This File"
+  (fileContext.ts, fileCommands.ts, Cmd+Alt+C, editor and explorer menus); "Queue All Allowed
+  Findings in This File"; Problems quick fixes (codeActions.ts); diff opens automatically after
+  a run plus "Review all changes"; draft pull request on Keep (pullRequest.ts, GitHub CLI or
+  clipboard plus untitled document); session Bobcoin budget (budget.ts, setting sessionBudget,
+  refused before the modal, ignored with fake Bob); update toasts when the context or report is
+  regenerated (changes.ts, updates.ts); onboarding question presets by role; tree colours from
+  the readiness context for files the exam did not cover; keybindings; Getting Started
+  walkthrough (media/walkthrough). Shared target root resolution (targetRoot.ts): the context
+  file is looked up in target/<repo> then the workspace, study notes likewise (store.readNotes).
+  Smoke scenario 2 now builds a temp copy of the repo layout with a fake, line-aligned readiness
+  context next to results/sim and covers every feature above.
+
 ## Next
 - Teammate: `python cli.py publish` (step 23). The Publish button already runs it and shows
   the output; today the CLI reports an invalid choice.
@@ -91,6 +107,10 @@ from "Next".
   bobReadiness.bobCommand. Add Bob's flag that disables edits for onboarding if one exists.
 
 ## Needs Aziz
+- New features by hand: Heatmap tab in both windows, status bar warning on tinydb/table.py,
+  right click Copy Bob Context, quick fix light bulb on a Problems entry, the diff opening after
+  a fake Bob run, "Create pull request" after Keep (clipboard path, no gh installed here), the
+  Help, Welcome walkthrough. Check the heatmap squares are readable in the light theme.
 - Exam tab by hand: open the repository root in Bob IDE after `python cli.py target`. The
   Explorer shows target/tinydb/tinydb/utils.py and __init__.py with a red badge, other tinydb
   files tinted by heat, operations.py with a "?" marker. The Exam tab shows the simulated

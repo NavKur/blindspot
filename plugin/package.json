@@ -77,6 +77,31 @@
         "command": "bobReadiness.reloadReport",
         "title": "Reload Blindspot Report",
         "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openHeatmap",
+        "title": "Open Heatmap",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.copyFileContext",
+        "title": "Copy Bob Context for This File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.queueFile",
+        "title": "Queue All Allowed Findings in This File",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.explainFile",
+        "title": "Why Is Bob Risky Here",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openNotes",
+        "title": "Open Study Notes",
+        "category": "Bob Readiness"
       }
     ],
     "configuration": {
@@ -126,6 +151,16 @@
           "type": "string",
           "default": "python cli.py publish",
           "description": "Command run by the Publish button in the Exam tab, in the workspace root. A workspace .venv python is used automatically."
+        },
+        "bobReadiness.sessionBudget": {
+          "type": "number",
+          "default": 5,
+          "description": "Bobcoins this session may spend through the plugin. Send to Bob refuses when the estimate would go over it. 0 means no limit. Ignored while useFakeBob is on."
+        },
+        "bobReadiness.openDiffAfterRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open the diff of the first changed file as soon as Bob and the tests finish."
         }
       }
     },
@@ -150,6 +185,38 @@
         {
           "command": "bobReadiness.openFile",
           "when": "false"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1"
+        },
+        {
+          "command": "bobReadiness.queueFile",
+          "group": "bobReadiness@2"
+        },
+        {
+          "command": "bobReadiness.explainFile",
+          "group": "bobReadiness@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1",
+          "when": "!explorerResourceIsFolder"
+        },
+        {
+          "command": "bobReadiness.queueFile",
+          "group": "bobReadiness@2",
+          "when": "!explorerResourceIsFolder"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "bobReadiness.copyFileContext",
+          "group": "bobReadiness@1"
         }
       ]
     },
@@ -227,6 +294,65 @@
           "light": "#da1e28",
           "highContrast": "#ff8389"
         }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "bobReadiness.toggleHighlights",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r"
+      },
+      {
+        "command": "bobReadiness.sendToBob",
+        "key": "ctrl+alt+b",
+        "mac": "cmd+alt+b"
+      },
+      {
+        "command": "bobReadiness.copyFileContext",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "bobReadiness.gettingStarted",
+        "title": "Bob Readiness: know where Bob is wrong",
+        "description": "Four steps from the exam results to a safe Bob change.",
+        "steps": [
+          {
+            "id": "exam",
+            "title": "See where Bob is weak",
+            "description": "Open the Exam tab.\n[Open Exam tab](command:bobReadiness.openExam)",
+            "media": {
+              "markdown": "media/walkthrough/exam.md"
+            }
+          },
+          {
+            "id": "heatmap",
+            "title": "Read the heatmap",
+            "description": "One square per file per run, one per function.\n[Open Heatmap](command:bobReadiness.openHeatmap)",
+            "media": {
+              "markdown": "media/walkthrough/heatmap.md"
+            }
+          },
+          {
+            "id": "editor",
+            "title": "Work in the editor",
+            "description": "Highlights, hover cards, the status bar warning and Copy Bob context.\n[Toggle highlights](command:bobReadiness.toggleHighlights)",
+            "media": {
+              "markdown": "media/walkthrough/editor.md"
+            }
+          },
+          {
+            "id": "approve",
+            "title": "Let Bob fix what it is allowed to fix",
+            "description": "Tick, approve, run on a branch, test, keep or discard.\n[Open panel](command:bobReadiness.openPanel)",
+            "media": {
+              "markdown": "media/walkthrough/approve.md"
+            }
+          }
+        ]
       }
     ]
   },

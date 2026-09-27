@@ -14,6 +14,29 @@ export const SUGGESTED_QUESTIONS = [
   "What should I read first?",
 ];
 
+export type OnboardingRole = "new" | "reviewing" | "releasing";
+
+export const ROLE_LABELS: Record<OnboardingRole, string> = {
+  new: "New to the repo",
+  reviewing: "Reviewing a change",
+  releasing: "About to release",
+};
+
+/** Three question sets, one per situation. Answers are cached by question text whatever the role. */
+export const SUGGESTED_BY_ROLE: Record<OnboardingRole, string[]> = {
+  new: SUGGESTED_QUESTIONS,
+  reviewing: [
+    "Which parts of this code does Bob understand least?",
+    "What behaviour is easy to get wrong in Table.update()?",
+    "Which tests cover the storage layer?",
+  ],
+  releasing: [
+    "What changed recently in areas where Bob was wrong before?",
+    "Which functions have no tests?",
+    "What should the release notes mention?",
+  ],
+};
+
 /** Cache key: case and whitespace insensitive, trailing punctuation ignored. */
 export function normalizeQuestion(question: string): string {
   return question.trim().toLowerCase().replace(/\s+/g, " ").replace(/[?.!\s]+$/g, "");
