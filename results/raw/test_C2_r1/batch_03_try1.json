@@ -1,0 +1,13 @@
+{
+  "returncode": 0,
+  "seconds": 6.7,
+  "parsed": true,
+  "status": "success",
+  "cost": 0.022634,
+  "tool_calls": 0,
+  "tokens": null,
+  "reply": "[\n  {\"id\": \"q38231f26a5\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"qd9a7e40bad\", \"answer\": false, \"p\": 0.75},\n  {\"id\": \"q0215bdaf02\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"qafabbfbf13\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"q3d923ba02a\", \"answer\": false, \"p\": 0.92},\n  {\"id\": \"q554e52bf65\", \"answer\": true, \"p\": 0.99},\n  {\"id\": \"q66e90d3ecf\", \"answer\": false, \"p\": 0.85},\n  {\"id\": \"qb9b8e4f019\", \"answer\": false, \"p\": 0.95},\n  {\"id\": \"q8c8761db60\", \"answer\": true, \"p\": 0.99},\n  {\"id\": \"q8666d2dc4d\", \"answer\": false, \"p\": 0.72},\n  {\"id\": \"q9dc5be305c\", \"answer\": false, \"p\": 0.65},\n  {\"id\": \"qce96582c7c\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"q7f3f81d7f0\", \"answer\": false, \"p\": 0.98},\n  {\"id\": \"qe9eb040a17\", \"answer\": false, \"p\": 0.95},\n  {\"id\": \"qba19e0b5ac\", \"answer\": true, \"p\": 0.95},\n  {\"id\": \"q5f5da9c8a8\", \"answer\": false, \"p\": 0.97},\n  {\"id\": \"qe35a4d59e7\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"q552dd08c8c\", \"answer\": true, \"p\": 0.90},\n  {\"id\": \"q44e0d2b719\", \"answer\": true, \"p\": 0.97},\n  {\"id\": \"q79e4e06735\", \"answer\": false, \"p\": 0.65}\n]",
+  "stdout_tail": "",
+  "stderr_tail": "",
+  "cached": false
+}
