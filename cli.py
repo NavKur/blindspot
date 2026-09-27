@@ -16,6 +16,7 @@ STEPS = {
     "report": "step 11",
     "cartographer": "steps 20 to 22",
     "simulate": "step 12",
+    "publish": "step 17",
 }
 
 
@@ -52,6 +53,10 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("simulate", help="fake examinee (no Bob) writing SIMULATED reports to results/sim/ for the plugin")
     s.add_argument("--set", dest="qset", choices=("pilot", "train"), default="train")
     sub.add_parser("cartographer", help="write targeted context for red modules (condition C2)")
+    pb = sub.add_parser("publish", help="write readiness.json, rules and an AGENTS.md block into the target repo")
+    pb.add_argument("--sim", action="store_true", help="publish the simulated data in results/sim")
+    pb.add_argument("--run", help="marked run to publish, e.g. train_C1_r1 (default: newest)")
+    pb.add_argument("--dest", help="repo to publish into (default: target/tinydb)")
     return p
 
 
@@ -66,6 +71,9 @@ def main(argv=None) -> int:
     if args.command == "mark":
         from blindspot import mark
         return mark.main(args.qset, args.condition, args.repeat)
+    if args.command == "publish":
+        from blindspot import publish
+        return publish.main(sim=args.sim, run=args.run, dest=args.dest)
     if args.command == "simulate":
         from blindspot import simulate
         return simulate.main(args.qset)

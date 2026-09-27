@@ -62,8 +62,16 @@ def answer_questions(questions, condition, repeat=1, seed=config.SEED, targeted=
         p = a + OVERCONFIDENCE[condition] + (0.05 if correct else -0.05) + rng.normal(0, 0.07)
         p = round(float(np.clip(p, floor, 0.99)), 2)
 
+        truth = q.get("truth", True)
+        if correct:
+            answer = truth
+        elif isinstance(truth, bool):
+            answer = not truth
+        else:
+            answer = "'<simulated wrong value>'"
         out.append({"id": q["id"], "module": q["module"], "path": q["path"], "entity": q["entity"],
-                    "family": q["family"], "correct": correct, "p": p,
+                    "family": q["family"], "type": q.get("type", "tf"), "text": q.get("text", ""),
+                    "truth": truth, "answer": answer, "correct": correct, "p": p,
                     "excluded": bool(rng.random() < EXCLUDE_RATE), "simulated": True})
     return out
 
