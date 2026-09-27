@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blindspot: Bob Readiness, interactive demo</title>
+<style>/*SHELL_CSS*/</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><b>Blindspot</b> <span class="sub">Bob Readiness plugin, interactive demo with the real exam data</span></div>
+  <div class="switch" id="switch"></div>
+  <div class="links">
+    <span class="badge" title="No call to IBM Bob is made from this page. The approval flow and the onboarding chat are played by a scripted fake Bob, exactly like the plugin's development mode.">Fake Bob</span>
+    <a id="repo-link" href="#" target="_blank" rel="noopener">Repository</a>
+    <a href="#" id="about-link">What am I looking at?</a>
+  </div>
+</div>
+<div class="ide">
+  <aside class="explorer">
+    <div class="pane-title">Explorer</div>
+    <div class="tree" id="tree"></div>
+    <div class="legend">
+      <span><i style="background:#42be65"></i> Bob knows it</span>
+      <span><i style="background:#f1c21b"></i> shaky</span>
+      <span><i style="background:#fa4d56"></i> red: confidently wrong too often</span>
+      <span><i style="background:#555"></i> not examined</span>
+    </div>
+  </aside>
+  <section class="editor">
+    <div class="tabs" id="editor-tabs"></div>
+    <div class="code-wrap" id="code-wrap"><div class="code" id="code"></div></div>
+    <div class="hovercard" id="hovercard"></div>
+  </section>
+  <aside class="panel">
+    <div class="pane-title">Bob Readiness</div>
+    <iframe id="panel" title="Bob Readiness side panel"></iframe>
+  </aside>
+</div>
+<div class="statusbar" id="statusbar"></div>
+<div class="toasts" id="toasts"></div>
+<div class="modal-back" id="modal-back" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <h2 id="modal-title"></h2>
+    <pre id="modal-detail"></pre>
+    <div class="modal-btns" id="modal-btns"></div>
+  </div>
+</div>
+<script>/*DATA*/</script>
+<script>/*PANEL_HTML*/</script>
+<script>/*APP_JS*/</script>
+</body>
+</html>

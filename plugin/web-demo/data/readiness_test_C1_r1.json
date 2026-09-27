@@ -1,0 +1,1540 @@
+{
+  "version": 1,
+  "repo": {
+    "name": "presentation-tinydb",
+    "commit": "1e39ad3a2d9eca57efd9019fd089b5a04676da95",
+    "generated_at": "2026-09-27T15:06:28+00:00"
+  },
+  "summary": {
+    "readiness": 0.89,
+    "questions": 200,
+    "sure_but_wrong": 6,
+    "bobcoins_spent": 0.3975
+  },
+  "setup": {
+    "install": [
+      "pip install -e ."
+    ],
+    "test": "pytest -q"
+  },
+  "notes_markdown_path": ".bob/rules/readiness-context.md",
+  "files": [
+    {
+      "path": "tinydb/__init__.py",
+      "readiness": 0.833,
+      "status": "review",
+      "imports": [
+        "tinydb/database.py",
+        "tinydb/queries.py",
+        "tinydb/storages.py",
+        "tinydb/version.py"
+      ]
+    },
+    {
+      "path": "tinydb/database.py",
+      "readiness": 0.867,
+      "status": "ready",
+      "imports": [
+        "tinydb/__init__.py",
+        "tinydb/storages.py",
+        "tinydb/table.py",
+        "tinydb/utils.py"
+      ]
+    },
+    {
+      "path": "tinydb/middlewares.py",
+      "readiness": 1.0,
+      "status": "ready",
+      "imports": [
+        "tinydb/__init__.py"
+      ]
+    },
+    {
+      "path": "tinydb/operations.py",
+      "readiness": 0.769,
+      "status": "review",
+      "imports": []
+    },
+    {
+      "path": "tinydb/queries.py",
+      "readiness": 0.914,
+      "status": "ready",
+      "imports": [
+        "tinydb/utils.py"
+      ]
+    },
+    {
+      "path": "tinydb/storages.py",
+      "readiness": 0.926,
+      "status": "ready",
+      "imports": []
+    },
+    {
+      "path": "tinydb/table.py",
+      "readiness": 0.85,
+      "status": "ready",
+      "imports": [
+        "tinydb/queries.py",
+        "tinydb/storages.py",
+        "tinydb/utils.py"
+      ]
+    },
+    {
+      "path": "tinydb/utils.py",
+      "readiness": 0.885,
+      "status": "ready",
+      "imports": []
+    }
+  ],
+  "functions": [
+    {
+      "id": "tinydb/database.py::TinyDB",
+      "file": "tinydb/database.py",
+      "name": "TinyDB",
+      "line_start": 17,
+      "line_end": 27,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.__exit__",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.__exit__",
+      "line_start": 244,
+      "line_end": 249,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.__getattr__",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.__getattr__",
+      "line_start": 251,
+      "line_end": 255,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.__iter__",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.__iter__",
+      "line_start": 270,
+      "line_end": 274,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.__len__",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.__len__",
+      "line_start": 260,
+      "line_end": 268,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.__repr__",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.__repr__",
+      "line_start": 100,
+      "line_end": 109,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.close",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.close",
+      "line_start": 214,
+      "line_end": 230,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.drop_table",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.drop_table",
+      "line_start": 176,
+      "line_end": 202,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the code of the method `TinyDB.drop_table` in `tinydb/database.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        },
+        {
+          "believed": "Does the code of the method `TinyDB.drop_table` in `tinydb/database.py` (counting helper functions defined inside it) contain a call to something named `read`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.drop_tables",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.drop_tables",
+      "line_start": 163,
+      "line_end": 174,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the code of the method `TinyDB.drop_tables` in `tinydb/database.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.6
+        }
+      ]
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.storage",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.storage",
+      "line_start": 205,
+      "line_end": 212,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/database.py::TinyDB.table",
+      "file": "tinydb/database.py",
+      "name": "TinyDB.table",
+      "line_start": 111,
+      "line_end": 133,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware",
+      "line_start": 76,
+      "line_end": 86,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.__init__",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.__init__",
+      "line_start": 88,
+      "line_end": 94,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.close",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.close",
+      "line_start": 122,
+      "line_end": 127,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.flush",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.flush",
+      "line_start": 113,
+      "line_end": 120,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.read",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.read",
+      "line_start": 96,
+      "line_end": 102,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::CachingMiddleware.write",
+      "file": "tinydb/middlewares.py",
+      "name": "CachingMiddleware.write",
+      "line_start": 104,
+      "line_end": 111,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::Middleware",
+      "file": "tinydb/middlewares.py",
+      "name": "Middleware",
+      "line_start": 10,
+      "line_end": 20,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::Middleware.__call__",
+      "file": "tinydb/middlewares.py",
+      "name": "Middleware.__call__",
+      "line_start": 25,
+      "line_end": 65,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::Middleware.__getattr__",
+      "file": "tinydb/middlewares.py",
+      "name": "Middleware.__getattr__",
+      "line_start": 67,
+      "line_end": 73,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/middlewares.py::Middleware.__init__",
+      "file": "tinydb/middlewares.py",
+      "name": "Middleware.__init__",
+      "line_start": 21,
+      "line_end": 23,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::add",
+      "file": "tinydb/operations.py",
+      "name": "add",
+      "line_start": 26,
+      "line_end": 33,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::decrement",
+      "file": "tinydb/operations.py",
+      "name": "decrement",
+      "line_start": 66,
+      "line_end": 73,
+      "readiness": 0.0,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the code of the function `decrement` in `tinydb/operations.py` (counting helper functions defined inside it) contain a call to something named `add`? Bob answered: yes.",
+          "truth": "The correct answer is: no.",
+          "confidence": 0.8
+        },
+        {
+          "believed": "Does `tinydb/operations.py` define a top-level function named `decrement`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.7
+        }
+      ]
+    },
+    {
+      "id": "tinydb/operations.py::delete",
+      "file": "tinydb/operations.py",
+      "name": "delete",
+      "line_start": 16,
+      "line_end": 23,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::increment",
+      "file": "tinydb/operations.py",
+      "name": "increment",
+      "line_start": 56,
+      "line_end": 63,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::set",
+      "file": "tinydb/operations.py",
+      "name": "set",
+      "line_start": 46,
+      "line_end": 53,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/operations.py::subtract",
+      "file": "tinydb/operations.py",
+      "name": "subtract",
+      "line_start": 36,
+      "line_end": 43,
+      "readiness": 0.0,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does `tinydb/operations.py` define a top-level function named `subtract`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.8
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::Query",
+      "file": "tinydb/queries.py",
+      "name": "Query",
+      "line_start": 138,
+      "line_end": 148,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__eq__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__eq__",
+      "line_start": 251,
+      "line_end": 262,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__ge__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__ge__",
+      "line_start": 316,
+      "line_end": 327,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__getattr__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__getattr__",
+      "line_start": 190,
+      "line_end": 202,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__gt__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__gt__",
+      "line_start": 303,
+      "line_end": 314,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__le__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__le__",
+      "line_start": 290,
+      "line_end": 301,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__lt__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__lt__",
+      "line_start": 277,
+      "line_end": 288,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.__repr__",
+      "file": "tinydb/queries.py",
+      "name": "Query.__repr__",
+      "line_start": 184,
+      "line_end": 185,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query._generate_test",
+      "file": "tinydb/queries.py",
+      "name": "Query._generate_test",
+      "line_start": 215,
+      "line_end": 249,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the method `Query._generate_test` in `tinydb/queries.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.7
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::Query.all",
+      "file": "tinydb/queries.py",
+      "name": "Query.all",
+      "line_start": 436,
+      "line_end": 467,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.any",
+      "file": "tinydb/queries.py",
+      "name": "Query.any",
+      "line_start": 401,
+      "line_end": 434,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.fragment",
+      "file": "tinydb/queries.py",
+      "name": "Query.fragment",
+      "line_start": 482,
+      "line_end": 494,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.map",
+      "file": "tinydb/queries.py",
+      "name": "Query.map",
+      "line_start": 508,
+      "line_end": 522,
+      "readiness": 0.0,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the class `Query` in `tinydb/queries.py` have a method named `map` (defined in the class itself or inherited from a class in this package)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.8
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::Query.one_of",
+      "file": "tinydb/queries.py",
+      "name": "Query.one_of",
+      "line_start": 469,
+      "line_end": 480,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.search",
+      "file": "tinydb/queries.py",
+      "name": "Query.search",
+      "line_start": 357,
+      "line_end": 374,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::Query.test",
+      "file": "tinydb/queries.py",
+      "name": "Query.test",
+      "line_start": 376,
+      "line_end": 399,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::QueryInstance",
+      "file": "tinydb/queries.py",
+      "name": "QueryInstance",
+      "line_start": 56,
+      "line_end": 66,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::QueryInstance.__and__",
+      "file": "tinydb/queries.py",
+      "name": "QueryInstance.__and__",
+      "line_start": 113,
+      "line_end": 121,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::QueryInstance.is_cacheable",
+      "file": "tinydb/queries.py",
+      "name": "QueryInstance.is_cacheable",
+      "line_start": 84,
+      "line_end": 85,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::QueryLike",
+      "file": "tinydb/queries.py",
+      "name": "QueryLike",
+      "line_start": 32,
+      "line_end": 42,
+      "readiness": 0.0,
+      "status": "part",
+      "tested": false,
+      "misconceptions": [
+        {
+          "believed": "Does `tinydb/queries.py` define a top-level class named `QueryLike`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/queries.py::QueryLike.__call__",
+      "file": "tinydb/queries.py",
+      "name": "QueryLike.__call__",
+      "line_start": 51,
+      "line_end": 51,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::QueryLike.__hash__",
+      "file": "tinydb/queries.py",
+      "name": "QueryLike.__hash__",
+      "line_start": 53,
+      "line_end": 53,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/queries.py::where",
+      "file": "tinydb/queries.py",
+      "name": "where",
+      "line_start": 524,
+      "line_end": 528,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage",
+      "line_start": 79,
+      "line_end": 83,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.__init__",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.__init__",
+      "line_start": 84,
+      "line_end": 120,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.close",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.close",
+      "line_start": 122,
+      "line_end": 123,
+      "readiness": 0.75,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the code of the method `JSONStorage.close` in `tinydb/storages.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered: yes.",
+          "truth": "The correct answer is: no.",
+          "confidence": 0.85
+        }
+      ]
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.read",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.read",
+      "line_start": 125,
+      "line_end": 140,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::JSONStorage.write",
+      "file": "tinydb/storages.py",
+      "name": "JSONStorage.write",
+      "line_start": 142,
+      "line_end": 161,
+      "readiness": 0.833,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the method `JSONStorage.write` in `tinydb/storages.py` contain a `raise` statement for `IOError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/storages.py::MemoryStorage",
+      "file": "tinydb/storages.py",
+      "name": "MemoryStorage",
+      "line_start": 164,
+      "line_end": 168,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::MemoryStorage.__init__",
+      "file": "tinydb/storages.py",
+      "name": "MemoryStorage.__init__",
+      "line_start": 169,
+      "line_end": 175,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::MemoryStorage.read",
+      "file": "tinydb/storages.py",
+      "name": "MemoryStorage.read",
+      "line_start": 177,
+      "line_end": 178,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::Storage.close",
+      "file": "tinydb/storages.py",
+      "name": "Storage.close",
+      "line_start": 71,
+      "line_end": 76,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::Storage.write",
+      "file": "tinydb/storages.py",
+      "name": "Storage.write",
+      "line_start": 60,
+      "line_end": 69,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/storages.py::touch",
+      "file": "tinydb/storages.py",
+      "name": "touch",
+      "line_start": 16,
+      "line_end": 33,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Document.__init__",
+      "file": "tinydb/table.py",
+      "name": "Document.__init__",
+      "line_start": 30,
+      "line_end": 32,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table",
+      "file": "tinydb/table.py",
+      "name": "Table",
+      "line_start": 35,
+      "line_end": 45,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.__init__",
+      "file": "tinydb/table.py",
+      "name": "Table.__init__",
+      "line_start": 94,
+      "line_end": 112,
+      "readiness": 0.0,
+      "status": "wrong",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the code of the method `Table.__init__` in `tinydb/table.py` (counting helper functions defined inside it) contain a call to something named `_update_table`? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.8
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.__len__",
+      "file": "tinydb/table.py",
+      "name": "Table.__len__",
+      "line_start": 702,
+      "line_end": 707,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table._get_next_id",
+      "file": "tinydb/table.py",
+      "name": "Table._get_next_id",
+      "line_start": 721,
+      "line_end": 754,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table._read_table",
+      "file": "tinydb/table.py",
+      "name": "Table._read_table",
+      "line_start": 756,
+      "line_end": 779,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.all",
+      "file": "tinydb/table.py",
+      "name": "Table.all",
+      "line_start": 221,
+      "line_end": 233,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.clear_cache",
+      "file": "tinydb/table.py",
+      "name": "Table.clear_cache",
+      "line_start": 695,
+      "line_end": 700,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.contains",
+      "file": "tinydb/table.py",
+      "name": "Table.contains",
+      "line_start": 380,
+      "line_end": 402,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.count",
+      "file": "tinydb/table.py",
+      "name": "Table.count",
+      "line_start": 686,
+      "line_end": 693,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.get",
+      "file": "tinydb/table.py",
+      "name": "Table.get",
+      "line_start": 317,
+      "line_end": 378,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.insert",
+      "file": "tinydb/table.py",
+      "name": "Table.insert",
+      "line_start": 137,
+      "line_end": 175,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.insert_multiple",
+      "file": "tinydb/table.py",
+      "name": "Table.insert_multiple",
+      "line_start": 177,
+      "line_end": 219,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the method `Table.insert_multiple` in `tinydb/table.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.remove",
+      "file": "tinydb/table.py",
+      "name": "Table.remove",
+      "line_start": 602,
+      "line_end": 673,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the method `Table.remove` in `tinydb/table.py` contain a `raise` statement for `RuntimeError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.search",
+      "file": "tinydb/table.py",
+      "name": "Table.search",
+      "line_start": 235,
+      "line_end": 277,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.storage",
+      "file": "tinydb/table.py",
+      "name": "Table.storage",
+      "line_start": 131,
+      "line_end": 135,
+      "readiness": 0.0,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the class `Table` in `tinydb/table.py` have a method named `storage` (defined in the class itself or inherited from a class in this package)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/table.py::Table.truncate",
+      "file": "tinydb/table.py",
+      "name": "Table.truncate",
+      "line_start": 675,
+      "line_end": 684,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.update",
+      "file": "tinydb/table.py",
+      "name": "Table.update",
+      "line_start": 404,
+      "line_end": 506,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.update_multiple",
+      "file": "tinydb/table.py",
+      "name": "Table.update_multiple",
+      "line_start": 508,
+      "line_end": 558,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/table.py::Table.upsert",
+      "file": "tinydb/table.py",
+      "name": "Table.upsert",
+      "line_start": 560,
+      "line_end": 600,
+      "readiness": 0.667,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the method `Table.upsert` in `tinydb/table.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.7
+        }
+      ]
+    },
+    {
+      "id": "tinydb/utils.py::FrozenDict",
+      "file": "tinydb/utils.py",
+      "name": "FrozenDict",
+      "line_start": 114,
+      "line_end": 122,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::FrozenDict._immutable",
+      "file": "tinydb/utils.py",
+      "name": "FrozenDict._immutable",
+      "line_start": 127,
+      "line_end": 128,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::FrozenDict.pop",
+      "file": "tinydb/utils.py",
+      "name": "FrozenDict.pop",
+      "line_start": 140,
+      "line_end": 141,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::FrozenDict.update",
+      "file": "tinydb/utils.py",
+      "name": "FrozenDict.update",
+      "line_start": 137,
+      "line_end": 138,
+      "readiness": 0.0,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the class `FrozenDict` in `tinydb/utils.py` have a method named `update` (defined in the class itself or inherited from a class in this package)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache",
+      "line_start": 39,
+      "line_end": 49,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.__delitem__",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.__delitem__",
+      "line_start": 77,
+      "line_end": 78,
+      "readiness": 0.0,
+      "status": "part",
+      "tested": false,
+      "misconceptions": [
+        {
+          "believed": "Does the class `LRUCache` in `tinydb/utils.py` have a method named `__delitem__` (defined in the class itself or inherited from a class in this package)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.75
+        }
+      ]
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.__getitem__",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.__getitem__",
+      "line_start": 80,
+      "line_end": 85,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.__setitem__",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.__setitem__",
+      "line_start": 74,
+      "line_end": 75,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.clear",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.clear",
+      "line_start": 65,
+      "line_end": 66,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.get",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.get",
+      "line_start": 90,
+      "line_end": 98,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.lru",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.lru",
+      "line_start": 58,
+      "line_end": 59,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::LRUCache.set",
+      "file": "tinydb/utils.py",
+      "name": "LRUCache.set",
+      "line_start": 100,
+      "line_end": 111,
+      "readiness": 0.5,
+      "status": "part",
+      "tested": true,
+      "misconceptions": [
+        {
+          "believed": "Does the class `LRUCache` in `tinydb/utils.py` have a method named `set` (defined in the class itself or inherited from a class in this package)? Bob answered: no.",
+          "truth": "The correct answer is: yes.",
+          "confidence": 0.7
+        }
+      ]
+    },
+    {
+      "id": "tinydb/utils.py::freeze",
+      "file": "tinydb/utils.py",
+      "name": "freeze",
+      "line_start": 144,
+      "line_end": 163,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": true,
+      "misconceptions": []
+    },
+    {
+      "id": "tinydb/utils.py::with_typehint",
+      "file": "tinydb/utils.py",
+      "name": "with_typehint",
+      "line_start": 17,
+      "line_end": 36,
+      "readiness": 1.0,
+      "status": "ok",
+      "tested": false,
+      "misconceptions": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "F001",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/operations.py",
+      "line_start": 36,
+      "line_end": 40,
+      "function_id": "tinydb/operations.py::subtract",
+      "title": "Bob was sure but wrong about subtract",
+      "detail": "Does `tinydb/operations.py` define a top-level function named `subtract`? Bob answered no (80% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to subtract closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F002",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/operations.py",
+      "line_start": 66,
+      "line_end": 70,
+      "function_id": "tinydb/operations.py::decrement",
+      "title": "Bob was sure but wrong about decrement",
+      "detail": "Does the code of the function `decrement` in `tinydb/operations.py` (counting helper functions defined inside it) contain a call to something named `add`? Bob answered yes (80% sure). Correct: no.",
+      "recommendation": "Review any Bob change to decrement closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F003",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/queries.py",
+      "line_start": 508,
+      "line_end": 512,
+      "function_id": "tinydb/queries.py::Query.map",
+      "title": "Bob was sure but wrong about Query.map",
+      "detail": "Does the class `Query` in `tinydb/queries.py` have a method named `map` (defined in the class itself or inherited from a class in this package)? Bob answered no (80% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Query.map closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F004",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/storages.py",
+      "line_start": 122,
+      "line_end": 123,
+      "function_id": "tinydb/storages.py::JSONStorage.close",
+      "title": "Bob was sure but wrong about JSONStorage.close",
+      "detail": "Does the code of the method `JSONStorage.close` in `tinydb/storages.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered yes (85% sure). Correct: no.",
+      "recommendation": "Review any Bob change to JSONStorage.close closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F005",
+      "type": "review_risk",
+      "severity": "medium",
+      "file": "tinydb/table.py",
+      "line_start": 94,
+      "line_end": 98,
+      "function_id": "tinydb/table.py::Table.__init__",
+      "title": "Bob was sure but wrong about Table.__init__",
+      "detail": "Does the code of the method `Table.__init__` in `tinydb/table.py` (counting helper functions defined inside it) contain a call to something named `_update_table`? Bob answered no (80% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Table.__init__ closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F006",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/database.py",
+      "line_start": 163,
+      "line_end": 167,
+      "function_id": "tinydb/database.py::TinyDB.drop_tables",
+      "title": "Bob is unsure about TinyDB.drop_tables",
+      "detail": "Does the code of the method `TinyDB.drop_tables` in `tinydb/database.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered no (60% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to TinyDB.drop_tables closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F007",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/database.py",
+      "line_start": 176,
+      "line_end": 180,
+      "function_id": "tinydb/database.py::TinyDB.drop_table",
+      "title": "Bob is unsure about TinyDB.drop_table",
+      "detail": "Does the code of the method `TinyDB.drop_table` in `tinydb/database.py` (counting helper functions defined inside it) contain a call to something named `write`? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to TinyDB.drop_table closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F008",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/queries.py",
+      "line_start": 32,
+      "line_end": 36,
+      "function_id": "tinydb/queries.py::QueryLike",
+      "title": "Bob is unsure about QueryLike",
+      "detail": "Does `tinydb/queries.py` define a top-level class named `QueryLike`? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to QueryLike closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F009",
+      "type": "test_gap",
+      "severity": "low",
+      "file": "tinydb/queries.py",
+      "line_start": 32,
+      "line_end": 36,
+      "function_id": "tinydb/queries.py::QueryLike",
+      "title": "No test mentions QueryLike",
+      "detail": "Bob's readiness here is 0% and no file under tests/ mentions it (name search).",
+      "recommendation": "Add a test that pins down the behaviour of QueryLike.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F010",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/queries.py",
+      "line_start": 215,
+      "line_end": 219,
+      "function_id": "tinydb/queries.py::Query._generate_test",
+      "title": "Bob is unsure about Query._generate_test",
+      "detail": "Does the method `Query._generate_test` in `tinydb/queries.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered no (70% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Query._generate_test closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F011",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/storages.py",
+      "line_start": 142,
+      "line_end": 146,
+      "function_id": "tinydb/storages.py::JSONStorage.write",
+      "title": "Bob is unsure about JSONStorage.write",
+      "detail": "Does the method `JSONStorage.write` in `tinydb/storages.py` contain a `raise` statement for `IOError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to JSONStorage.write closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F012",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/table.py",
+      "line_start": 131,
+      "line_end": 135,
+      "function_id": "tinydb/table.py::Table.storage",
+      "title": "Bob is unsure about Table.storage",
+      "detail": "Does the class `Table` in `tinydb/table.py` have a method named `storage` (defined in the class itself or inherited from a class in this package)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Table.storage closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F013",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/table.py",
+      "line_start": 177,
+      "line_end": 181,
+      "function_id": "tinydb/table.py::Table.insert_multiple",
+      "title": "Bob is unsure about Table.insert_multiple",
+      "detail": "Does the method `Table.insert_multiple` in `tinydb/table.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Table.insert_multiple closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F014",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/table.py",
+      "line_start": 560,
+      "line_end": 564,
+      "function_id": "tinydb/table.py::Table.upsert",
+      "title": "Bob is unsure about Table.upsert",
+      "detail": "Does the method `Table.upsert` in `tinydb/table.py` contain a `raise` statement for `ValueError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered no (70% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Table.upsert closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "with_notes",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F015",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/table.py",
+      "line_start": 602,
+      "line_end": 606,
+      "function_id": "tinydb/table.py::Table.remove",
+      "title": "Bob is unsure about Table.remove",
+      "detail": "Does the method `Table.remove` in `tinydb/table.py` contain a `raise` statement for `RuntimeError` in its own code (counting helper functions defined inside it, but not other functions it calls)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to Table.remove closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F016",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/utils.py",
+      "line_start": 77,
+      "line_end": 78,
+      "function_id": "tinydb/utils.py::LRUCache.__delitem__",
+      "title": "Bob is unsure about LRUCache.__delitem__",
+      "detail": "Does the class `LRUCache` in `tinydb/utils.py` have a method named `__delitem__` (defined in the class itself or inherited from a class in this package)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to LRUCache.__delitem__ closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F017",
+      "type": "test_gap",
+      "severity": "low",
+      "file": "tinydb/utils.py",
+      "line_start": 77,
+      "line_end": 78,
+      "function_id": "tinydb/utils.py::LRUCache.__delitem__",
+      "title": "No test mentions LRUCache.__delitem__",
+      "detail": "Bob's readiness here is 0% and no file under tests/ mentions it (name search).",
+      "recommendation": "Add a test that pins down the behaviour of LRUCache.__delitem__.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F018",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/utils.py",
+      "line_start": 100,
+      "line_end": 104,
+      "function_id": "tinydb/utils.py::LRUCache.set",
+      "title": "Bob is unsure about LRUCache.set",
+      "detail": "Does the class `LRUCache` in `tinydb/utils.py` have a method named `set` (defined in the class itself or inherited from a class in this package)? Bob answered no (70% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to LRUCache.set closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    },
+    {
+      "id": "F019",
+      "type": "review_risk",
+      "severity": "low",
+      "file": "tinydb/utils.py",
+      "line_start": 137,
+      "line_end": 138,
+      "function_id": "tinydb/utils.py::FrozenDict.update",
+      "title": "Bob is unsure about FrozenDict.update",
+      "detail": "Does the class `FrozenDict` in `tinydb/utils.py` have a method named `update` (defined in the class itself or inherited from a class in this package)? Bob answered no (75% sure). Correct: yes.",
+      "recommendation": "Review any Bob change to FrozenDict.update closely. The correct facts are in .bob/rules/readiness-context.md.",
+      "bob_allowed": "no",
+      "estimated_coins": 0.05
+    }
+  ],
+  "starter_tasks": [
+    {
+      "title": "Small change in QueryLike.__call__",
+      "file": "tinydb/queries.py",
+      "why": "Bob answered every question about it correctly"
+    },
+    {
+      "title": "Small change in QueryLike.__hash__",
+      "file": "tinydb/queries.py",
+      "why": "Bob answered every question about it correctly"
+    },
+    {
+      "title": "Small change in Query.__repr__",
+      "file": "tinydb/queries.py",
+      "why": "Bob answered every question about it correctly"
+    }
+  ],
+  "_blindspot": {
+    "simulated": false,
+    "red_modules": [
+      "tinydb",
+      "tinydb.operations"
+    ]
+  }
+}

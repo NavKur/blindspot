@@ -100,9 +100,17 @@ from "Next".
   Smoke scenario 3 covers target/tinydb as the workspace after a real `publish --sim`;
   test/publishedContext.test.ts validates what is really published in target/tinydb.
 
+- 27 Sep, web demo for the hackathon submission: `npm run web-demo` builds docs/demo/index.html
+  (scripts/web-demo/build.ts, app.js, shell.html, shell.css, theme.css). The Exam tab's view
+  builder moved to src/report/examView.ts (pure) so the demo and the extension share it. The
+  page embeds the plugin's own panel HTML in an iframe with an acquireVsCodeApi shim, the real
+  C1 and C2 contexts (plugin/web-demo/data), reports, history, comparisons and tinydb source;
+  app.js plays the extension host with a fake Bob. Checked headless in Chrome: highlights,
+  queue, modal, run, keep, C1 to C2 switch, onboarding, compare.
+
 ## Next
 - Phase 7 (Aziz): go/no-go with real Bob, switch useFakeBob off for one approval and one
-  onboarding question, screenshots, version 0.1.0, tag.
+  onboarding question, screenshots, version 0.1.0, tag. Runbook in docs/DEMO_RUNBOOK.md.
 
 ## Known issues
 - Not yet run inside a real VS Code or Bob IDE window in this session (no display here). The

@@ -80,6 +80,13 @@ the Heatmap or Exam tab.
 
 A "Getting started" walkthrough (Help, Welcome) covers the four steps.
 
+## Try it in a browser
+
+`docs/demo/index.html` at the repository root is a self-contained web version: the plugin's real
+side panel with the real exam data for tinydb, an editor view with the highlights, and a scripted
+fake Bob for the approval flow. Build it with `npm run web-demo`; see `docs/demo/README.md` for
+the links to share.
+
 ## Install from .vsix
 
 1. `npm install && npm run package` produces `bob-readiness-<version>.vsix`.

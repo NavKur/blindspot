@@ -364,7 +364,8 @@
     "lint": "eslint .",
     "vscode:prepublish": "npm run build",
     "package": "vsce package --no-dependencies",
-    "smoke": "node scripts/smoke.js"
+    "smoke": "node scripts/smoke.js",
+    "web-demo": "node scripts/build-web-demo.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
