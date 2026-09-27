@@ -108,3 +108,4 @@ N_BOOT = 2000
 2026-09-26 23:30 UTC - Fixed exam composition via config.QUOTAS (imports 22, raises 30, defaults 21, calls 110, exists 137 incl. 69 real / 27 misplaced / 27 near-miss / 14 mutation), module-then-entity round-robin sampling, systematic TRAIN/TEST split - specifies details the pre-registration left open - no exam results existed. 
 TEST SHA-256: 4bd2c649d54670e66ed798e7442f69ec472c129bb8796dbe204000c0357026ed
 2026-09-27 00:00 UTC - Added .gitattributes forcing LF line endings after Windows Git converted exams/test.jsonl to CRLF. Content unchanged, SHA-256 re-verified.
+2026-09-27 01:14 UTC - When more than MAX_CARTO_MODULES modules are red, the Cartographer targets the worst first, ranked by confidently-wrong rate then by the Wilson lower bound. The rule did not specify an order. Found with simulated data only, no Bob results seen.

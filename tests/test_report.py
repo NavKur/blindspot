@@ -80,3 +80,10 @@ def test_write_report_files_and_history_appends(tmp_path):
 def test_no_scored_answers_is_an_error():
     with pytest.raises(ValueError):
         report.build_report([answer("m", "e", 1, 0.9, excluded=True)], "train", "C1", 1)
+
+
+def test_red_modules_are_ordered_worst_first():
+    rows = sample()
+    rows += [answer("tinydb.utils", "u", 0, 0.99) for _ in range(20)]   # far worse than tinydb.queries
+    rep = report.build_report(rows, "train", "C1", 1, now=NOW)
+    assert rep["red_modules"][:2] == ["tinydb.utils", "tinydb.queries"]
