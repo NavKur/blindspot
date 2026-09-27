@@ -12,6 +12,7 @@ def test_config_values():
 def test_cartographer_and_analyze_parse():
     p = cli.build_parser()
     assert p.parse_args(["cartographer", "--dry-run"]).dry_run
+    assert p.parse_args(["analyze"]).command == "analyze"
 
 
 def test_exam_mark_publish_parse():
