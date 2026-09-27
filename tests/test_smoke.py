@@ -10,12 +10,24 @@ def test_config_values():
 
 
 @pytest.mark.parametrize("argv", [
-    ["exam", "--condition", "C1", "--set", "pilot"],
-    ["mark", "--condition", "C1", "--set", "pilot"],
     ["cartographer"],
 ])
 def test_every_subcommand_parses(argv):
     assert cli.main(argv) == 0
+
+
+def test_exam_mark_publish_parse():
+    p = cli.build_parser()
+    a = p.parse_args(["exam", "--condition", "C1", "--set", "pilot", "--repeat", "2"])
+    assert (a.qset, a.condition, a.repeat, a.allow_ide) == ("pilot", "C1", 2, False)
+    a = p.parse_args(["mark", "--condition", "C2", "--set", "train"])
+    assert a.repeat == 1
+
+
+def test_exam_refuses_without_api_key(monkeypatch):
+    monkeypatch.delenv("BOB_API_KEY", raising=False)
+    monkeypatch.delenv("BOB_BIN", raising=False)
+    assert cli.main(["exam", "--condition", "C1", "--set", "pilot"]) == 2
 
 
 def test_report_parses_and_needs_a_run():
