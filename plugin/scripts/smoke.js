@@ -90,6 +90,7 @@ const vscode = {
     workspaceFolders,
     getConfiguration: () => ({ get: (k, d) => (k in config ? config[k] : d) }),
     onDidChangeConfiguration: () => new Disposable(),
+    findFiles: async () => [],
     onDidChangeTextDocument: () => new Disposable(),
     createFileSystemWatcher: () => ({ onDidChange() {}, onDidCreate() {}, onDidDelete() {}, dispose() {} }),
     openTextDocument: async (uriOrOptions) => {

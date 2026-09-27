@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { describeProblems, parseContext, type Finding, type FunctionEntry, type ReadinessContext } from "./contract";
 import { ContextIndex, relativeTo } from "./contextIndex";
 import { getSettings, workspaceRoot } from "./settings";
-import { firstExisting, resolveTargetRoot } from "./targetRoot";
+import { exists, firstExisting, resolveTargetRoot } from "./targetRoot";
 
 /**
  * Finds, loads, validates and watches the context file. Keeps the last valid context when a
@@ -66,7 +66,29 @@ export class ContextStore implements vscode.Disposable {
     const candidates = [path.join(this.targetRoot, rel)];
     const inWorkspace = path.join(this.root, rel);
     if (inWorkspace !== candidates[0]) candidates.push(inWorkspace);
+    for (const c of candidates) if (await exists(c)) return candidates;
+    // Nothing at the usual places: the workspace may be opened one level above the examined
+    // repository (for example demo-tinydb/ inside the Blindspot folder). Use a single nested
+    // context file if there is exactly one, and make its repository the target root.
+    const nested = await this.findNested(rel);
+    if (nested) {
+      this.targetRoot = nested;
+      return [path.join(nested, rel), ...candidates];
+    }
     return candidates;
+  }
+
+  private async findNested(rel: string): Promise<string | undefined> {
+    try {
+      const found = await vscode.workspace.findFiles(`**/${rel}`, "**/{node_modules,.venv,venv,.git}/**", 3);
+      if (found.length !== 1) return undefined;
+      const full = found[0].fsPath;
+      const suffix = path.join(...rel.split("/"));
+      if (!full.endsWith(suffix)) return undefined;
+      return full.slice(0, full.length - suffix.length).replace(/[\\/]+$/, "");
+    } catch {
+      return undefined;
+    }
   }
 
   getContext(): ReadinessContext | undefined {
@@ -187,7 +209,7 @@ export class ContextStore implements vscode.Disposable {
       if (this.loadTimer) clearTimeout(this.loadTimer);
       this.loadTimer = setTimeout(() => void this.load(), 150);
     };
-    this.watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, `{${rel},target/*/${rel}}`));
+    this.watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, `{${rel},*/${rel},target/*/${rel}}`));
     this.watcher.onDidChange(schedule);
     this.watcher.onDidCreate(schedule);
     this.watcher.onDidDelete(schedule);
