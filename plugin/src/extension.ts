@@ -12,6 +12,10 @@ import { Log } from "./output";
 import { registerHover } from "./hover";
 import { PanelProvider } from "./panel/PanelProvider";
 import { Queue } from "./queue";
+import { ExamFeature } from "./report/examFeature";
+import { ReportStore } from "./report/reportStore";
+import { ReportTreeDecorations } from "./report/treeDecorations";
+import { guessRepoName } from "./report/reportLogic";
 import { ReleaseFeature } from "./release";
 import { SessionCoins } from "./session";
 import { StatusBar } from "./statusBar";
@@ -21,6 +25,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const state = new HighlightState(context.workspaceState);
   const session = new SessionCoins();
   const queue = new Queue(context.workspaceState, store);
+  const reports = new ReportStore();
 
   context.subscriptions.push(
     store,
@@ -29,7 +34,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     queue,
     new Decorations(store, state, context.extensionUri),
     new Diagnostics(store, state),
-    new StatusBar(store, state, session),
+    new StatusBar(store, state, session, reports),
+    reports,
+    new ReportTreeDecorations(reports),
     registerHover(store, state, queue),
     registerCodeLens(store, state, queue),
   );
@@ -52,16 +59,27 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   });
   const release = new ReleaseFeature(store, log, () => panel.currentTab === "release", () => panel.refresh());
   const onboarding = new OnboardingFeature(context.workspaceState, store, runner, log, () => panel.refresh());
+  const exam = new ExamFeature(reports, log, () => panel.refresh());
+  exam.repoName = () => {
+    const r = reports.getReport();
+    return r ? guessRepoName(r) : undefined;
+  };
   panel.addExtras(approval);
   panel.addExtras(release);
   panel.addExtras(onboarding);
+  panel.addExtras(exam);
+  context.subscriptions.push(
+    exam,
+    vscode.commands.registerCommand("bobReadiness.openExam", () => panel.reveal("exam")),
+    vscode.commands.registerCommand("bobReadiness.reloadReport", () => reports.load()),
+  );
   context.subscriptions.push(release);
   context.subscriptions.push(
     log,
     vscode.commands.registerCommand("bobReadiness.sendToBob", () => approval.sendToBob()),
   );
 
-  await store.load();
+  await Promise.all([store.load(), reports.load()]);
 }
 
 export function deactivate(): void {

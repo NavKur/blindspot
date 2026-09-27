@@ -1,13 +1,40 @@
-# Bob Readiness
+# Bob Readiness (the Blindspot plugin)
 
-A VS Code extension for IBM Bob IDE. It reads `.bob/context/readiness.json`, produced by the
-Blindspot context manager, and shows where Bob is sure but wrong or only partly right. A
-developer ticks findings, approves in a modal, and Bob edits the code on a new git branch. Tests
-run, and the developer keeps or discards the result.
+A VS Code extension for IBM Bob IDE, living in `plugin/` at the root of the Blindspot repository.
+It reads two files produced by the Blindspot engine and never calls the statistics code:
+
+- `results/report_latest.json` plus `results/history.jsonl` (docs/REPORT_SCHEMA.md): the exam
+  results. The plugin colours the file tree by heat, marks red modules, and shows the Exam tab
+  with overall metrics, reliability, modules worst first, worst functions, change over time,
+  run comparison and a Publish button. While no real run exists, `results/sim/` (simulated data
+  from `python cli.py simulate`) is used and labelled with a banner.
+- `.bob/context/readiness.json` (BUILD_PLAN.md section 2): per-function readiness and findings.
+  This drives line highlighting, hover cards, CodeLens, the Problems panel and the Review,
+  Testing, Release, Modernize and Onboarding tabs, and the human-in-the-loop flow where a
+  developer approves findings and Bob edits the code on a new git branch.
+
+Either file may be missing: each part of the plugin simply stays empty until its file exists.
 
 Screenshots: see `references/` for the target look (real screenshots come in phase 7).
 
-## What you get
+## Exam tab and tree colouring (report contract)
+
+- Explorer: red badge `!` for modules where `red` is true, colour by `heat` otherwise (five
+  bands, green to red), `?` when `low_n` is true (few answers). Files with no entry stay neutral.
+  Folders use the `directories` entries. Colours are theme colours `blindspot.red` and
+  `blindspot.heat0` to `blindspot.heat4`, so they can be changed in `workbench.colorCustomizations`.
+- Exam tab: banner when the data is simulated, run name, condition, generated time, target
+  commit, overall accuracy with the 95% interval, confidently wrong rate, Brier, ECE,
+  overconfidence, reliability bins, change over time (one line per condition), modules worst
+  first with per-file sparklines and family accuracy, worst functions and classes (click opens
+  the file), Compare runs (any two `report_<run>.json`), Publish context (runs
+  `bobReadiness.publishCommand` and shows its output) and Reload report.
+- Status bar: "Blindspot 89% C2" opens the Exam tab.
+- Paths in the report are relative to the examined repository. The plugin maps them onto
+  `target/<repo>` when `target.lock.json` exists (fetch it with `python cli.py target`), or onto
+  the workspace root, or onto `bobReadiness.targetRoot`.
+
+## What you get from the readiness context
 
 - Highlighting in any open file listed in the context: red tint and left border for functions
   where Bob was sure but wrong, blue for partly known, nothing for known. Yellow gutter dots on
@@ -39,6 +66,9 @@ Screenshots: see `references/` for the target look (real screenshots come in pha
 | `bobReadiness.useFakeBob` | `true` | Use `scripts/fake-bob.js` instead of real Bob. Real Bob costs Bobcoins |
 | `bobReadiness.testCommand` | `pytest -q` | Run after Bob makes changes, and by "Run tests" in the Release tab |
 | `bobReadiness.baseBranch` | `main` | Branch to return to when discarding |
+| `bobReadiness.resultsPath` | `results` | Folder with `report_latest.json` and `history.jsonl`. Falls back to `<folder>/sim` |
+| `bobReadiness.targetRoot` | empty | Folder the report paths map onto. Empty means `target/<repo>` from `target.lock.json`, else the workspace root |
+| `bobReadiness.publishCommand` | `python cli.py publish` | Run by the Publish button, in the workspace root. A workspace `.venv` python is used automatically |
 
 ## The readiness gate
 
@@ -70,10 +100,13 @@ workspace, so repeated questions are free.
     npm run build        # esbuild bundle to dist/
     npm test             # vitest unit tests (pure logic) plus a git integration test
     npm run lint
-    npm run smoke        # drives the bundled extension with fake Bob in a scratch copy of ../demo-tinydb
+    npm run smoke        # drives the bundled extension with fake Bob in a scratch copy of ../demo-tinydb,
+                         # then the Exam tab and tree colouring from ../results/sim
     npm run package      # produces bob-readiness-<version>.vsix
 
-Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open.
+Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open. To see the
+Exam tab and tree colouring instead, open the Blindspot repository root as the workspace (after
+`python cli.py target`), or point `bobReadiness.resultsPath` at the results folder.
 
 ## Demo workspace
 

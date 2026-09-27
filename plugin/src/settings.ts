@@ -8,6 +8,9 @@ export interface Settings {
   useFakeBob: boolean;
   testCommand: string;
   baseBranch: string;
+  resultsPath: string;
+  targetRoot: string;
+  publishCommand: string;
 }
 
 export function getSettings(): Settings {
@@ -19,6 +22,9 @@ export function getSettings(): Settings {
     useFakeBob: cfg.get<boolean>("useFakeBob", true),
     testCommand: cfg.get<string>("testCommand", "pytest -q"),
     baseBranch: cfg.get<string>("baseBranch", "main"),
+    resultsPath: cfg.get<string>("resultsPath", "results"),
+    targetRoot: cfg.get<string>("targetRoot", ""),
+    publishCommand: cfg.get<string>("publishCommand", "python cli.py publish"),
   };
 }
 

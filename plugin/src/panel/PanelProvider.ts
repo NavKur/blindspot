@@ -22,7 +22,11 @@ export type PanelMessage =
   | { type: "dismissRun" }
   | { type: "runTests" }
   | { type: "copyReleaseNotes" }
-  | { type: "ask"; question: string };
+  | { type: "ask"; question: string }
+  | { type: "openTargetFile"; file: string }
+  | { type: "compareRuns"; a: string; b: string }
+  | { type: "publish" }
+  | { type: "reloadReport" };
 
 /** Other features plug in here so the provider stays small. */
 export interface PanelExtras {
@@ -30,6 +34,8 @@ export interface PanelExtras {
   extraState?: () => Partial<PanelState>;
   /** Handle a message. Return true when handled. */
   handle?: (msg: PanelMessage) => Promise<boolean> | boolean;
+  /** Repo name to show in the header when there is no readiness context. */
+  repoName?: () => string | undefined;
 }
 
 export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposable {
@@ -96,7 +102,8 @@ export class PanelProvider implements vscode.WebviewViewProvider, vscode.Disposa
 
   refresh(): void {
     if (!this.view) return;
-    const state = buildPanelState(this.store.getIndex(), this.queue.selected, this.session.spent, this.activeTab);
+    const fallback = this.extras.map((e) => e.repoName?.()).find((n) => !!n);
+    const state = buildPanelState(this.store.getIndex(), this.queue.selected, this.session.spent, this.activeTab, fallback);
     for (const extra of this.extras) {
       if (extra.extraState) Object.assign(state, extra.extraState());
     }

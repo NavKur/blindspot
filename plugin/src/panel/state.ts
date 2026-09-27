@@ -16,11 +16,12 @@ export interface PanelState {
   release?: unknown;
   onboarding?: unknown;
   run?: unknown;
+  exam?: unknown;
   activeTab: TabId;
 }
 
-export type TabId = "onboarding" | "review" | "testing" | "release" | "modernize";
-export const TAB_IDS: TabId[] = ["onboarding", "review", "testing", "release", "modernize"];
+export type TabId = "exam" | "onboarding" | "review" | "testing" | "release" | "modernize";
+export const TAB_IDS: TabId[] = ["exam", "onboarding", "review", "testing", "release", "modernize"];
 
 export interface HeaderState {
   repoName: string;
@@ -94,9 +95,9 @@ export function toRow(finding: Finding, index: ContextIndex, selected: ReadonlyS
   };
 }
 
-export function buildHeader(ctx: ReadinessContext | undefined, sessionCoins: number): HeaderState {
+export function buildHeader(ctx: ReadinessContext | undefined, sessionCoins: number, fallbackRepoName?: string): HeaderState {
   return {
-    repoName: ctx?.repo.name ?? "no context",
+    repoName: ctx?.repo.name ?? fallbackRepoName ?? "no context",
     readiness: ctx ? percent(ctx.summary.readiness) : "--",
     sureButWrong: ctx?.summary.sure_but_wrong ?? 0,
     sessionCoins: sessionCoins.toFixed(1),
@@ -115,12 +116,13 @@ export function buildPanelState(
   selected: ReadonlySet<string>,
   sessionCoins: number,
   activeTab: TabId,
+  fallbackRepoName?: string,
 ): PanelState {
   const ctx = index?.context;
   const rows = (type: FindingType) => (index ? findingsOfType(index, type).map((f) => toRow(f, index, selected)) : []);
   return {
     hasContext: !!ctx,
-    header: buildHeader(ctx, sessionCoins),
+    header: buildHeader(ctx, sessionCoins, fallbackRepoName),
     tabs: { review: rows("review_risk"), testing: rows("test_gap"), modernize: rows("modernize") },
     footer: buildFooter(ctx, selected),
     activeTab,

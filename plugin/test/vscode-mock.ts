@@ -66,3 +66,12 @@ export class CancellationTokenSource {
 }
 export enum ProgressLocation { Notification = 15 }
 export const env = { clipboard: { writeText: async () => undefined } };
+export class ThemeColor { constructor(public id: string) {} }
+export class FileDecoration {
+  propagate = false;
+  constructor(public badge?: string, public tooltip?: string, public color?: unknown) {}
+}
+export class Disposable { constructor(private fn?: () => void) {} dispose(): void { this.fn?.(); } static from(...ds: { dispose(): void }[]): Disposable { return new Disposable(() => ds.forEach((d) => d.dispose())); } }
+export enum StatusBarAlignment { Left = 1, Right = 2 }
+(window as Record<string, unknown>).registerFileDecorationProvider = () => ({ dispose() {} });
+(window as Record<string, unknown>).createStatusBarItem = () => ({ show() {}, hide() {}, dispose() {} });

@@ -47,14 +47,17 @@ class Hover { constructor(c, r) { this.contents = c; this.range = r; } }
 class CodeLens { constructor(r, c) { this.range = r; this.command = c; } }
 class Diagnostic { constructor(r, m, s) { this.range = r; this.message = m; this.severity = s; } }
 class ThemeColor { constructor(id) { this.id = id; } }
+class FileDecoration { constructor(badge, tooltip, color) { this.badge = badge; this.tooltip = tooltip; this.color = color; this.propagate = false; } }
 class RelativePattern { constructor(b, p) { this.base = b; this.pattern = p; } }
 class CancellationTokenSource { constructor() { this.em = new EventEmitter(); this.token = { isCancellationRequested: false, onCancellationRequested: this.em.event }; } cancel() { this.token.isCancellationRequested = true; this.em.fire(); } dispose() {} }
 const config = { useFakeBob: true, testCommand, baseBranch: "main" };
+const opened = [];
 const workspaceFolders = [{ uri: Uri.file(root), name: "smoke", index: 0 }];
 const commands = new Map();
 let webviewProvider;
+let decorationProvider;
 const vscode = {
-  Disposable, EventEmitter, Uri, Position, Range, Selection, MarkdownString, Hover, CodeLens, Diagnostic, ThemeColor, RelativePattern, CancellationTokenSource,
+  Disposable, EventEmitter, Uri, Position, Range, Selection, MarkdownString, Hover, CodeLens, Diagnostic, ThemeColor, FileDecoration, RelativePattern, CancellationTokenSource,
   OverviewRulerLane: { Left: 1, Center: 2, Right: 4 }, StatusBarAlignment: { Left: 1, Right: 2 },
   DiagnosticSeverity: { Error: 0, Warning: 1, Information: 2, Hint: 3 }, ProgressLocation: { Notification: 15 }, TextEditorRevealType: { InCenter: 1 },
   window: {
@@ -64,6 +67,7 @@ const vscode = {
     createStatusBarItem: () => ({ show() {}, hide() {}, dispose() {}, text: "", tooltip: "" }),
     createOutputChannel: () => ({ appendLine: (l) => process.env.SMOKE_VERBOSE && console.log("   | " + l), show() {}, dispose() {} }),
     registerWebviewViewProvider: (id, p) => { webviewProvider = p; return new Disposable(); },
+    registerFileDecorationProvider: (p) => { decorationProvider = p; return new Disposable(); },
     showInformationMessage: async (m) => { messages.info.push(m); return undefined; },
     showWarningMessage: async (m, opts) => { messages.warn.push(m); return opts && opts.modal ? modalAnswer : undefined; },
     showErrorMessage: async (m) => { messages.error.push(m); return undefined; },
@@ -76,7 +80,7 @@ const vscode = {
     onDidChangeConfiguration: () => new Disposable(),
     onDidChangeTextDocument: () => new Disposable(),
     createFileSystemWatcher: () => ({ onDidChange() {}, onDidCreate() {}, onDidDelete() {}, dispose() {} }),
-    openTextDocument: async (uri) => ({ lineCount: 1000, lineAt: (n) => ({ range: new Range(n, 0, n, 0) }), uri }),
+    openTextDocument: async (uri) => { opened.push(uri.fsPath); return { lineCount: 1000, lineAt: (n) => ({ range: new Range(n, 0, n, 0) }), uri }; },
   },
   languages: {
     registerHoverProvider: () => new Disposable(),
@@ -214,6 +218,49 @@ async function waitFor(pred, label, ms = 120000) { const t0 = Date.now(); while 
 
   for (const s of subscriptions) { try { s.dispose(); } catch { /* ignore */ } }
   fs.rmSync(root, { recursive: true, force: true });
+
+  // ---------- Scenario 2: the Blindspot repository itself as the workspace (report contract) ----------
+  console.log("\n-- Exam tab from results/sim in the repository root");
+  const repoRoot = path.resolve(extRoot, "..");
+  workspaceFolders[0] = { uri: Uri.file(repoRoot), name: "blindspot", index: 0 };
+  states.length = 0;
+  const subs2 = [];
+  await ext.activate({ subscriptions: subs2, workspaceState: memento(), globalState: memento(), extensionUri: Uri.file(extRoot), extensionPath: extRoot });
+  webviewProvider.resolveWebviewView(view);
+  await send({ type: "ready" });
+  await waitFor(() => last() && last().exam, "exam state", 10000);
+  const x = last().exam;
+  check(x && x.simulated && x.usingSim, "simulated banner flags set");
+  check(x && x.run.name === "train_C2_r1" && x.overall.accuracy === "89%", "run and overall accuracy: " + (x && x.run.name + " " + x.overall.accuracy));
+  check(x && x.modules.map((m) => m.module).slice(0, 2).join(",") === "tinydb,tinydb.utils", "modules worst first");
+  check(x && x.runs.length === 3, "three run reports found: " + (x && x.runs.join(",")));
+  check(x && x.history.axis.length === 3 && x.history.accuracy.length === 3, "history chart has three conditions");
+  check(last().header.repoName === "tinydb" && !last().hasContext, "header falls back to the report's repo name");
+  await send({ type: "compareRuns", a: "train_C1_r1", b: "train_C2_r1" });
+  await waitFor(() => last().exam && last().exam.compare, "comparison", 10000);
+  check(last().exam.compare.rows.length === 8 && last().exam.compare.rows.some((r) => r.delta.startsWith("+")), "comparison rows with deltas");
+  const targetRoot = path.join(repoRoot, "target", "tinydb");
+  const deco = (rel) => decorationProvider.provideFileDecoration(Uri.file(path.join(targetRoot, rel)));
+  const utils = deco("tinydb/utils.py");
+  check(utils && utils.badge === "!" && utils.color.id === "blindspot.red", "red module gets a red badge");
+  const init = deco("tinydb/__init__.py");
+  check(init && init.badge === "!?" && init.tooltip.includes("Few answers"), "red plus few answers marker");
+  const queries = deco("tinydb/queries.py");
+  check(queries && queries.badge === undefined && queries.color.id === "blindspot.heat0", "cool module coloured by heat, no badge");
+  const ops = deco("tinydb/operations.py");
+  check(ops && ops.badge === "?" && ops.color.id === "blindspot.heat1", "few answers marker on a non red module");
+  check(deco("tinydb") && deco("tinydb").color.id === "blindspot.heat0", "directory coloured from directories[]");
+  check(deco("README.rst") === undefined && deco("tinydb/version.py") === undefined, "unexamined files stay neutral");
+  check(decorationProvider.provideFileDecoration(Uri.file(path.join(repoRoot, "cli.py"))) === undefined, "files outside the target root stay neutral");
+  await send({ type: "openTargetFile", file: "tinydb/table.py" });
+  await sleep(100);
+  check(opened.some((p) => p.endsWith(path.join("target", "tinydb", "tinydb", "table.py"))), "worst entity click opens the target file");
+  await send({ type: "publish" });
+  await waitFor(() => last().exam && last().exam.publish && !last().exam.publish.running, "publish command", 60000);
+  const pub = last().exam.publish;
+  check(pub && pub.command.includes("cli.py publish"), "publish runs the CLI: " + (pub && pub.command));
+  check(pub && (pub.ok || /invalid choice|not implemented/i.test(pub.output)), "publish result shown (ok or CLI says not implemented yet)");
+  for (const s of subs2) { try { s.dispose(); } catch { /* ignore */ } }
   console.log(failures ? `\n${failures} check(s) failed` : "\nAll smoke checks passed");
   process.exit(failures ? 1 : 0);
 })().catch((err) => { console.error(err); process.exit(1); });

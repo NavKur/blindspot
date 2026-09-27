@@ -12,3 +12,11 @@ and maps where Bob is confidently wrong. Full README comes in step 34.
     pip install -r requirements.txt
     pytest -q
     python cli.py --help
+
+## Bob IDE plugin
+
+The VS Code extension for Bob IDE lives in `plugin/`. It reads `results/report_latest.json`
+(see docs/REPORT_SCHEMA.md) and, when present, `.bob/context/readiness.json`. See plugin/README.md
+for the build, the settings and the demo workspace.
+
+    cd plugin && npm install && npm run build && npm test && npm run package

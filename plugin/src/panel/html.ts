@@ -103,6 +103,37 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
 .notice { font-size: 11px; color: var(--vscode-descriptionForeground); margin-top: 6px; }
 
 .result h2 { font-size: 15px; margin: 0 0 10px; font-weight: 600; }
+
+.banner { background: var(--yellow); color: #161616; padding: 6px 10px; font-weight: 600; margin-bottom: 10px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 14px; margin: 6px 0 10px; }
+.grid .stat b { font-size: 16px; }
+.heat { display: inline-block; width: 10px; height: 10px; flex: none; position: relative; top: 1px; margin-right: 6px; }
+.h0 { background: #24a148; } .h1 { background: #8fd14f; } .h2 { background: #f1c21b; } .h3 { background: #ff832b; } .h4 { background: #da1e28; }
+.hred { background: var(--red); outline: 2px solid var(--red); outline-offset: 1px; }
+.mod { border: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #3c3c3c)); padding: 8px 10px; margin-bottom: 6px; }
+.mod .top { display: flex; align-items: center; gap: 6px; }
+.mod .top a { cursor: pointer; color: var(--blue); text-decoration: none; font-weight: 600; }
+.mod .top a:hover { text-decoration: underline; }
+.mod .nums { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; color: var(--vscode-descriptionForeground); font-size: 12px; }
+.mod .reasons { color: var(--red); font-size: 12px; margin-top: 3px; }
+.tag { display: inline-block; font-size: 11px; padding: 0 6px; margin-left: auto; }
+.tag.red { background: var(--red-bg); } .tag.few { background: rgba(241,194,27,0.28); }
+svg.spark { vertical-align: middle; margin-left: auto; }
+svg.spark polyline, svg.chart polyline { fill: none; stroke-width: 1.5; }
+.chart-wrap { margin: 6px 0 10px; }
+.legend { display: flex; gap: 12px; font-size: 11px; color: var(--vscode-descriptionForeground); margin-top: 2px; }
+.legend i { display: inline-block; width: 10px; height: 3px; vertical-align: middle; margin-right: 4px; }
+.c0 { stroke: #8a3ffc; background: #8a3ffc; } .c1 { stroke: #4589ff; background: #4589ff; } .c2 { stroke: #24a148; background: #24a148; } .c3 { stroke: #ff832b; background: #ff832b; }
+table.cmp { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.cmp th, table.cmp td { text-align: left; padding: 3px 4px; border-bottom: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, #3c3c3c)); }
+table.cmp td.up { color: var(--green); } table.cmp td.down { color: var(--red); }
+.selects { display: flex; gap: 6px; align-items: center; margin: 6px 0; }
+select { font-family: inherit; font-size: 12px; background: var(--vscode-dropdown-background); color: var(--vscode-dropdown-foreground); border: 1px solid var(--vscode-dropdown-border, transparent); padding: 3px; }
+.bins { display: flex; gap: 4px; align-items: flex-end; height: 50px; margin: 4px 0; }
+.bins .bin { flex: 1; text-align: center; font-size: 10px; color: var(--vscode-descriptionForeground); display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+.bins .bin i { display: block; background: var(--blue); min-height: 1px; }
+.bins .bin.empty i { background: transparent; border-top: 1px dashed var(--vscode-descriptionForeground); }
+pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.15)); padding: 8px; font-size: 11px; white-space: pre-wrap; max-height: 200px; overflow: auto; margin: 6px 0; }
 .files .kv span:last-child { font-family: var(--vscode-editor-font-family), monospace; font-size: 12px; }
 .files .kv a { cursor: pointer; text-decoration: none; color: var(--vscode-foreground); }
 .files .kv a:hover { text-decoration: underline; }
@@ -127,7 +158,7 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
 (function () {
   const vscode = acquireVsCodeApi();
   const TABS = [
-    ["onboarding", "Onboarding"], ["review", "Review"], ["testing", "Testing"], ["release", "Release"], ["modernize", "Modernize"],
+    ["exam", "Exam"], ["onboarding", "Onboarding"], ["review", "Review"], ["testing", "Testing"], ["release", "Release"], ["modernize", "Modernize"],
   ];
   let state = null;
   let draft = "";
@@ -171,6 +202,7 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
       case "testing": main.innerHTML = renderFindings(state.tabs.testing, "No test gaps in the context file."); break;
       case "modernize": main.innerHTML = renderFindings(state.tabs.modernize, "No modernization findings in the context file."); break;
       case "release": main.innerHTML = renderRelease(state.release); break;
+      case "exam": main.innerHTML = renderExam(state.exam); break;
       case "onboarding": main.innerHTML = renderOnboarding(state.onboarding); break;
     }
     if (state.activeTab === "onboarding") {
@@ -250,6 +282,74 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
     return html;
   }
 
+  function renderExam(x) {
+    if (!x) return '<div class="empty">No Blindspot report found. Expected results/report_latest.json (or results/sim/report_latest.json for simulated data) in the workspace. Run "python cli.py report" or "python cli.py simulate".</div>';
+    let html = "";
+    if (x.simulated || x.usingSim) html += '<div class="banner">Simulated data' + (x.usingSim ? " from results/sim" : "") + '. Not a real Bob run.</div>';
+    if (x.error) html += '<div class="tests fail"><b>Report problem</b> ' + esc(x.error) + "</div>";
+    html += '<div class="kv"><span>Run</span><span class="mono">' + esc(x.run.name) + "</span></div>" +
+      '<div class="kv"><span>Condition</span><span>' + esc(x.run.condition) + ", " + esc(x.run.set) + " set, repeat " + x.run.repeat + "</span></div>" +
+      '<div class="kv"><span>Generated</span><span>' + esc(x.generatedAt) + "</span></div>" +
+      '<div class="kv"><span>Target commit</span><span class="mono">' + esc(x.targetCommit) + "</span></div>" +
+      '<div class="kv"><span>Answers</span><span>' + x.counts.scored + " scored, " + x.counts.excluded + " excluded</span></div>";
+    html += '<h3>Overall</h3><div class="grid">' +
+      stat(x.overall.accuracy, "accuracy, 95% interval " + x.overall.interval) +
+      stat(x.overall.cw, "confidently wrong (" + x.overall.cwCount + ")") +
+      stat(x.overall.brier, "Brier score, lower is better") +
+      stat(x.overall.ece, "calibration error (ECE)") +
+      stat(x.overall.overconfidence, "overconfidence (stated minus actual)") +
+      stat(x.overall.meanP, "mean stated confidence") + "</div>";
+    html += '<h3>Reliability</h3><div class="bins">' + x.reliability.map((b) =>
+      '<div class="bin' + (b.n ? "" : " empty") + '" title="' + esc(b.label) + ": " + b.n + " answers" + (b.accuracy == null ? "" : ", accuracy " + Math.round(b.accuracy * 100) + "%, stated " + Math.round(b.meanP * 100) + "%") + '"><i style="height:' + (b.accuracy == null ? 0 : Math.max(2, Math.round(b.accuracy * 40))) + 'px"></i><span>' + esc(b.label.split(" to ")[0]) + "</span></div>").join("") + "</div>" +
+      '<div class="muted" style="font-size:11px">Bars: accuracy inside each stated confidence band. Dashed: no answers in that band.</div>';
+    if (x.history.axis.length > 1) {
+      html += "<h3>Change over time</h3>" + chart("Accuracy", x.history.accuracy, x) + chart("Confidently wrong rate", x.history.cw, x);
+    } else if (x.history.axis.length === 1) {
+      html += '<h3>Change over time</h3><div class="muted">One report so far (' + esc(x.history.axis[0]) + "). The chart appears after the next run.</div>";
+    }
+    html += "<h3>Modules, worst first</h3>";
+    if (x.redModules.length) html += '<div class="muted" style="margin-bottom:6px">Red: ' + esc(x.redModules.join(", ")) + "</div>";
+    for (const m of x.modules) {
+      html += '<div class="mod"><div class="top"><i class="heat ' + (m.red ? "hred" : "h" + m.bucket) + '" title="heat ' + m.heat.toFixed(2) + '"></i>' +
+        '<a data-target="' + esc(m.path) + '" title="' + esc(m.path) + '">' + esc(m.module) + "</a>" +
+        (m.red ? '<span class="tag red">red</span>' : "") + (m.lowN ? '<span class="tag few">few answers</span>' : "") +
+        (m.spark ? '<svg class="spark" width="60" height="16" viewBox="0 0 60 16"><polyline class="c1" points="' + m.spark + '"></polyline></svg>' : "") + "</div>" +
+        '<div class="nums"><span>accuracy ' + esc(m.accuracy) + " (" + esc(m.interval) + ")</span><span>confidently wrong " + esc(m.cw) + "</span><span>n " + m.n + "</span><span>overconfidence " + esc(m.overconfidence) + "</span></div>" +
+        (m.families.length ? '<div class="nums">' + m.families.map((f) => "<span>" + esc(f.name) + " " + esc(f.accuracy) + "</span>").join("") + "</div>" : "") +
+        (m.redReasons.length ? '<div class="reasons">' + esc(m.redReasons.join("; ")) + "</div>" : "") + "</div>";
+    }
+    if (x.worst.length) {
+      html += "<h3>Worst functions and classes</h3>";
+      for (const w of x.worst) {
+        html += '<div class="kv"><a class="mono" data-target="' + esc(w.path) + '" style="cursor:pointer;color:var(--blue);text-decoration:none" title="' + esc(w.path) + '">' + esc(w.entity.split(":").pop()) + "</a><span>" + esc(w.accuracyLabel) + " of " + w.n + ", " + w.cw_count + " confidently wrong</span></div>";
+      }
+    }
+    if (x.runs.length > 1) {
+      const opts = (sel) => x.runs.map((r) => '<option value="' + esc(r) + '"' + (r === sel ? " selected" : "") + ">" + esc(r) + "</option>").join("");
+      const a = (x.compare && x.compare.a) || x.runs[0];
+      const b = (x.compare && x.compare.b) || x.runs[x.runs.length - 1];
+      html += '<h3>Compare runs</h3><div class="selects"><select id="cmp-a">' + opts(a) + '</select><span>vs</span><select id="cmp-b">' + opts(b) + '</select><button class="btn secondary" id="cmp-go" style="width:auto">Compare</button></div>';
+      if (x.compare) {
+        html += '<table class="cmp"><tr><th>module</th><th>' + esc(x.compare.a) + "</th><th>" + esc(x.compare.b) + "</th><th>change</th></tr>" +
+          x.compare.rows.map((r) => "<tr><td>" + esc(r.label) + (r.redA ? " (red)" : "") + (r.redB && !r.redA ? " (now red)" : "") + "</td><td>" + esc(r.a) + "</td><td>" + esc(r.b) + '</td><td class="' + (r.deltaValue > 0 ? "up" : r.deltaValue < 0 ? "down" : "") + '">' + esc(r.delta) + "</td></tr>").join("") + "</table>";
+      }
+    }
+    if (x.publish) {
+      html += "<h3>Publish</h3>" + (x.publish.running ? '<div class="muted"><span class="spin"></span>Running ' + esc(x.publish.command) + "</div>" :
+        '<div class="tests ' + (x.publish.ok ? "" : "fail") + '"><b>' + (x.publish.ok ? "Published" : "Publish failed") + "</b> " + esc(x.publish.command) + "<pre>" + esc(x.publish.output) + "</pre></div>");
+    }
+    html += '<div class="muted" style="font-size:11px;margin-top:10px">Reading ' + esc(x.resultsDir) + "</div>";
+    return html;
+  }
+  function stat(value, label) { return '<div class="stat"><b>' + esc(value) + "</b><span>" + esc(label) + "</span></div>"; }
+  function chart(title, lines, x) {
+    const w = x.history.width, h = x.history.height;
+    return '<div class="chart-wrap"><div class="muted" style="font-size:11px">' + esc(title) + '</div><svg class="chart" width="100%" height="' + h + '" viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none">' +
+      '<line x1="0" y1="' + (h - 2) + '" x2="' + w + '" y2="' + (h - 2) + '" stroke="var(--vscode-descriptionForeground)" stroke-width="0.5"></line>' +
+      lines.map((l, i) => '<polyline class="c' + (i % 4) + '" points="' + l.points + '"></polyline>').join("") + "</svg>" +
+      '<div class="legend">' + lines.map((l, i) => '<span><i class="c' + (i % 4) + '"></i>' + esc(l.condition) + "</span>").join("") + "<span>" + esc(x.history.axis[0]) + " to " + esc(x.history.axis[x.history.axis.length - 1]) + "</span></div></div>";
+  }
+
   function renderRun(run) {
     let html = '<div class="result"><h2>' + esc(run.title) + "</h2>";
     html += '<div class="kv"><span>Branch</span><span class="mono" style="color:var(--blue)">' + esc(run.branch) + "</span></div>";
@@ -290,6 +390,11 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
     }
     if (state.activeTab === "onboarding") { foot.style.display = "none"; return; }
     foot.style.display = "";
+    if (state.activeTab === "exam") {
+      foot.innerHTML = '<div class="btns"><button class="btn" id="publish"' + (!state.exam || (state.exam.publish && state.exam.publish.running) ? " disabled" : "") + ' title="Runs the publish command and shows its output. Never publish while an exam is running.">Publish context</button>' +
+        '<button class="btn secondary" id="reload-report">Reload report</button></div>';
+      return;
+    }
     if (state.activeTab === "release") {
       foot.innerHTML = '<button class="btn secondary" id="run-tests"' + (state.release && state.release.tests && state.release.tests.kind === "running" ? " disabled" : "") + ">Run tests</button>" +
         '<button class="btn secondary" id="copy-notes">Copy release notes</button>';
@@ -301,9 +406,10 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
   }
 
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-tab],[data-open],[data-diff],[data-ask],#send,#keep,#discard,#cancel,#dismiss,#run-tests,#copy-notes,#ask-btn");
+    const t = e.target.closest("[data-tab],[data-open],[data-diff],[data-ask],[data-target],#send,#keep,#discard,#cancel,#dismiss,#run-tests,#copy-notes,#ask-btn,#publish,#reload-report,#cmp-go");
     if (!t) return;
     if (t.dataset.tab) { post({ type: "setTab", tab: t.dataset.tab }); return; }
+    if (t.dataset.target) { post({ type: "openTargetFile", file: t.dataset.target }); return; }
     if (t.dataset.open) { post({ type: "openFile", file: t.dataset.open, line: Number(t.dataset.line || 1) }); return; }
     if (t.dataset.diff) { post({ type: "openDiff", file: t.dataset.diff }); return; }
     if (t.dataset.ask) { post({ type: "ask", question: t.dataset.ask }); return; }
@@ -316,6 +422,9 @@ pre.code { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0
       case "run-tests": post({ type: "runTests" }); break;
       case "copy-notes": post({ type: "copyReleaseNotes" }); break;
       case "ask-btn": ask(); break;
+      case "publish": post({ type: "publish" }); break;
+      case "reload-report": post({ type: "reloadReport" }); break;
+      case "cmp-go": post({ type: "compareRuns", a: $("cmp-a").value, b: $("cmp-b").value }); break;
     }
   });
   document.addEventListener("change", (e) => {

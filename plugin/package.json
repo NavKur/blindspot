@@ -67,6 +67,16 @@
         "command": "bobReadiness.sendToBob",
         "title": "Send Selected Findings to Bob",
         "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.openExam",
+        "title": "Open Exam Tab",
+        "category": "Bob Readiness"
+      },
+      {
+        "command": "bobReadiness.reloadReport",
+        "title": "Reload Blindspot Report",
+        "category": "Bob Readiness"
       }
     ],
     "configuration": {
@@ -101,6 +111,21 @@
           "type": "string",
           "default": "main",
           "description": "Branch to return to when discarding Bob's changes."
+        },
+        "bobReadiness.resultsPath": {
+          "type": "string",
+          "default": "results",
+          "description": "Folder with report_latest.json and history.jsonl from the Blindspot engine, relative to the workspace. Falls back to <folder>/sim when only simulated data exists."
+        },
+        "bobReadiness.targetRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Folder the report paths map onto. Empty means target/<repo> from target.lock.json when present, otherwise the workspace root."
+        },
+        "bobReadiness.publishCommand": {
+          "type": "string",
+          "default": "python cli.py publish",
+          "description": "Command run by the Publish button in the Exam tab, in the workspace root. A workspace .venv python is used automatically."
         }
       }
     },
@@ -147,7 +172,63 @@
           "contextualTitle": "Bob Readiness"
         }
       ]
-    }
+    },
+    "colors": [
+      {
+        "id": "blindspot.red",
+        "description": "Explorer colour for red modules (over the Blindspot thresholds).",
+        "defaults": {
+          "dark": "#fa4d56",
+          "light": "#da1e28",
+          "highContrast": "#ff8389"
+        }
+      },
+      {
+        "id": "blindspot.heat0",
+        "description": "Explorer colour for examined files with heat below 0.2.",
+        "defaults": {
+          "dark": "#42be65",
+          "light": "#198038",
+          "highContrast": "#6fdc8c"
+        }
+      },
+      {
+        "id": "blindspot.heat1",
+        "description": "Explorer colour for heat 0.2 to 0.4.",
+        "defaults": {
+          "dark": "#8fd14f",
+          "light": "#4d8c1f",
+          "highContrast": "#b5e27a"
+        }
+      },
+      {
+        "id": "blindspot.heat2",
+        "description": "Explorer colour for heat 0.4 to 0.6.",
+        "defaults": {
+          "dark": "#f1c21b",
+          "light": "#b28600",
+          "highContrast": "#fddc69"
+        }
+      },
+      {
+        "id": "blindspot.heat3",
+        "description": "Explorer colour for heat 0.6 to 0.8.",
+        "defaults": {
+          "dark": "#ff832b",
+          "light": "#ba4e00",
+          "highContrast": "#ffb784"
+        }
+      },
+      {
+        "id": "blindspot.heat4",
+        "description": "Explorer colour for heat 0.8 and above.",
+        "defaults": {
+          "dark": "#fa4d56",
+          "light": "#da1e28",
+          "highContrast": "#ff8389"
+        }
+      }
+    ]
   },
   "scripts": {
     "build": "node esbuild.mjs",

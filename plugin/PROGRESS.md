@@ -61,7 +61,21 @@ from "Next".
 - README.md: features, install from .vsix, settings, gate table, flow, development, demo setup.
 - Packaged: bob-readiness-0.0.1.vsix (version bump to 0.1.0 is phase 7, by Aziz).
 
+- 27 Sep: merged origin/main (report contract, simulated results, scan, stats, target lock),
+  moved extension/ to plugin/ (main's .gitignore and .bobignore already expected that path).
+  Added the report contract as a second data source: src/report/reportContract.ts (zod for
+  report_latest.json and history.jsonl), reportLogic.ts (heat buckets, tree colouring rule,
+  worst-first ordering, run comparison, history series, sparkline points), reportStore.ts
+  (results folder with results/sim fallback, target root from target.lock.json, watching,
+  per-run reports), treeDecorations.ts (FileDecorationProvider: red badge, heat colour, few
+  answers marker, neutral when not examined), examFeature.ts + Exam tab in the panel (banner,
+  overview, reliability, change over time, modules, worst entities, compare runs, Publish,
+  reload), status bar "Blindspot 89% C2". Smoke script scenario 2 covers all of it against
+  results/sim and target/tinydb. Python suite on the merged tree: 68 passed, 1 skipped.
+
 ## Next
+- Teammate: `python cli.py publish` (step 23). The Publish button already runs it and shows
+  the output; today the CLI reports an invalid choice.
 - Phase 7 (Aziz): go/no-go with real Bob, switch useFakeBob off for one approval and one
   onboarding question, screenshots, version 0.1.0, tag.
 
@@ -77,6 +91,10 @@ from "Next".
   bobReadiness.bobCommand. Add Bob's flag that disables edits for onboarding if one exists.
 
 ## Needs Aziz
+- Exam tab by hand: open the repository root in Bob IDE after `python cli.py target`. The
+  Explorer shows target/tinydb/tinydb/utils.py and __init__.py with a red badge, other tinydb
+  files tinted by heat, operations.py with a "?" marker. The Exam tab shows the simulated
+  banner, metrics, chart, modules, compare and Publish (which fails until step 23 exists).
 - Phase 5 by hand: make two small commits touching tinydb/table.py in the demo workspace, open
   the Release tab: since v4.9.0, commits, changed functions, readiness bars, verdict and notes.
   Run tests shows 226 passed. Copy release notes puts markdown on the clipboard.
