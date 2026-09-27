@@ -84,9 +84,11 @@ A "Getting started" walkthrough (Help, Welcome) covers the four steps.
 
 1. `npm install && npm run package` produces `bob-readiness-<version>.vsix`.
 2. In Bob IDE: Extensions view, the "..." menu, "Install from VSIX", pick the file.
-3. Open the Blindspot repository (Exam and Heatmap from `results/sim`, files under
-   `target/tinydb` after `python cli.py target`) or a repository that has
-   `.bob/context/readiness.json` (highlights and the approval flow).
+3. Run `python cli.py publish --run test_C1_r1` in the Blindspot repository, then open either
+   `target/tinydb` (highlights, hovers, CodeLens, Problems, every tab, Exam tab from
+   `.bob/blindspot`, Publish button) or the repository root (Exam tab from `results/`, tree
+   colouring and highlights inside `target/tinydb`). Any other repository with a
+   `.bob/context/readiness.json` also gets highlights and the approval flow.
 
 ## Settings
 
@@ -100,9 +102,9 @@ A "Getting started" walkthrough (Help, Welcome) covers the four steps.
 | `bobReadiness.baseBranch` | `main` | Branch to return to when discarding |
 | `bobReadiness.sessionBudget` | `5` | Bobcoins the plugin may spend this session. 0 means no limit. Ignored with fake Bob |
 | `bobReadiness.openDiffAfterRun` | `true` | Open the first changed file's diff when Bob and the tests finish |
-| `bobReadiness.resultsPath` | `results` | Folder with `report_latest.json` and `history.jsonl`. Falls back to `<folder>/sim` |
-| `bobReadiness.targetRoot` | empty | Folder the report and context paths map onto |
-| `bobReadiness.publishCommand` | `python cli.py publish` | Run by the Publish button. A workspace `.venv` python is used automatically |
+| `bobReadiness.resultsPath` | `results` | Folder with `report_latest.json` and `history.jsonl`. Falls back to `<folder>/sim`, then to `.bob/blindspot` (the copies `python cli.py publish` writes into the examined repository) |
+| `bobReadiness.targetRoot` | empty | Folder the report and context paths map onto. Empty means `target/<repo>` from `target.lock.json`, else the workspace |
+| `bobReadiness.publishCommand` | `python cli.py publish` | Run by the Publish button in the Blindspot engine folder (the workspace or the nearest parent with `cli.py`), with that folder's `.venv` python and `--dest` for the repository being shown |
 
 ## The readiness gate
 
@@ -119,7 +121,8 @@ A "Getting started" walkthrough (Help, Welcome) covers the four steps.
     npm test             # vitest: pure logic plus a git integration test
     npm run lint
     npm run smoke        # drives the bundled plugin against a stub VS Code API: fake Bob in a copy of
-                         # ../demo-tinydb, then results/sim plus a fake context in a copy of the repo layout
+                         # ../demo-tinydb, then results/sim plus a fake context in a copy of the repo layout,
+                         # then target/tinydb as the workspace after a real `cli.py publish --sim`
     npm run package      # bob-readiness-<version>.vsix
 
 Press F5 in VS Code to start the Extension Development Host with `../demo-tinydb` open.

@@ -260,7 +260,8 @@ async function waitFor(pred, label, ms = 120000) { const t0 = Date.now(); while 
   // A copy of the Blindspot layout: results/sim, target.lock.json, target/tinydb, cli.py and the engine package for Publish.
   execFileSync("rsync", ["-a", path.join(realRoot, "results", "sim") + "/", path.join(repoRoot, "results", "sim") + "/"]);
   fs.copyFileSync(path.join(realRoot, "target.lock.json"), path.join(repoRoot, "target.lock.json"));
-  execFileSync("rsync", ["-a", "--exclude", ".venv", path.join(realRoot, "target", "tinydb") + "/", path.join(repoRoot, "target", "tinydb") + "/"]);
+  // A clean target: whatever the real checkout has published is left out so the fake context below is the only one.
+  execFileSync("rsync", ["-a", "--exclude", ".venv", "--exclude", ".bob", "--exclude", "AGENTS.md", "--exclude", ".git", path.join(realRoot, "target", "tinydb") + "/", path.join(repoRoot, "target", "tinydb") + "/"]);
   fs.copyFileSync(path.join(realRoot, "cli.py"), path.join(repoRoot, "cli.py"));
   execFileSync("rsync", ["-a", "--exclude", "__pycache__", path.join(realRoot, "blindspot") + "/", path.join(repoRoot, "blindspot") + "/"]);
   // Fake readiness context at the workspace root, paths relative to the target repo, lines aligned to it.
@@ -273,8 +274,9 @@ async function waitFor(pred, label, ms = 120000) { const t0 = Date.now(); while 
   const ctxJson = JSON.parse(fs.readFileSync(fakeContext, "utf8"));
   ctxJson.files.push({ path: "tinydb/version.py", readiness: 0.95, status: "ready", imports: [] });
   fs.writeFileSync(fakeContext, JSON.stringify(ctxJson, null, 2));
+  // The temp layout only has simulated results, so publish the simulated run (the plugin adds --dest itself).
   const venvPython = path.join(realRoot, ".venv", "bin", "python");
-  if (fs.existsSync(venvPython)) config.publishCommand = `"${venvPython}" cli.py publish`;
+  config.publishCommand = `"${fs.existsSync(venvPython) ? venvPython : "python3"}" cli.py publish --sim`;
   workspaceFolders[0] = { uri: Uri.file(repoRoot), name: "blindspot", index: 0 };
   states.length = 0;
   const subs2 = [];
@@ -363,9 +365,63 @@ async function waitFor(pred, label, ms = 120000) { const t0 = Date.now(); while 
   await send({ type: "publish" });
   await waitFor(() => last().exam && last().exam.publish && !last().exam.publish.running, "publish command", 60000);
   const pub = last().exam.publish;
-  check(pub && pub.command.includes("cli.py publish"), "publish runs the CLI: " + (pub && pub.command));
-  check(pub && (pub.ok || /invalid choice|not implemented/i.test(pub.output)), "publish result shown (ok or CLI says not implemented yet)");
+  check(pub && pub.command.includes("cli.py publish") && pub.command.includes(`--dest "${targetRoot}"`), "publish runs the CLI in the engine root with --dest: " + (pub && pub.command));
+  check(pub && pub.ok && /SIMULATED/.test(pub.output) && /\.bob\/context\/readiness\.json/.test(pub.output), "publish succeeded and listed what it wrote: " + (pub && pub.output.split("\n")[0]));
+  check(fs.existsSync(path.join(targetRoot, ".bob", "context", "readiness.json")) && fs.existsSync(path.join(targetRoot, ".bob", "blindspot", "report_latest.json")) && fs.existsSync(path.join(targetRoot, "AGENTS.md")), "published files exist in target/tinydb");
   for (const s of subs2) { try { s.dispose(); } catch { /* ignore */ } }
+
+  // ---------- Scenario 3: the examined repository (target/tinydb) as the workspace, after publish ----------
+  console.log("\n-- target/tinydb as the workspace: Exam tab from .bob/blindspot, highlights from .bob/context, Publish via the parent engine");
+  git(["init", "-q", "-b", "main"], targetRoot);
+  git(["config", "user.email", "smoke@test"], targetRoot);
+  git(["config", "user.name", "smoke"], targetRoot);
+  // publish ran before .git existed, so publish once more to get the exclude entries (idempotent otherwise)
+  execFileSync(fs.existsSync(venvPython) ? venvPython : "python3", ["cli.py", "publish", "--sim"], { cwd: repoRoot, encoding: "utf8" });
+  git(["add", "-A"], targetRoot);
+  git(["commit", "-q", "-m", "chore: tinydb baseline"], targetRoot);
+  check(git(["status", "--porcelain"], targetRoot) === "" && !git(["ls-files"], targetRoot).includes("AGENTS.md"), "published files are excluded from git so the tree is clean and they were not committed");
+  workspaceFolders[0] = { uri: Uri.file(targetRoot), name: "tinydb", index: 0 };
+  states.length = 0;
+  opened.length = 0;
+  const subs3 = [];
+  await ext.activate({ subscriptions: subs3, workspaceState: memento(), globalState: memento(), extensionUri: Uri.file(extRoot), extensionPath: extRoot });
+  webviewProvider.resolveWebviewView(view);
+  await send({ type: "ready" });
+  await waitFor(() => last() && last().exam, "exam state from the published copies", 10000);
+  const y = last().exam;
+  check(y && y.source === "published" && y.resultsDir === path.join(targetRoot, ".bob", "blindspot"), "exam read from .bob/blindspot: " + (y && y.source + " " + y.resultsDir));
+  check(y && y.simulated && !y.usingSim && y.runs.length === 3, "simulated flag comes from the report itself, three runs available");
+  check(last().hasContext && last().header.repoName === "tinydb" && /^\d+%$/.test(last().header.readiness), "readiness context loaded from the workspace .bob/context: " + last().header.readiness);
+  check(last().tabs.review.length + last().tabs.testing.length > 0, "findings tabs filled from the published context");
+  const utils3 = decorationProvider.provideFileDecoration(Uri.file(path.join(targetRoot, "tinydb", "utils.py")));
+  check(utils3 && utils3.badge && utils3.badge.includes("!") && utils3.color.id === "blindspot.red", "tree colouring maps report paths onto the workspace root");
+  check(decorationProvider.provideFileDecoration(Uri.file(path.join(targetRoot, "README.rst"))) === undefined, "unexamined file stays neutral");
+  await send({ type: "openTargetFile", file: "tinydb/table.py" });
+  await sleep(100);
+  check(opened.some((p) => p === path.join(targetRoot, "tinydb", "table.py")), "worst entity click opens the file in the workspace");
+  await send({ type: "publish" });
+  await waitFor(() => last().exam && last().exam.publish && !last().exam.publish.running, "publish from the tinydb workspace", 60000);
+  const pub3 = last().exam.publish;
+  check(pub3 && pub3.ok && pub3.command.includes(`--dest "${targetRoot}"`), "Publish finds cli.py two levels up and publishes into the workspace: " + (pub3 && pub3.command));
+  check(git(["status", "--porcelain"], targetRoot) === "", "tree still clean after publishing from the plugin");
+  for (const s of subs3) { try { s.dispose(); } catch { /* ignore */ } }
+
+  // No engine anywhere above the workspace: Publish refuses with a clear message instead of failing in a shell.
+  const lonely = fs.mkdtempSync(path.join(os.tmpdir(), "bob-readiness-smoke-lonely-"));
+  execFileSync("rsync", ["-a", targetRoot + "/", lonely + "/"]);
+  workspaceFolders[0] = { uri: Uri.file(lonely), name: "lonely", index: 0 };
+  states.length = 0;
+  const subs4 = [];
+  await ext.activate({ subscriptions: subs4, workspaceState: memento(), globalState: memento(), extensionUri: Uri.file(extRoot), extensionPath: extRoot });
+  webviewProvider.resolveWebviewView(view);
+  await send({ type: "ready" });
+  await waitFor(() => last() && last().exam, "exam state in the lonely copy", 10000);
+  await send({ type: "publish" });
+  await waitFor(() => last().exam && last().exam.publish && !last().exam.publish.running, "publish refusal", 10000);
+  const pub4 = last().exam.publish;
+  check(pub4 && pub4.ok === false && /cli\.py was not found/.test(pub4.output), "Publish explains when no engine checkout is around: " + (pub4 && pub4.output.split(".")[0]));
+  for (const s of subs4) { try { s.dispose(); } catch { /* ignore */ } }
+  fs.rmSync(lonely, { recursive: true, force: true });
   fs.rmSync(repoRoot, { recursive: true, force: true });
   console.log(failures ? `\n${failures} check(s) failed` : "\nAll smoke checks passed");
   process.exit(failures ? 1 : 0);

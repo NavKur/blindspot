@@ -4,6 +4,12 @@ For the engine side (Python). Written by the plugin side after merging main on 2
 The plugin lives in `plugin/`. It never calls Bob or the statistics code on its own: it reads
 files, and it runs exactly one CLI command (`publish`) when a person clicks a button.
 
+**Status, 27 September (later the same day):** everything asked for below exists. `python cli.py
+publish` (`blindspot/publish.py`) writes `.bob/context/readiness.json`, the notes, the `AGENTS.md`
+block and report copies under `.bob/blindspot/`; the plugin reads all of them from either the
+repository root or `target/tinydb`. See `docs/HOW_IT_WORKS.md` sections 6 and 7 for the current
+picture. The rest of this file is kept as the record of the handoff.
+
 ## 1. What already works today
 
 Open the repository root in Bob IDE with the plugin installed:

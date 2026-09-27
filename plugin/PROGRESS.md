@@ -89,9 +89,18 @@ from "Next".
   Smoke scenario 2 now builds a temp copy of the repo layout with a fake, line-aligned readiness
   context next to results/sim and covers every feature above.
 
+- 27 Sep, merged main with the finished experiment (real TEST runs, `cli.py publish`,
+  Cartographer, analysis). Wired the two halves together: src/report/resultsLocation.ts (pure:
+  results, results/sim, then .bob/blindspot lookup; engine root discovery by walking up to
+  cli.py; publish command with the engine .venv and --dest), reportStore reads and watches all
+  three places and reports `source`, the Exam tab says when it reads published copies, the
+  Publish button runs in the engine folder from a target/tinydb workspace and reloads the
+  reports afterwards, or explains when no engine is around. Engine side: publish adds `.bob/`
+  and `AGENTS.md` to the target's .git/info/exclude so Send to Bob starts from a clean tree.
+  Smoke scenario 3 covers target/tinydb as the workspace after a real `publish --sim`;
+  test/publishedContext.test.ts validates what is really published in target/tinydb.
+
 ## Next
-- Teammate: `python cli.py publish` (step 23). The Publish button already runs it and shows
-  the output; today the CLI reports an invalid choice.
 - Phase 7 (Aziz): go/no-go with real Bob, switch useFakeBob off for one approval and one
   onboarding question, screenshots, version 0.1.0, tag.
 

@@ -26,3 +26,4 @@ __pycache__/
 bob_sessions/
 plugin/
 node_modules/
+presentation-tinydb/

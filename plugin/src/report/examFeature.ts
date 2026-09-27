@@ -7,6 +7,8 @@ import type { HeaderFallback } from "../panel/state";
 import { getSettings } from "../settings";
 import { runProcess } from "../shell";
 import type { ModuleEntry, Report, WorstEntity } from "./reportContract";
+import { findEngineRoot, publishCommandFor, type ResultsSource } from "./resultsLocation";
+import { exists } from "../targetRoot";
 import {
   alignSeries,
   compareReports,
@@ -27,6 +29,8 @@ import type { ReportStore } from "./reportStore";
 export interface ExamView {
   simulated: boolean;
   usingSim: boolean;
+  /** results (engine folder), sim (results/sim) or published (.bob/blindspot in the examined repo). */
+  source: ResultsSource;
   resultsDir: string;
   run: { name: string; set: string; condition: string; repeat: number };
   generatedAt: string;
@@ -170,18 +174,33 @@ export class ExamFeature implements PanelExtras, vscode.Disposable {
     this.onChange();
   }
 
+  /**
+   * Run `python cli.py publish` in the Blindspot engine checkout. The workspace may be the engine
+   * root or the examined repository inside it (target/tinydb), so the engine is looked for in the
+   * workspace and its parents. The files are published into the repository the reports map onto.
+   */
   private async runPublish(): Promise<void> {
-    const root = this.store.getInfo() ? path.dirname(this.store.getInfo()!.resultsDir.replace(/[\\/]sim$/, "")) : undefined;
-    const cwd = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? root;
-    if (!cwd) return;
-    if (this.publish?.running) return;
-    const command = await this.resolvePublishCommand(cwd);
+    const workspace = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspace || this.publish?.running) return;
+    const setting = getSettings().publishCommand.trim();
+    const engineRoot = await findEngineRoot(workspace, exists);
+    if (!engineRoot) {
+      const output =
+        `cli.py was not found in ${workspace} or its parent folders. Open the Blindspot repository, or the examined ` +
+        "repository inside its target/ folder, or point bobReadiness.publishCommand at the engine.";
+      this.publish = { running: false, ok: false, output, command: setting };
+      this.log.line(`Publish refused: ${output}`);
+      this.onChange();
+      return;
+    }
+    const targetRoot = this.store.getInfo()?.targetRoot ?? workspace;
+    const command = publishCommandFor(setting, engineRoot, targetRoot, await this.venvPython(engineRoot));
     this.publish = { running: true, output: "", command };
     this.onChange();
     this.log.show();
-    this.log.line(`Publish: ${command}`);
+    this.log.line(`Publish in ${engineRoot}: ${command}`);
     const result = await runProcess(command, [], {
-      cwd,
+      cwd: engineRoot,
       shell: true,
       timeoutMs: 5 * 60 * 1000,
       onLine: (line) => this.log.line(`publish: ${line}`),
@@ -191,21 +210,21 @@ export class ExamFeature implements PanelExtras, vscode.Disposable {
     this.publish = { running: false, ok, output: output || (ok ? "Done." : `Exit code ${result.code}`), command };
     this.log.line(ok ? "Publish finished" : `Publish failed with exit code ${result.code}`);
     this.onChange();
+    // The published copies under .bob/blindspot may be what the Exam tab is reading.
+    if (ok) await this.store.load();
   }
 
-  /** Use the workspace virtualenv's python when the command starts with a bare "python". */
-  private async resolvePublishCommand(cwd: string): Promise<string> {
-    const command = getSettings().publishCommand.trim();
-    if (!/^python3?\s/.test(command)) return command;
-    for (const candidate of [path.join(cwd, ".venv", "bin", "python"), path.join(cwd, ".venv", "Scripts", "python.exe")]) {
+  /** The engine's virtualenv interpreter, when it has one. */
+  private async venvPython(engineRoot: string): Promise<string | undefined> {
+    for (const candidate of [path.join(engineRoot, ".venv", "bin", "python"), path.join(engineRoot, ".venv", "Scripts", "python.exe")]) {
       try {
         await fs.access(candidate);
-        return `"${candidate}" ${command.replace(/^python3?\s+/, "")}`;
+        return candidate;
       } catch {
         // try the next one
       }
     }
-    return command;
+    return undefined;
   }
 
   private view(): ExamView | undefined {
@@ -222,6 +241,7 @@ export class ExamFeature implements PanelExtras, vscode.Disposable {
     return {
       simulated: report.simulated,
       usingSim: info.usingSim,
+      source: info.source,
       resultsDir: info.resultsDir,
       run: report.run,
       generatedAt: formatWhen(report.generated_at),

@@ -198,47 +198,86 @@ Say these plainly if asked.
 
 - Built in a very short window against a Sunday 27 September deadline. Phases 0 to 6 of the
   build plan are done and packaged as `bob-readiness-0.0.1.vsix`.
-- The **engine side of the readiness context (the Cartographer output) is still in progress**.
-  Today the function level features run on a hand-aligned sample context
-  (`fixtures/readiness.sample.json`) against a tinydb checkout. The report side runs on
-  simulated data until real exam runs land. The plugin labels both as simulated or sample.
-- The Publish button runs `python cli.py publish`, which the engine has not implemented yet.
+- The experiment is finished and frozen. Real TEST runs exist for C1 (89.0 percent) and C2
+  (95.0 percent), and `python cli.py publish` turns a marked run into the readiness context, the
+  study notes, an AGENTS.md block and report copies inside the examined repository. Everything
+  the plugin shows in the demo is real Bob data from those runs, not simulated.
+- One repository, one run per condition, a popular library Bob may have seen in training, and
+  the C2 context is longer than C1 with no length-matched control. Say this if asked about the
+  statistics.
 - Real Bob has been tested by a go/no-go check (Bob answers headless, edits files on disk,
-  returns a JSON result with a cost). The full approval flow has been exercised end to end
-  with fake Bob and by the smoke script, and still needs a hand run inside Bob IDE with real
-  Bob (planned phase 7).
+  returns a JSON result with a cost). The approval flow has been exercised end to end with fake
+  Bob and by the smoke script; the first hand run with real Bob is the rehearsal in
+  `docs/DEMO_RUNBOOK.md`. Update this line with its result.
 - Layout, colours and the modal were verified against the reference mockups in
-  `plugin/references/`, and by the smoke script, but not yet clicked through in a live Bob IDE
-  window in the latest session.
+  `plugin/references/` and by the smoke script. Check them once in the live window before
+  presenting.
 
 ---
 
-## 8. Demo script (about five minutes)
+## 8. Demo script (seven minutes, real Bob, real data)
 
-Setup beforehand: install the `.vsix` in Bob IDE, open the Blindspot repository root after
-`python cli.py target`, and have `../demo-tinydb` prepared as in the plugin README. Fake Bob
-stays on.
+Setup beforehand, all prepared by `docs/DEMO_RUNBOOK.md`: the `.vsix` installed, Bob IDE
+started from a Terminal where `BOB_API_KEY` is exported (`open -a "IBM Bob"
+/Users/zyzzmac/blindspot/presentation-tinydb`), the folder `presentation-tinydb` open with the
+C1 context published (`plugin/scripts/demo-reset.sh` puts it back to this state), a second
+Terminal at the repository root ready for step 6, the Output channel "Bob Readiness" closed,
+the side panel closed, no files open. Run the whole script once the day before and record it;
+the recording is the fallback if live Bob misbehaves.
 
-1. **Explorer.** Point at the coloured tree under `target/tinydb`. Red badge on
-   `tinydb/utils.py` and `__init__.py`, a `?` on `operations.py`. "Green means Bob knows this
-   code. Red means it is confidently wrong about it."
-2. **Exam tab.** Open the side panel. Show the simulated banner, accuracy with its interval,
-   the confidently wrong rate, the reliability bins, and the change over time chart with one
-   line per condition. Click Compare runs and pick C1 against C2.
-3. **Heatmap tab.** Files across runs, then functions by file. Click a red square to jump.
-4. **Editor.** Switch to the demo workspace, open `tinydb/table.py`. `update()` is red with
-   the inline note; `search()` is blue. Hover for the card. Show the CodeLens. Open Problems.
-   Toggle "Readiness: Off" in the status bar and everything disappears; toggle it back.
-5. **Right click, Copy Bob Context.** Paste into any text box to show the preamble.
-6. **The flow.** Review tab: tick two findings. Note one row is disabled with "Needs a
-   person". Press Send to Bob. Read the modal aloud: items, branch name, cost. Approve. Show
-   the Output channel streaming. The diff opens. Tests show 226 passed. Press Keep, show the
-   draft PR. Then, optionally, repeat and press Discard to show the branch vanish.
-7. **Release tab.** Since the last tag, commits, changed functions with readiness bars, the
-   verdict, and Copy release notes.
+Suggested split: Nacky presents steps 1, 2 and 6 (the exam and the result), Aziz presents
+steps 3, 4 and 5 (what the developer sees and the fix loop).
 
-If anything goes wrong live, the `npm run smoke` output is a safe fallback to show the same
-scenarios running.
+**1. The problem, 30 seconds, slide.** "Bob is equally confident when it is right and when it
+is wrong. A developer cannot tell which is which from the answer. We measured it."
+
+**2. The exam, 60 seconds, Exam tab.** Open the side panel, Exam tab. Point at: run
+`test_C1_r1`, 200 questions generated from the code's syntax tree, sat closed book by real Bob,
+89 percent right, 6 answers confidently wrong. Scroll to the reliability bins ("when Bob says 90
+percent it is right less often than that") and to the modules worst first (`__init__.py`,
+`operations.py` in red). "Every question has a mechanically checked answer. No human graded
+this."
+
+**3. Where exactly, 75 seconds, editor.** Explorer: red `!` on `operations.py` and
+`__init__.py`, green to yellow on the rest, `README.rst` neutral because it was not examined.
+Open `tinydb/operations.py`. `subtract` at line 36 is red. Hover it and read the card: "Bob
+answered no, 80 percent sure, to whether this function exists. It exists." Show the status bar
+warning "Bob: confidently wrong here 2 times" and "Blindspot 89% C1". Open the Problems panel:
+19 findings. Press Cmd+Alt+R twice: everything off, everything on. "This is the exam result
+placed on the line of code it is about."
+
+**4. The gate, 30 seconds, Review tab.** "The plugin does not only show risk, it routes work."
+Show the rows: three are "Bob with notes, review needed", the rest "Needs a person" with the
+checkbox disabled. Try to tick one; it refuses. "The decision comes from measured readiness,
+not from Bob's own confidence, which is the one thing we cannot trust."
+
+**5. The fix loop live, 150 seconds, Review tab and editor.** Tick F004 and F011 (both in
+`storages.py`). Footer: "Selected: 2" and the estimate. Press Send to Bob. Read the modal
+aloud: the two items, the branch name, the cost, the session budget. Approve. The Output
+channel opens: "Bob: reading .bob/rules/readiness-context.md" (the study notes go into the
+prompt because these items are "with notes"), then Bob's lines. While Bob works, say the four
+rules: approval in a modal, a fresh branch, a clean tree, a budget. When it finishes: changed
+files with counts, the diff opens, tests run on the branch and show 219 passed. Press Keep:
+commit on the branch and a draft pull request. "One person approved, Bob worked on a branch,
+the tests ran, the person kept it. Nothing reached main." If Bob changed nothing or a test
+failed, press Discard and show the branch vanish; that is the same safety story.
+
+**6. Does the context help, 60 seconds, second Terminal.** Run
+`.venv/bin/python cli.py publish --run test_C2_r1 --dest presentation-tinydb`. Within a second a
+toast in the IDE says what changed, the status bar reads "Blindspot 95% C2" and `storages.py`
+turns green. Back in the Exam tab, Compare runs `test_C1_r1` against `test_C2_r1`: storages 93
+to 100, database 87 to 97, table 85 to 93, utils 88 to 96. Slide with the pre-registered result:
+wrong answers fell from 22 to 10, 17 fixed and 5 broken, exact McNemar p = 0.017, Brier
+improved. "Notes written from where Bob failed on the training questions fixed a significant
+share of its mistakes on sealed test questions it had never seen."
+
+**7. Close, 30 seconds, slide.** Limitations in one breath (one repository, one run per
+condition, a library Bob may know from training, no length-matched control), then the sentence:
+"See where Bob is sure but wrong, before you rely on it."
+
+Fallbacks, in order: the recording of the rehearsal; switching `bobReadiness.useFakeBob` to
+true in `presentation-tinydb/.vscode/settings.json` so step 5 runs with the fake Bob in a few
+seconds; `npm run smoke` output in a terminal.
 
 ---
 

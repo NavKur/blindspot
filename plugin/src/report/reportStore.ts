@@ -5,12 +5,15 @@ import { normalizePath, relativeTo } from "../contextIndex";
 import { getSettings, workspaceRoot } from "../settings";
 import { exists, resolveTargetRoot } from "../targetRoot";
 import { parseHistory, parseReport, type DirectoryEntry, type HistoryLine, type ModuleEntry, type Report } from "./reportContract";
+import { pickResultsDir, reportWatchGlobs, type ResultsSource } from "./resultsLocation";
 
 export interface ReportLoadInfo {
   /** Absolute folder the files were read from. */
   resultsDir: string;
   /** True when the folder is the simulated results/sim fallback. */
   usingSim: boolean;
+  /** Which of the three places the reports came from. */
+  source: ResultsSource;
   /** Absolute root the report paths map onto. */
   targetRoot: string;
   /** Names of report_<run>.json files available for comparison. */
@@ -23,7 +26,9 @@ export interface ReportLoadInfo {
  * folder, and maps report paths onto the workspace file tree.
  *
  * Results folder: bobReadiness.resultsPath (default "results"). When it has no report but
- * results/sim does, the simulated data is used and labelled as such.
+ * results/sim does, the simulated data is used and labelled as such. When neither exists, the
+ * copies that `python cli.py publish` writes to .bob/blindspot inside the examined repository
+ * are used, so the Exam tab works with that repository open as the workspace.
  * Target root: bobReadiness.targetRoot, or target/<repo> from target.lock.json when present,
  * or the workspace root.
  */
@@ -108,19 +113,13 @@ export class ReportStore implements vscode.Disposable {
   async load(): Promise<boolean> {
     if (!this.root) return false;
     const settings = getSettings();
-    const primary = path.resolve(this.root, settings.resultsPath);
-    let resultsDir = primary;
-    let usingSim = false;
-    if (!(await exists(path.join(primary, "report_latest.json")))) {
-      const sim = path.join(primary, "sim");
-      if (await exists(path.join(sim, "report_latest.json"))) {
-        resultsDir = sim;
-        usingSim = true;
-      } else {
-        this.clear();
-        return false;
-      }
+    const location = await pickResultsDir(this.root, settings.resultsPath, exists);
+    if (!location) {
+      this.clear();
+      return false;
     }
+    const resultsDir = location.dir;
+    const usingSim = location.source === "sim";
     const previous = this.report;
     const targetRoot = await resolveTargetRoot(this.root, settings.targetRoot);
     let text: string;
@@ -152,7 +151,7 @@ export class ReportStore implements vscode.Disposable {
       this.history = [];
     }
     const runs = await listRuns(resultsDir);
-    this.info = { resultsDir, usingSim, targetRoot, runs, historySkipped };
+    this.info = { resultsDir, usingSim, source: location.source, targetRoot, runs, historySkipped };
     this.emitter.fire(this.report);
     this.reloadEmitter.fire({ previous, current: parsed.report });
     return true;
@@ -173,12 +172,11 @@ export class ReportStore implements vscode.Disposable {
     this.watchers = [];
     const folder = vscode.workspace.workspaceFolders?.[0];
     if (!folder) return;
-    const base = getSettings().resultsPath.replace(/\/+$/, "");
     const schedule = () => {
       if (this.timer) clearTimeout(this.timer);
       this.timer = setTimeout(() => void this.load(), 300);
     };
-    for (const glob of [`${base}/report_latest.json`, `${base}/history.jsonl`, `${base}/sim/report_latest.json`, `${base}/sim/history.jsonl`]) {
+    for (const glob of reportWatchGlobs(getSettings().resultsPath)) {
       const w = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folder, glob));
       w.onDidChange(schedule);
       w.onDidCreate(schedule);

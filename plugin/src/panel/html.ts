@@ -311,9 +311,10 @@ pre.out { background: var(--vscode-textCodeBlock-background, rgba(127,127,127,0.
   }
 
   function renderExam(x) {
-    if (!x) return '<div class="empty">No Blindspot report found. Expected results/report_latest.json (or results/sim/report_latest.json for simulated data) in the workspace. Run "python cli.py report" or "python cli.py simulate".</div>';
+    if (!x) return '<div class="empty">No Blindspot report found. Expected results/report_latest.json (or results/sim/report_latest.json for simulated data) in the workspace, or .bob/blindspot/report_latest.json written by "python cli.py publish" when the examined repository is open. Run "python cli.py report", "python cli.py simulate" or "python cli.py publish".</div>';
     let html = "";
     if (x.simulated || x.usingSim) html += '<div class="banner">Simulated data' + (x.usingSim ? " from results/sim" : "") + '. Not a real Bob run.</div>';
+    if (x.source === "published") html += '<div class="notice">Reading the copies that "python cli.py publish" wrote into this repository. Publish again to refresh them.</div>';
     if (x.error) html += '<div class="tests fail"><b>Report problem</b> ' + esc(x.error) + "</div>";
     html += '<div class="kv"><span>Run</span><span class="mono">' + esc(x.run.name) + "</span></div>" +
       '<div class="kv"><span>Condition</span><span>' + esc(x.run.condition) + ", " + esc(x.run.set) + " set, repeat " + x.run.repeat + "</span></div>" +

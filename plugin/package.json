@@ -140,7 +140,7 @@
         "bobReadiness.resultsPath": {
           "type": "string",
           "default": "results",
-          "description": "Folder with report_latest.json and history.jsonl from the Blindspot engine, relative to the workspace. Falls back to <folder>/sim when only simulated data exists."
+          "description": "Folder with report_latest.json and history.jsonl from the Blindspot engine, relative to the workspace. Falls back to <folder>/sim when only simulated data exists, then to .bob/blindspot (the copies written by python cli.py publish into the examined repository)."
         },
         "bobReadiness.targetRoot": {
           "type": "string",
@@ -150,7 +150,7 @@
         "bobReadiness.publishCommand": {
           "type": "string",
           "default": "python cli.py publish",
-          "description": "Command run by the Publish button in the Exam tab, in the workspace root. A workspace .venv python is used automatically."
+          "description": "Command run by the Publish button in the Exam tab. It runs in the Blindspot engine folder (the workspace or the nearest parent with cli.py), uses that folder's .venv python automatically, and adds --dest for the repository the reports map onto."
         },
         "bobReadiness.sessionBudget": {
           "type": "number",

@@ -208,6 +208,7 @@ choose with `--run test_C1_r1`; `--sim` uses `results/sim/`) and writes into `ta
 | `.bob/rules/readiness-context.md` | Plain English list of facts Bob got wrong with the correct answers. Bob loads `.bob/rules` automatically |
 | `AGENTS.md` | A block between `<!-- blindspot:start -->` and `<!-- blindspot:end -->` with readiness per file. Other text is kept; republishing replaces only the block |
 | `.bob/blindspot/` | Copies of every `report_*.json` and `history.jsonl`, so the Exam tab works with `target/tinydb` open |
+| `.git/info/exclude` | Only when the destination is a git clone: a marked block listing `.bob/` and `AGENTS.md`, so `git status` stays clean for the plugin's branch flow. Local metadata, never pushed |
 
 How `readiness.json` is filled from the marked answers:
 
@@ -234,23 +235,29 @@ Choosing the run is a presentation choice: `test_C1_r1` shows Bob before Blindsp
 The plugin reads two things, both relative to the open workspace folder:
 
 1. The exam reports (`docs/REPORT_SCHEMA.md`), looked for in this order: `bobReadiness.resultsPath` (default `results`),
-   then `results/sim` (shown with a simulated banner), then `.bob/blindspot` (needs the small patch
-   `plugin_report_fallback.patch` to `plugin/src/report/reportStore.ts`). Report paths are mapped onto
-   `bobReadiness.targetRoot`, else `target/<repo>` from `target.lock.json`, else the workspace root.
-2. The readiness context at `bobReadiness.contextPath` (default `.bob/context/readiness.json`), paths relative to the workspace root.
+   then `results/sim` (shown with a simulated banner), then `.bob/blindspot` (the copies `publish` writes into the
+   examined repository; the Exam tab says it is reading published copies). The lookup is in
+   `plugin/src/report/resultsLocation.ts`. Report paths are mapped onto `bobReadiness.targetRoot`, else `target/<repo>`
+   from `target.lock.json`, else the workspace root.
+2. The readiness context at `bobReadiness.contextPath` (default `.bob/context/readiness.json`), looked for in the
+   target root first (so `target/tinydb/.bob/context/readiness.json` when the repository root is open), then in the
+   workspace folder. Its paths are relative to the target root, the same convention as the reports.
 
-Two ways to open it:
+Both ways of opening it work after `python cli.py publish`:
 
-| Open this folder in Bob IDE | Works | Caveat |
+| Open this folder in Bob IDE | What you get | Notes |
 |---|---|---|
-| `target/tinydb` (recommended for the demo) | Highlights, hovers, CodeLens, Problems, all tabs, and the Exam tab via `.bob/blindspot` (with the patch) | Run `publish` first. The Publish button will not work here because `cli.py` is not in this folder |
-| the repository root | Exam tab and tree colouring from `results/`, Publish button | Highlighting finds no context unless `bobReadiness.contextPath` is set to `target/tinydb/.bob/context/readiness.json`, and its paths would then not match files; use the tinydb folder for highlighting |
+| `target/tinydb` (recommended for the demo) | Highlights, hovers, CodeLens, Problems, all tabs, tree colouring, and the Exam tab from `.bob/blindspot` | Run `publish` first (from a terminal or the Publish button). The Publish button finds `cli.py` in the parent folders and adds `--dest` for this folder |
+| the repository root | Exam tab and tree colouring from `results/` (the newest report, real or simulated), Publish button, highlights inside `target/tinydb` | Files outside `target/tinydb` stay neutral |
 
-The Publish button runs `bobReadiness.publishCommand` (default `python cli.py publish`, using `.venv` if present) in the workspace root.
+The Publish button runs `bobReadiness.publishCommand` (default `python cli.py publish`) in the Blindspot engine folder:
+the workspace itself, or the nearest parent that has `cli.py` and `blindspot/publish.py`. It uses that folder's `.venv`
+python when present and appends `--dest <target root>` unless the command already names one. When no engine folder is
+found it says so in the Exam tab instead of running anything. After a successful publish the reports are reloaded.
 
-The "Send to Bob" flow creates a branch and needs a clean working tree. `publish` modifies `target/tinydb`, so commit
-inside that folder first (`cd target/tinydb; git add -A; git commit -m "Add Blindspot context"`). Do not push that commit.
-This flow has only been tested with the plugin's fake Bob so far.
+The "Send to Bob" flow creates a branch and needs a clean working tree. `publish` therefore lists the files it writes
+(`.bob/` and `AGENTS.md`) in `target/tinydb/.git/info/exclude`, so `git status` there stays clean and nothing needs to
+be committed or pushed. This flow has only been tested with the plugin's fake Bob so far.
 
 
 ## 8. Common tasks
@@ -269,7 +276,11 @@ The Exam tab's Compare runs can show `test_C1_r1` against `test_C2_r1` at any ti
 Work on the plugin without real data: `python cli.py simulate` then `python cli.py publish --sim`. Afterwards run
 `python cli.py target --force` to wipe simulated files out of `target/tinydb`.
 
-Run the engine tests: `pytest -q` (expect about 97 passed, 1 skipped). Plugin: `cd plugin; npm test; npm run build`.
+Run the engine tests: `pytest -q` (expect about 99 passed, 1 skipped). Plugin: `cd plugin; npm test; npm run build`,
+and `npm run smoke` drives the bundled plugin end to end: fake Bob in a copy of `demo-tinydb`, then the repository
+layout with `results/sim`, then `target/tinydb` as the workspace after a real `publish --sim`, including the Publish
+button and the clean tree check. `plugin/test/publishedContext.test.ts` validates whatever is currently published in
+`target/tinydb` against the plugin's schemas (skipped when nothing is published).
 
 
 ## 9. Rules that must not be broken
